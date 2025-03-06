@@ -1,0 +1,111 @@
+import React, { useState, useEffect, useRef } from 'react'
+
+const SelectOptions = ({ fieldName,setValue, register, field, errors }) => {
+
+    const [isOpen, setOpen] = useState(false);
+    const [filteredOptions, setFilteredOptions] = useState([]);
+
+    const handleInputClick = (field) => {
+        setFilteredOptions(field.selectOption);
+        setOpen(!isOpen);
+    }
+
+    const handleOptionClick = (field,indexOption, option) => {
+        console.log( field.inputName, option);
+        setValue(field.inputName, option);
+        setOpen(false);
+    }
+
+
+    const handleInputChange = (field, event) => {
+
+        const value = event.target.value;
+        const options = field.selectOption.filter((option) => {
+            return (
+                option.toLowerCase().includes(value.toLowerCase()))
+        });
+
+        setFilteredOptions(options);
+
+        if (options.length === 1 && options[0].toLowerCase() === value.toLowerCase()) {
+            setValue(field.inputName, options[0]);
+            setOpen(false);
+        }
+    }
+
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (containerRef.current && !containerRef.current.contains(event.target)) {
+                setTimeout(() => setOpen(false), 500);
+
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+
+    return (
+
+        <>
+            <div ref={containerRef} className="  relative w-full ">
+               {React.isValidElement(field.icon) ? field.icon : null}
+               {React.isValidElement(field.icon2) ? field.icon2 : null}
+
+
+                <input style={{ boxShadow: '0 0 6px #172b4d0a' }}
+                                onClick={() => { handleInputClick(field) }}  
+
+                    className={` 
+                         ${ errors && errors[field.inputName] ? 'focus:border-reds' : 'focus:border-textColor'} 
+                         w-full outline-none py-2 px-2  ${field.paddingLeft} 
+                           rounded text-sm text-textColor2    font-normal border bg-white  `}
+
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    disabled={field.disabled}
+                    readOnly={field.readonly}
+                    {...register(field.inputName,{
+                        required: field.required,
+                    })}
+                    onChange={(e) => handleInputChange(field, e)}
+
+                />
+
+                {isOpen &&
+                    <div className={`  bg-white border border-searchIcon w-full  z-50
+                   absolute top-full left-0`}  >
+                        {filteredOptions.length > 0 ? (
+                            filteredOptions?.map((option, indexOption) => {
+                                return (
+                                    <div key={indexOption}
+                                        onClick={() => handleOptionClick(field,indexOption, option)}
+                                        className={` ${indexOption === 0 ? 'bg-textColor text-white' : 'text-black2'}  p-2.5 
+                                                          hover:text-white hover:bg-textColor text-sm`}>
+                                        <span>{  option }</span>
+                                    </div>)
+                            })
+                        ) :
+                            (
+                                <div className='p-2.5 text-black2 text-sm'>
+                                    <span>No option found</span>
+                                </div>
+                            )}
+                    </div>
+
+                }
+            </div>
+            { errors && errors[field.inputName] &&
+                <div className='flexs  items-center'>
+                    <small className='text-reds  text-xs font-medium '>
+                        {errors[field.inputName].message}
+                    </small>
+                </div>}
+        </>
+
+    )
+}
+
+export default SelectOptions

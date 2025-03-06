@@ -1,0 +1,68 @@
+.main .header {
+
+    top: 0;
+    left: 0;
+    z-index: 999;
+}
+
+.header .left-bar {
+    display: flex;
+    align-items: center;
+}
+
+.left-bar .menu {
+
+    margin-right: 50px;
+
+}
+
+.logo-text img {
+    width: 17px;
+}
+
+;
+
+.dropdown .dropdown-menu {
+
+    z-index: 2000;
+    border-radius: 10px;
+    top: 25px;
+    right: 30px;
+    width: 300px;
+
+}
+
+.dropdown .dropdown-menu-2 {
+
+    z-index: 20000;
+    top: 25px;
+    right: 20px;
+
+    width: 130px;
+}
+
+.setting-menu li {
+    list-style: none;
+    width: 100%;
+}
+
+.notification-header p {
+
+    font-size: 15.5px;
+    letter-spacing: 1px;
+}
+
+.notification-header a {
+
+
+    font-size: 13px;
+}
+
+@media (max-width:576px) and (min-width:250px) {
+
+    .left-bar .menu {
+        margin-right: 30px;
+        display: flex;
+        align-items: center;
+    }
+}

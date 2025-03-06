@@ -1,0 +1,127 @@
+
+.section-1 .row-1:hover p .bi-box-arrow-up-right {
+    display: inline-block;
+    margin-left:2px ;
+}
+
+.section-1 .row-1:hover .record-content-1 h4 {
+    color: #172b4d;
+}
+.section-1 .row-1:hover .record-content-1 p {
+    color: #2684ff;
+}
+
+.search-detail .bi-caret-down-fill {
+    left: 170px;
+    top: 40%;
+}
+
+
+.search-detail input[type=text]::placeholder {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14.5px;
+   
+    color: #505f79;
+}
+.row-1 {
+    padding: 20px;
+}
+   
+
+
+@media (max-width:1130px) and (min-width:250px ) {
+
+    div .section-1 {
+        grid-template-columns: repeat(2,1fr) !important;
+        grid-template-rows: repeat(3,1fr); 
+        
+    }
+    div .section-2 {
+        grid-template-columns: 100% !important; 
+        grid-template-rows: repeat(2,1fr); 
+   }
+   
+}
+
+
+@media (max-width:576px) and (min-width:250px)  {
+
+    div .section-1 {
+        grid-template-columns:100% !important;
+        grid-template-rows: repeat(5,1fr); 
+        
+    }
+}
+@media ( max-width:480px) {
+
+    .record-header span {
+        color: var(--sectionColor);
+        font-size: 12px;
+        
+    }
+    .record-content-1  h4 {
+
+        /* color: var(--sectionColor); */
+        font-size: 20px;
+     }
+     .record-content-1 p {
+        font-size: 15px;
+    }
+    .record-content-2 span {
+        
+        font-size: 16px;
+    }
+    .record-header-icon .bi-bar-chart-fill,
+    .record-header-icon .bi-cart2,
+    .record-header-icon .bi-people,
+    .record-header-icon .bi-box,
+     .record-header-icon .bi-person {
+        
+        width: 20px;
+        height: 20px;
+    }
+    .search-detail input {
+        width: 150px;
+    }
+  
+    .search-detail .bi-caret-down-fill {
+        left: 130px;
+    }
+     .search-detail input[type=text]::placeholder { 
+        font-size: 12px;
+    }
+    .section-1 .row-1 {
+        
+        padding: 10px;
+    }
+    .section-2 .row-2,
+   .section-2 .row-3,
+  .row-3-parts .row-3 {
+  
+    padding: 10px;
+   
+    }
+   
+    /* tr td {
+        font-size: 12px !important;
+    }
+    tbody tr {
+        border-bottom: 3px solid var(--searchIcon);
+    }
+
+     tr td:nth-child(3), tr th:nth-child(3) {
+        display: none;
+    } */
+   
+
+      
+} 
+
+
+@media (max-width:380px) and (min-width:250px) {
+    /* tr td:nth-child(4), tr th:nth-child(4) {
+        display: none;
+    } */
+
+  
+}

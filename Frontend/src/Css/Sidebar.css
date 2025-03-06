@@ -1,0 +1,77 @@
+
+
+.smiels-sidebar .side {
+    width: 240px;
+    padding: 70px 20px 20px 20px;
+    z-index: 999;
+}
+
+ .smiels-sidebar .side.close {
+    width: 60px;
+    padding: 70px 10px 10px 10px;
+   
+}
+.search input[type=text]::placeholder {
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+ .navbar-nav .nav-link:first-child {
+    border-radius: 5px !important;
+}
+
+
+
+
+.footer .chat {
+    font-size: 11px;
+    
+}
+
+
+
+div .loading {
+    width: 28px;
+    height: 28px;
+}
+.quickFile .check {
+ 
+   border-radius: 50%;
+}
+
+div .profile-logo {
+    width: 40px;
+    height: 40px;
+}
+
+
+@media (max-width:1170px) and (min-width:250px) {
+
+    .smiels-dashboard .side {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+    }
+}
+
+
+
+@media (max-width:768px)  {
+
+    .side.close {
+        display: none !important;
+        
+    }
+    
+  
+}
+
+@media (max-width:576px)  {
+    .smiels-dashboard .side {
+        position: absolute;
+        overflow-y: auto;
+        top: 60px;
+        left: 0px;
+        padding-top: 10px;
+        
+
+    }}

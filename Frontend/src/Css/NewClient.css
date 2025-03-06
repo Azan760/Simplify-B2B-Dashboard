@@ -1,0 +1,35 @@
+@media (max-width : 1001px) and (min-width:769px) {
+
+    div .client-Details {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .location {
+        grid-template-columns:  1fr !important;
+    }
+
+
+
+}
+
+
+
+@media (max-width : 440px) {
+    div .button {
+         flex-direction: column;
+         gap : 10px;
+    }
+    .inner-btn {
+        margin: 0px;
+    }
+
+    .detail-icon {
+        flex-direction: column;
+        gap: 20px;
+
+        align-items: flex-start;
+    }
+    .detail-icon div {
+        margin: 0px;
+    }
+}

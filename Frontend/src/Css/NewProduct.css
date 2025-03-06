@@ -1,0 +1,61 @@
+input[type=checkbox].toggle-btn {
+    position: relative;
+    width: 34px;
+    height: 16px;
+    -webkit-appearance: none;
+    background-color: #fff;
+    outline: none;
+    border-radius: 20px;
+    transition: .2s;
+    cursor: pointer;
+    border: 2px solid #dfe1e6;
+    margin-right: 2px;
+    pointer-events: all;
+}
+input[type=checkbox].toggle-btn::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    top: -4px;
+    left: -4px;
+    background-color: #fff;
+    transform: scale(1.1);
+    transition: .2s;
+    border: 2px solid #dfe1e6;
+}
+
+input[type=checkbox].toggle-btn:checked::before {
+    left: 14px;
+    border: 2px solid #0052cc;
+}
+
+
+
+
+
+input[type=checkbox].toggle-btn:checked {
+    background-color: #0052cc;
+    border: 2px solid #0052cc;
+}
+
+input:focus {
+    box-shadow: 0 0 1px #0052cc;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+
+
+input::placeholder {
+    text-transform: none;
+}

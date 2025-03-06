@@ -1,0 +1,22 @@
+
+
+
+@media (max-width : 1001px)  {
+
+    div .client-Detail {
+        grid-template-columns: 1fr  !important;
+    }
+
+
+
+}
+
+@media (max-width : 440px) {
+    div .button {
+         flex-direction: column;
+         gap : 10px;
+    }
+    .inner-btn {
+        margin: 0px;
+    }
+}

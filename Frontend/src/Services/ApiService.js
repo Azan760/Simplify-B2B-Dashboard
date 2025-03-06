@@ -1,0 +1,57 @@
+import axios from "axios"
+
+
+export const useFetch = (url) => {
+
+    const getFetch = async (searchTerm) => {
+
+        try {
+            let  response = await axios.get(url,{
+                params: { search: searchTerm },  
+              });
+              console.log(response.data);
+            return response.data;
+    
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    };
+
+
+    const postFetch = async (data) => {
+        try {
+            let response = await axios.post(url, data);
+            console.log("Success : ", response);
+
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
+    const postFetchFile = async (data) => {
+        try {
+            let response = await axios.post(url, data,{
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+            console.log("Success : ", response);
+
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
+    const updateFetch = async (data) => {
+        try {
+            let response = await axios.put(url, data);
+            console.log("Success : ", response);
+
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
+    return { getFetch, postFetch, updateFetch, postFetchFile };
+
+};
