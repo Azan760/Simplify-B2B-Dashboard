@@ -15,8 +15,6 @@ const DashboardLayout = () => {
         <>
 
             <div className="smiels-dashboard flex relative h-screen">
-                {/* <Login/> */}
-                {/* <NewPassword/> */}
                 <Sidebar sideOpen={sidebarOpen.sideOpen} />
                 <div style={{ marginTop: '60px' }} className="main block w-full">
                     <Header toggleSidebar={toggleSidebar} menuClose={sidebarOpen.menuClose}

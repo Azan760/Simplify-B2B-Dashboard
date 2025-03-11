@@ -20,8 +20,12 @@ export const useFetch = (url) => {
 
     const postFetch = async (data) => {
         try {
-            let response = await axios.post(url, data);
+            let response = await axios.post(url, data,{
+                withCredentials: true,
+            });
+
             console.log("Success : ", response);
+            return response.data;
 
         } catch (error) {
             console.error('Error:', error.message);

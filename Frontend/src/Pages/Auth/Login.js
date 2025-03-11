@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback,useEffect } from 'react'
 import RectangleArtSmall from "../../Assets/RectangleArtSmall.svg"
 import RectangleArtLarge from "../../Assets/RectangleArtLarge.svg"
 import { Helmet } from "react-helmet";
@@ -8,11 +8,25 @@ import Button from '../../Components/Button';
 import { arrowClockwise } from '../../Components/Icons';
 import { Link } from 'react-router-dom';
 import InputField from '../../Components/InputField.js';
-import { useFetch } from '../../Services/ApiService.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from "../../Features/AuthSlice.js";
+import { useNavigate } from 'react-router'
+import NProgress from 'nprogress';
+
+
+
 
 
 
 const Login = () => {
+
+     const navigate = useNavigate(); 
+
+    const dispatch = useDispatch();
+      const { token, user, loading, error } = useSelector((state) => state.auth);
+      const storedToken = localStorage.getItem("userToken");
+       const tokens = token || storedToken;
+
 
     const { register, handleSubmit, reset, formState: { errors, isSubmitting, isDirty } } = useForm({
         defaultValues: {
@@ -20,8 +34,6 @@ const Login = () => {
         },
 
     });
-
-    const {postFetch} = useFetch("http://localhost:8000/login");
 
     const inputField = [
         {
@@ -31,7 +43,7 @@ const Login = () => {
             required: "Email is required.",
             pattern : /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             types: 'email',
-            inputName: "userEmail",
+            inputName: "email",
             icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 className="bi bi-envelope absolute text-searchIcon top-2.5 left-2" viewBox="0 0 16 16">
                 <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
@@ -44,7 +56,7 @@ const Login = () => {
             placeholder: "Password",
             types: 'password',
             required: "Password is required",
-            inputName: "userPassword",
+            inputName: "password",
             icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 className=" absolute text-searchIcon top-2.5 left-2 bi bi-eye" viewBox="0 0 16 16">
                 <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
@@ -58,16 +70,32 @@ const Login = () => {
     ];
 
 
-    const onSubmit = async (data) => {
-      try {
+    useEffect(() => {
+        if (tokens ) {
+            navigate("/", {replace: true});
+            NProgress.done();
+        }
+    }, [token, user, navigate]);
 
-          console.log(data);
-          await postFetch(data);
-          reset();
-      }
-      catch(error) {
-        console.log(error.message);
-      }
+    useEffect(() => {
+        if (tokens) {
+            reset();
+        }
+    }, [token, reset]);
+
+    useEffect(() => {
+        if (error) {
+            alert(error.message);
+        }
+      
+    }, [loading, error]);
+
+
+
+    const onSubmit =  (data) => {
+
+        dispatch(loginUser(data));
+        NProgress.start();
 
     }
 
@@ -177,9 +205,7 @@ const Login = () => {
                     <img className='absolute bottom-0 right-0' src={RectangleArtLarge} alt='rectangle-art-large' />
 
                     <div className='flex flex-col text-center relative justify-center items-center  z-10 h-full'>
-                        {/* <div className='flex justify-center items-center'>
-                            <img className='block' src={imageCombo} alt='image-combo' />
-                        </div> */}
+                       
                         <div className='flex justify-center  items-center flex-col w-4/6 text-white'>
                             <h4 style={{ fontSize: '28px', lineHeight: '30px' }} className=' tracking-wide font-semibold'>
                                 Start managing your business and team more efficiently.

@@ -5,21 +5,46 @@ import { useSidebarDropdown } from '../Data/Data';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { chatIcon, circle, dotsIcon, search } from './Icons';
+import { useDispatch } from "react-redux";
+import { logout } from "../Features/AuthSlice";
+import { useNavigate } from "react-router-dom";
+import {useFetch} from "../Services/ApiService.js"
 
 const Sidebar = ({ sideOpen }) => {
 
     const [isOpen, setOpen] = useState('hidden');
     const [linkDropdown, links] = useSidebarDropdown();
+    
+
+    const {postFetch} = useFetch("http://localhost:8000/api/logout");
 
     useEffect(() => {
         sideOpen === 'side' ? setOpen('') : setOpen('hidden');
     }, [sideOpen]);
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
 
     const [selectedIndex, setSelectedIndex] = useState(0);
 
-
+    const handleLogout = async() => {
+        try {
+            const response = await postFetch();
+            if (response?.success) {  
+                dispatch(logout());
+                navigate("/login");
+            } else {
+                console.log("Logout failed:", response?.message);
+            }
     
+        }
+        catch (error) {
+          console.log(error.message);
+        }
+    };
+    
+
     
     return (
         
@@ -121,7 +146,7 @@ const Sidebar = ({ sideOpen }) => {
                             <img src="https://app.smiels.com/assets/user-profile.svg" alt="" className="profile-logo" />
                             <span className={` ${isOpen} user text-textColor2  font-normal  text-sm`}> SMIELS User </span>
                         </div>
-                        <span className={`${isOpen}`}>
+                        <span className={`${isOpen}`}  onClick={handleLogout}>
                             {dotsIcon}
                         </span>
                     </div>
