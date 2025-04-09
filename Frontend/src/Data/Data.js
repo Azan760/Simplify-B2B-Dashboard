@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 export const navItems = [
 
   {
@@ -965,7 +966,7 @@ export const saleClientDetail = [
     span: "Client Name",
     required: " Client Name is required.",
     message: "Client Name is required.",
-    placeholder: "Client Name",
+    placeholder: "Type here to Search",
     types: 'text',
     inputName: "clientName",
     icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -980,16 +981,12 @@ export const saleClientDetail = [
     </svg>,
     paddingLeft: 'pl-8',
     isSelect: true,
-    readonly: true,
     selectOption : [
-      "Zeeshan",
-      "Azaan",
+       "Please Eneter two or more Characters."
     ]
 
   }, {
 
-
-    disabled: true,
     span: "Contact Person",
     placeholder: "Choose Person",
     types: 'text',
@@ -1005,6 +1002,10 @@ export const saleClientDetail = [
     </svg>,
     isSelect: true,
     paddingLeft: 'pl-8',
+    selectOption : [
+     
+    ]
+
 
 
   },
@@ -1026,7 +1027,6 @@ export const saleClientDetail = [
   {
 
     span: "Ship to Address Type",
-    disabled: true,
     placeholder: "Select Address Type",
     types: 'text',
     inputName: "addressType",
@@ -1042,6 +1042,13 @@ export const saleClientDetail = [
       <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
     </svg>,
     isSelect: true,
+
+    disabled : false,
+
+    selectOption : [
+      "Bill To Address",
+      "Ship To Address"
+    ]
 
   }
 
@@ -1186,10 +1193,16 @@ export const saleProduct = [
     bodyTitle: "No Product",
     description: "Add products to your Invoice",
     buttonLabel: "Let's Add Product",
-    disabled: true,
-  }
-];
+    disabled: false,
 
+    inputs : [
+      {
+
+      }
+   
+   ]
+  }
+]
 
 export const register = [
   {
@@ -1208,6 +1221,35 @@ export const register = [
     message: "Email is required to be at least 4 character.",
   }
 ]
+
+
+export const aggregateTable = [
+  {
+    lable : "Total Quantity",
+    value : 0,
+
+  },
+  {
+    lable : "Dispatched/Sent Quantity",
+    value : 0,
+    
+  }, {
+    lable : "Sub Amount (GBP)",
+    value : 0,
+    
+  }, {
+    lable : "VAT Amount (GBP)",
+    value : 0,
+    
+  }, {
+    lable : "Total Amount (GBP)",
+    value : 0,
+    
+  }
+]
+
+
+
 
 
 

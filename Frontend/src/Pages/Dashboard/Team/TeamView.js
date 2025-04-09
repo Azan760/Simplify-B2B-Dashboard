@@ -1,25 +1,21 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { calendar, arrowClockwise, arrowLeft, uploadIcon, editIcon } from '../../../Components/Icons'
-import { useDate } from '../../../Components/Date'
 import { useForm } from 'react-hook-form'
-import { useFile, userDetail, dynamic_User_Field } from './Data'
-import Button from '../../../Components/Button'
-import { useNavigate } from 'react-router'
+import { useFetch } from '../../../Services/ApiService'
+import {useParams} from 'react-router-dom'
 import { back } from '../../../Components/Icons'
 import InputField from '../../../Components/InputField'
 import SelectOptions from '../../../Components/SelectOptions'
-import { useFetch } from '../../../Services/ApiService'
-import { useSelector } from 'react-redux'
+import Button from '../../../Components/Button'
+import { useNavigate } from 'react-router'
+import { useFile, userDetail, dynamic_User_Field } from './Data'
+import { useQuery } from 'react-query'
+import { formatDate } from '../../../Components/Date'
 
+const TeamView = () => {
 
-const NewMember = () => {
-
-
-    const { postFetchFile } = useFetch("http://localhost:8000/team/new");
-    const user = useSelector((state) => state.auth.user);
-
-
-    const {
+ const navigate = useNavigate();
+ const {
         register,
         handleSubmit,
         setValue,
@@ -27,37 +23,50 @@ const NewMember = () => {
         formState: { errors, isSubmitting, isDirty },
         reset,
 
-    } = useForm();
+    } = useForm();   
+     const {id} = useParams();
+    const {getFetch,updateFetch } = useFetch(`http://localhost:8000/team/view/${id}`);
 
+     const [onFileChange, fileInputRef, resetFileInput, triggerFileInput, imagePreview] = useFile(setValue);
+    
+        const { data: allData, isLoading, error } = useQuery(
+             'userData',
+             async () => {
+               const response = await getFetch();
+               return response.statusCode["data"];
+             },
+             {
+               refetchOnWindowFocus: false,
+               keepPreviousData: true,
+             }
+           );
 
-
-    const [formattedDate] = useDate();
-
-    const navigate = useNavigate();
-
-    const [onFileChange, fileInputRef, resetFileInput, triggerFileInput, imagePreview] = useFile(setValue);
+           useEffect(() => {
+              if (allData) {
+                const nameParts = allData.fullName.split(" "); 
+                setValue("firstName", nameParts[0]);
+                setValue("lastName", nameParts[1]);
+                setValue("userType", allData.userType);
+                setValue("email", allData.email);
+                setValue("active", allData.active);
+                
+              }
+            }, [allData]);
+          
+       
 
     const onSubmit = async (data) => {
 
-        data = {...data, createdBy : {id : user?._id, name : user?.fullName}};
-        console.log(data);
-
         try {
 
-            await postFetchFile(data);
-            resetFileInput();
-            reset();
-
+           await updateFetch(data);
         }
-        catch (error) {
-            console.log("Error : ", error.message);
-
+        catch(error) {
+            console.log(error);
         }
-
     }
-
+    
     return (
-
         <>
 
             <div style={{ height: "calc(100% - 60px)" }}>
@@ -68,7 +77,8 @@ const NewMember = () => {
                         {back}
                     </span>
                     <h6 style={{ letterSpacing: '1px' }} className="font-semibold text-heading  text-xl  xsm:text-lg">
-                        Add New Member
+                       Update Member Profile
+
                     </h6>
                 </div>
 
@@ -92,7 +102,7 @@ const NewMember = () => {
                                 <div className={`flex items-center   rounded py-2 px-3.5  bg-textColor2 text-white 
                                     font-semibold`}>
                                     {calendar}
-                                    <span className=' text-sm ml-2.5'> {formattedDate} </span>
+                                    <span className=' text-sm ml-2.5'> {formatDate(allData?.createdAt)}  </span>
 
                                 </div>
                             </div>
@@ -108,7 +118,7 @@ const NewMember = () => {
                                         return (
 
                                             <div key={index} className={`flex flex-col`}>
-                                              
+
                                                 {fields.isSelect ?
 
                                                     (<SelectOptions field={fields} setValue={setValue} register={register}
@@ -123,14 +133,13 @@ const NewMember = () => {
 
                                     })}
 
-                                {console.log(watch("userType"))}
 
                                 {dynamic_User_Field.map((fields, index) => {
                                     return (
 
                                         (watch("userType") === "Sales Manager" || watch("userType") === "Sales Person") &&
                                         (<div key={index} className={`flex flex-col`}>
-                                        
+
                                             {fields.isSelect ?
 
                                                 (<SelectOptions field={fields} setValue={setValue} register={register}
@@ -191,11 +200,11 @@ const NewMember = () => {
 
                             <div className='flex button'>
                                 <Button
-                                    type="reset" label="Reset" disabled={!isDirty || isSubmitting}
+                                    type="reset" label="Delete" disabled={!isDirty || isSubmitting}
                                     icon={arrowClockwise} className={` flex  ${(!isDirty || isSubmitting) && 'opacity-50'} border border-searchIcon   bg-white text-textColor2`}
                                 />
                                 <Button
-                                    type="submit" label="Submit" onSubmit={reset} disabled={!isDirty || isSubmitting}
+                                    type="submit" label="Update" onSubmit={reset} disabled={!isDirty || isSubmitting}
                                     className={` ${(!isDirty || isSubmitting) && 'opacity-50'} inner-btn  bg-textColor text-white  ml-2.5`}
                                 />
                             </div>
@@ -206,9 +215,9 @@ const NewMember = () => {
                 </form>
 
             </div>
-        </>
 
+        </>
     )
 }
 
-export default NewMember
+export default TeamView

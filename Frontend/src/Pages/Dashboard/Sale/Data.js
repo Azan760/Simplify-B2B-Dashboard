@@ -342,6 +342,8 @@ export const contactPerson = [
                 inputName: "salePerson",
                 placeholder: "Sale Person",
                 type: "text",
+                isSelect : true,
+                selectOption : [],
             },
         ]
     }

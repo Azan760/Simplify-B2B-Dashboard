@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import SelectOptions from './SelectOptions'
+import { useDispatch, useSelector } from 'react-redux';
 
 
 
@@ -14,14 +15,17 @@ const Section = () => {
 
   const navigate = useNavigate();
   const { register, handleSubmit, reset, setValue } = useForm();
+        const user = useSelector((state) => state.auth.user);
+        console.log(user);
+  
 
 
   return (
 
     <>
 
-      <div class="heading mb-5">
-        <h6 style={{ letterSpacing: '1px' }} className="font-semibold text-heading  sm:text-lg text-xl"> Welcome back, SIMPLIFY User! </h6>
+      <div className="heading mb-5">
+        <h6 style={{ letterSpacing: '1px' }} className="font-semibold text-heading  sm:text-lg text-xl">{ ` Welcome back, ${user?.fullName}  ` }</h6>
       </div>
 
       <section style={{ height: 'calc(100% - 60px)' }} className='grid' >

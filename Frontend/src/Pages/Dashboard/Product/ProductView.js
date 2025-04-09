@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { ProductDetail, ProductIcon, saleTable } from './Data.js'
-import { useDate } from '../../../Components/Date.js'
+import { formatDate } from '../../../Components/Date.js'
 import '../../../Css/NewProduct.css'
 import { arrowClockwise, arrowLeft, back } from '../../../Components/Icons.js'
 import { useNavigate } from 'react-router'
@@ -10,44 +10,39 @@ import DynamicField from '../../../Components/DynamicField.js'
 import TextArea from '../../../Components/TextArea.js'
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import InputField from '../../../Components/InputField'
-import SelectOptions from '../../../Components/SelectOptions'
+import InputField from '../../../Components/InputField.js'
+import SelectOptions from '../../../Components/SelectOptions.js'
 import { useFetch } from "../../../Services/ApiService.js"
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { Helmet } from "react-helmet";
+import { useParams } from 'react-router-dom'
 
 
 
 
-const NewProduct = () => {
+const ProductView = () => {
 
-    const [formattedDate] = useDate();
     NProgress.configure({ showSpinner: false });
     const user = useSelector((state) => state.auth.user);
 
+    const { id } = useParams();
 
-    const { postFetch, getFetch } = useFetch("http://localhost:8000/product/new");
+    const { getFetch, updateFetch } = useFetch(`http://localhost:8000/product/view/${id}`);
 
     const {
         register, handleSubmit, control, watch, formState: { errors, isSubmitting, isDirty }, reset, setValue }
         = useForm(
-            {
-                defaultValues: {
-                    salesPersonAssignment: [],
-                    type: "Inventory",
-                },
-            },
         );
 
     const { fields, append, remove } = useFieldArray({ control, name: "salesPersonAssignment" });
 
-    const { data: salesPerson, isLoading, error } = useQuery(
-        ['fetchAllData'],
+    const navigate = useNavigate();
+    const { data: allData, isLoading, error } = useQuery(
+        'productData',
         async () => {
             const response = await getFetch();
-            console.log(response);
-            return response.data;
+            return response.statusCode["data"];
         },
         {
             refetchOnWindowFocus: false,
@@ -55,7 +50,38 @@ const NewProduct = () => {
         }
     );
 
-    const navigate = useNavigate();
+    console.log(allData);
+    useEffect(() => {
+        if (allData) {
+            setValue("sku", allData?.details?.sku);
+            setValue("productServiceName", allData?.details?.productServiceName);
+            setValue("type", allData?.details?.type);
+            setValue("category", allData?.details?.category);
+            setValue("subCategory", allData?.details?.subCategory);
+            setValue("brand", allData?.details?.brand);
+            setValue("buy", allData?.details?.buy);
+            setValue("sell", allData?.details?.sell);
+            setValue("salePrice", allData?.details?.salePrice);
+            setValue("purchaseCost", allData?.details?.purchaseCost);
+            setValue("profit", allData?.details?.profit);
+            setValue("color", allData?.details?.color);
+            setValue("vatRate", allData?.details?.vatRate);
+            setValue("description", allData?.details?.description);
+
+            allData?.salesPersonAssignment?.forEach((item) => {
+                append({
+                    assignedUser: item?.assignedUser?.name,
+                    purchasePrice: item?.purchasePrice,
+                    salePrice: item?.salePrice,
+                    profit: item?.profit
+                });
+
+            })
+
+        }
+    }, [allData]);
+
+
 
     const handleAddPerson = useCallback(() => {
         append({ assignedUser: '', purchasePrice: '', salePrice: '', profit: '' });
@@ -67,30 +93,22 @@ const NewProduct = () => {
 
     const handleBack = useCallback(() => {
 
-        navigate('/product/list');
+        // navigate('/product/AllProduct');
     }, [navigate]);
 
     const handleReset = useCallback(() => {
         reset();
     }, []);
 
-    saleTable[0].inputs[0].selectOption = [];
-
-    salesPerson?.forEach(item => {
-        if (!saleTable[0].inputs[0].selectOption.includes(item.fullName)) {
-            saleTable[0].inputs[0].selectOption.push(item.fullName);
-        }
-    });
 
 
     const onSubmit = async (data) => {
 
         data = { ...data, createdBy: { id: user?._id, name: user?.fullName } };
-        console.log(data);
         try {
-            await postFetch(data);
+            // await postFetch(data);
             NProgress.start();
-            navigate('/product/list');
+            // navigate('/Product/all');
             reset();
         } catch (error) {
             console.error('Error in form submission:', error.message);
@@ -104,7 +122,7 @@ const NewProduct = () => {
         <>
 
             <Helmet>
-                <title> New Product </title>
+                <title> View/Edit Product </title>
             </Helmet>
 
             <div style={{ height: "calc(100% - 60px)" }}>
@@ -115,7 +133,7 @@ const NewProduct = () => {
                         {back}
                     </span>
                     <h6 className="font-semibold
-                 text-heading  text-xl  xsm:text-lg">  Add New Product/Service </h6>
+                 text-heading  text-xl  xsm:text-lg"> Edit Product/Service </h6>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -133,7 +151,7 @@ const NewProduct = () => {
                                             <label className={`my-0.5 mx-1.5 ${value.classname2}
                                              text-sectionColor text-xs`}> {value.label} </label>
                                             {value.icon}
-                                            {index === 3 && <span className=' text-sm ml-2.5'> {formattedDate} </span>}
+                                            {index === 3 && <span className=' text-sm ml-2.5'> {formatDate(allData?.createdAt)} </span>}
                                         </div>)
                                 })}
                             </div>
@@ -207,4 +225,4 @@ const NewProduct = () => {
 
 
 
-export default NewProduct
+export default ProductView

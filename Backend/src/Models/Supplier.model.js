@@ -17,12 +17,18 @@ const contactPersonSchema = new mongoose.Schema({
     phoneNo: {
         type: String,
         trim: true,
-        minLength: [6, "Phone number must be at least 6 characters."],
+
     },
-    assigneUser: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "TeamMember",
-    },
+    salePerson: {
+           id: {
+               type: mongoose.Schema.Types.ObjectId,
+               ref: "TeamMember",
+           },
+           name: {
+               type: String,
+               required: false,
+           }
+       },
     active : {
         type : Boolean
     },
@@ -74,14 +80,12 @@ const detailsSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: true,
         trim: true,
     },
     phoneNo: {
         type: String,
         trim: true,
-        unique: true,
-        minLength: [6, "Phone number must be at least 6 characters."],
+    
     },
     defaultTerm: {
         type: Number,
@@ -89,14 +93,14 @@ const detailsSchema = new mongoose.Schema({
     },
     vatNumber: {
         type: String,
-        minLength: [2, "VAT number must be at least 2 characters."],
+        
     },
     vatRate: {
         type: Number,
     },
     eoriNo: {
         type: String,
-        minLength: [2, "EORI number must be at least 2 characters."],
+    
     },
     defaultCategory: {
         type: String,
@@ -114,4 +118,4 @@ const newSupplierSchema = new mongoose.Schema({
 
 },{timestamps : true});
 
-export const NewSupplier = mongoose.model("NewSupplier", newSupplierSchema);
+export const NewSupplier = mongoose.model("Supplier", newSupplierSchema);

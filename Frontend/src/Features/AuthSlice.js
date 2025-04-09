@@ -2,37 +2,48 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Async login function
-export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { rejectWithValue }) => {
-    try {
+export const loginUser = createAsyncThunk(
+    "auth/loginUser",
+    async (userData, { rejectWithValue }) => {
+        try {
+            const response = await axios.post("http://localhost:8000/api/login", userData, {
+                withCredentials: true,
+            });
 
-        const response = await axios.post("http://localhost:8000/api/login", userData,{
-            withCredentials : true,
-        });
-        console.log(response );
-        const data = response.data;
+            console.log(response);
+            const data = response.data;
 
-        if (!data.success) {
-            throw new Error(data.message || "Login failed");
+            if (!data.success) {
+                throw new Error(data.message || "Login failed");
+            }
+
+            return {
+                token: data.data.accessToken,
+                user: data.data.loginUserData,
+            };
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
-
-        return {
-            token: data.data.accessToken,  
-            user: data.data.loginUserData, 
-        };
-    } catch (error) {
-
-        return rejectWithValue(error.response?.data?.message || error.message);
     }
-});
+);
+
+// Get initial state from localStorage
+const initialState = {
+    user: JSON.parse(localStorage.getItem("userData")) || null,
+    token: localStorage.getItem("userToken") || null,
+    loading: false,
+    error: null,
+};
 
 const authSlice = createSlice({
     name: "auth",
-    initialState: { user: null, token: null, loading: false, error: null },
+    initialState,
     reducers: {
         logout: (state) => {
             state.user = null;
             state.token = null;
             localStorage.removeItem("userToken");
+            localStorage.removeItem("userData"); // Clear user data
         },
     },
     extraReducers: (builder) => {
@@ -42,10 +53,15 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
+                console.log("Login Successful:", action.payload);
+
                 state.loading = false;
                 state.user = action.payload.user;
-                localStorage.setItem("userToken", action.payload.token); // Store token
                 state.token = action.payload.token;
+
+                // Persist in localStorage
+                localStorage.setItem("userToken", action.payload.token);
+                localStorage.setItem("userData", JSON.stringify(action.payload.user));
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;

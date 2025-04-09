@@ -170,7 +170,6 @@ export const teamTableHeader = [
     "Email",
     "User Type",
     "Commissiones",
-    "Last Login",
     "Created On",
     "Created By",
     "Active",

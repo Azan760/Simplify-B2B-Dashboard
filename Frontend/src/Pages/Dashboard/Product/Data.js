@@ -102,55 +102,32 @@ export const ProductDetail = [
 
     }, {
         span: "Brand",
-        icon: <svg style={{ left: '93%', top: '13.5px' }} xmlns="http://www.w3.org/2000/svg" width="11" height="11"
-            fill="currentColor" className="bi bi-caret-down-fill text-browns absolute   " viewBox="0 0 16 16">
-            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
-        </svg>,
         placeholder: 'Brand',
         types: 'text',
         inputName: "brand",
         require : false,
-        isSelect : false,
+        
     },
     {
         span: "Category",
-        icon: <svg style={{ left: '93%', top: '13.5px' }} xmlns="http://www.w3.org/2000/svg" width="11" height="11"
-            fill="currentColor" className="bi bi-caret-down-fill text-browns absolute   " viewBox="0 0 16 16">
-            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
-        </svg>,
         placeholder: 'Category',
         types: 'text',
         inputName: "category",
         require : false,
-        isSelect : false,
-
-
     }, {
         span: "Sub Category",
-        icon: <svg style={{ left: '93%', top: '13.5px' }} xmlns="http://www.w3.org/2000/svg" width="11" height="11"
-            fill="currentColor" className="bi bi-caret-down-fill text-browns absolute   " viewBox="0 0 16 16">
-            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
-        </svg>,
         placeholder: 'Sub Category',
         types: 'text',
         inputName: "subCategory",
-        require : false,
-        isSelect : false,
-       
+        require : false,     
 
 
     }, {
         span: "Color",
-        icon: <svg style={{ left: '93%', top: '13.5px' }} xmlns="http://www.w3.org/2000/svg" width="11" height="11"
-            fill="currentColor" className="bi bi-caret-down-fill text-browns absolute   " viewBox="0 0 16 16">
-            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
-        </svg>,
         placeholder: 'Color',
         types: 'text',
         inputName: "color",
         require : false,
-        isSelect : false,
-       
 
 
     }, {
@@ -166,7 +143,7 @@ export const ProductDetail = [
         placeholder: 'Purchase Cost',
         types: 'number',
         // classname : 'flex',
-        inputName: "purchase",
+        inputName: "purchaseCost",
         require : false,
         paddingLeft : 'pl-8',
         selection : true,
@@ -187,7 +164,7 @@ export const ProductDetail = [
         placeholder: 'Sales Price',
         types: 'number',
         // classname : 'flex',
-        inputName: "sales",
+        inputName: "salePrice",
         require : false,
         paddingLeft : 'pl-8',
         selection : true,
@@ -270,26 +247,23 @@ export const saleTable = [
                 name : "purchase",
                 placeholder : "Purchase Price",
                 type : "number",
-                inputName : 'purchasePrice',
+                inputName : 'purchaseCost',
                 number : true,
-                isSelect : false
             },{
                 name : "sale",
                 placeholder : "Sale Price",
                 type : 'number',
                 inputName : 'salePrice',
                 number : true,
-                isSelect : false
 
 
             },{
                 name : "profit",
                 placeholder : "Profit",
-                readonly : true,
+                readonly : false,
                 type:"number",
                 inputName : 'profit',
                 number : true,
-                isSelect : false
                 
             }
 
@@ -302,16 +276,15 @@ export const saleTable = [
 
 export const productTableHeader = [
 
-        <input style={{ boxShadow: '0 0 6px #172b4d2e' }} type="checkbox" className="w-5 h-5 rounded outline-none border border-white" />
-        ,
+        
         "Name",
         "Sku",
         "Created By",
         "Created On",
         "Assigned To",
         "Type",
-        "Stock",
-        "Avg Price",
+        // "Stock",
+        // "Avg Price",
         "Active",
         "Brand",
         "Category",

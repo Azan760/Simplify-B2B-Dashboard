@@ -10,7 +10,7 @@ export const SalesPerson = asyncHandler(async (req, res) => {
 
     try {
 
-        const salesPerson = await TeamMember.find({ userType: "Sales Person" }).select("fullName -_id");
+        const salesPerson = await TeamMember.find({ userType: { $in: ["Sales Person", "Sales Manager"] } }).select("fullName -_id");
 
         if (!salesPerson) {
             return res.status(404).json(new ApiError(404, "No sales person found"));
@@ -34,7 +34,9 @@ export const SalesPerson = asyncHandler(async (req, res) => {
 
 //     if (salesPersons.length === 0) return null;
 
-//     const lastAssignedProduct = await Product.findOne({ "salesPersonAssignment.0": { $exists: true } }).sort({ createdAt: -1 });
+//     const lastAssignedProduct = await Product.findOne({ "salesPersonAssignment.0": { $exists: true } })
+//         .sort({ createdAt: -1 })
+//         .select("salesPersonAssignment");
 
 //     if (!lastAssignedProduct || lastAssignedProduct.salesPersonAssignment.length === 0) {
 //         return {
@@ -43,60 +45,21 @@ export const SalesPerson = asyncHandler(async (req, res) => {
 //         };
 //     }
 
-//     const lastAssignedSalesPerson = lastAssignedProduct.salesPersonAssignment.slice(-1)[0]; // Get last entry
+//     const lastAssignedSalesPerson = lastAssignedProduct.salesPersonAssignment[lastAssignedProduct.salesPersonAssignment.length - 1];
 
-//     const assignedID = lastAssignedSalesPerson._id.toString();
-
-//     const lastIndex = salesPersons.findIndex(user => user._id.toString() === assignedID);
+//     const lastIndex = salesPersons.findIndex(user => user._id.toString() === lastAssignedSalesPerson.assignedUser.id.toString());
 
 //     const nextIndex = (lastIndex + 1) % salesPersons.length;
 
 //     return {
 //         id: salesPersons[nextIndex]._id,
 //         name: salesPersons[nextIndex].fullName
-//     }
-
-
-// }
-
-
-const assignSalesPerson = async () => {
-    const salesPersons = await TeamMember.find({ userType: "Sales Person" }).sort({ createdAt: 1 });
-
-    if (salesPersons.length === 0) return null;
-
-    const lastAssignedProduct = await Product.findOne({ "salesPersonAssignment.0": { $exists: true } })
-        .sort({ createdAt: -1 }) 
-        .select("salesPersonAssignment");
-
-    if (!lastAssignedProduct || lastAssignedProduct.salesPersonAssignment.length === 0) {
-        return {
-            id: salesPersons[0]._id,
-            name: salesPersons[0].fullName
-        };
-    }
-
-    // Get last assigned sales person from last product
-    const lastAssignedSalesPerson = lastAssignedProduct.salesPersonAssignment[lastAssignedProduct.salesPersonAssignment.length - 1];
-
-    // Find index of last assigned sales person in salesPersons array
-    const lastIndex = salesPersons.findIndex(user => user._id.toString() === lastAssignedSalesPerson.assignedUser.id.toString());
-
-    // Get next sales person in sequence
-    const nextIndex = (lastIndex + 1) % salesPersons.length;
-
-    return {
-        id: salesPersons[nextIndex]._id,
-        name: salesPersons[nextIndex].fullName
-    };
-};
+//     };
+// };
 
 
 
 export const NewProduct = asyncHandler(async (req, res) => {
-
-    console.log(req.body);
-
 
     const {
         type,
@@ -108,13 +71,14 @@ export const NewProduct = asyncHandler(async (req, res) => {
         salesPersonAssignment,
         brand,
         category,
-        subcategory,
+        subCategory,
         color,
-        purchase,
-        sales,
+        purchaseCost,
+        salePrice,
         profit,
         vatRate,
         description,
+        createdBy
     } = req.body;
 
     try {
@@ -126,19 +90,19 @@ export const NewProduct = asyncHandler(async (req, res) => {
 
 
 
-          let updatedSalesPersonAssignment = [...salesPersonAssignment];
+        let updatedSalesPersonAssignment = [...salesPersonAssignment];
 
-          if (updatedSalesPersonAssignment.length === 0) {
-            const assignedUser = await assignSalesPerson(); 
-            console.log("Assigned Sales Person:", assignedUser);
-        
-            if (assignedUser) {
-                updatedSalesPersonAssignment.push({ assignedUser });
-            }
-        
-        
+        if (updatedSalesPersonAssignment.length === 0) {
+            // const assignedUser = await assignSalesPerson();
+            // console.log("Assigned Sales Person:", assignedUser);
+
+            // if (assignedUser) {
+            //     updatedSalesPersonAssignment.push({ assignedUser });
+            // }
+
+
         } else {
-        
+
             for (const i of updatedSalesPersonAssignment) {
 
                 if (!i.assignedUser) {
@@ -153,7 +117,7 @@ export const NewProduct = asyncHandler(async (req, res) => {
 
                         return res.status(400).json(new ApiError(400, "Assigned user not found"));
                     }
-                
+
                     i.assignedUser = {
                         id: assignUser._id,
                         name: assignUser.fullName
@@ -163,30 +127,34 @@ export const NewProduct = asyncHandler(async (req, res) => {
         }
 
         const newProduct = await Product.create({
-            active,
-            sku,
-            productServiceName,
-            salesPersonAssignment : updatedSalesPersonAssignment,
-            brand,
-            category,
-            subcategory,
-            color,
-            purchase,
-            sales,
-            profit,
-            description,
-            buy,
-            sell,
-            type,
-            vatRate,
+            details: {
+                sku,
+                productServiceName,
+                brand,
+                category,
+                subCategory,
+                color,
+                purchaseCost,
+                type,
+                salePrice,
+                profit,
+                vatRate,
+                description,
+                active,
+                buy,
+                sell
+            },
+            salesPersonAssignment: updatedSalesPersonAssignment,
+            createdBy,
+
         });
 
         const checkProduct = await Product.findById(newProduct._id).select("-__v ");
         console.log(checkProduct);
 
 
-
         return res.status(201).json(new ApiResponse(201, checkProduct, "Product created successfully"));
+
     } catch (error) {
         console.error("Error creating product:", error);
         return res.status(500).json(new ApiError(500, "Failed to create product", error.message));
@@ -194,3 +162,73 @@ export const NewProduct = asyncHandler(async (req, res) => {
 
 
 });
+
+
+export const allProducts = asyncHandler(async (req, res) => {
+
+    try {
+
+        const { page = 1, limit = 10 } = req.query;
+        const pageNumber = parseInt(page, 10) || 1;
+        const limitNumber = parseInt(limit, 10) || 10;
+
+        const data = await Product.find()
+            .skip((pageNumber - 1) * limitNumber)
+            .limit(limitNumber).sort({ createdAt: -1 }).select('-__v  -updatedAt');
+
+        const formattedData = data.map(item => {
+            return {
+                _id: item._id,
+                details: item.details,
+                createdBy: item.createdBy,
+                createdAt: item.createdAt,
+                salesPersonAssignment: item.salesPersonAssignment.map(assignment => assignment.assignedUser),
+            };
+        });
+
+
+
+        res.status(200).json(new ApiResponse({
+            message: "Data Fetch Successfully!",
+            data: formattedData,
+        }));
+
+
+
+    } catch (error) {
+        throw new ApiError(500, error.message);
+    }
+
+
+});
+
+
+export const editView = asyncHandler(async(req,res) => {
+
+    const { id } = req.params;
+
+    try {
+        if(!id){
+            throw new ApiError(400, 'User ID is required!');
+        }
+        const user = await Product.findById(id).select('-refreshToken -password -__v ');
+        if (!user) {
+            throw new ApiError(404, 'Product not found!');
+        }
+
+        return res.status(200).json(new ApiResponse(
+            {
+                data: user,
+                message: 'Product fetched successfully!'
+            }
+        ));
+
+    } catch (error) {
+        throw new ApiError(500, error.message);
+    }
+});
+
+
+
+
+

@@ -38,15 +38,32 @@ const TeamMemberSchema = new mongoose.Schema({
             "Sales Person",
         ],
     },
-    
+    contractType: {
+        type : String,
+        enum : ["Fixed","CommissionBased"],
+    },
+    commissionRate : {
+        type : Number,
+        default : 0
+    },
+    corporateTax : {
+        type : Number,
+    },
     userImage : {
         type : String,
     },
 
     createdBy: {
+
+        id :  { 
          type: mongoose.Schema.Types.ObjectId,
           ref: 'User' 
         },
+        name : {
+            type : String,
+            required : true
+        }
+    },
     password: {         
         type: String,              
     },

@@ -30,13 +30,13 @@ const Sidebar = ({ sideOpen }) => {
 
     const handleLogout = async() => {
         try {
-            const response = await postFetch();
-            if (response?.success) {  
+            // const response = await postFetch();
+            // if (response?.success) {  
                 dispatch(logout());
                 navigate("/login");
-            } else {
-                console.log("Logout failed:", response?.message);
-            }
+            // } else {
+            //     console.log("Logout failed:", response?.message);
+            // }
     
         }
         catch (error) {

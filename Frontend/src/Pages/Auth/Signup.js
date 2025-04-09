@@ -1,7 +1,5 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
-import logoImg from "../../Assets/logoSMIELSmain.svg"
-import imageCombo from "../../Assets/ImageCombo.png"
 import { useNavigate } from 'react-router'
 import { register } from '../../Data/Data'
 import { useForm } from "react-hook-form"
@@ -12,6 +10,8 @@ import RectangleArtLarge from "../../Assets/RectangleArtLarge.svg"
 import { useFetch } from '../../Services/ApiService'
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import simplifyLogo from "../../Assets/simplify-logo.jpeg"
+
 
 const Signup = () => {
 
@@ -47,7 +47,7 @@ const Signup = () => {
 
         <div className='flex flex-col  p-16 '>
           <div className='flex items-center gap-5 mb-24 xsm:mb-16'>
-            <img src={logoImg} className='xsm:w-3/6 ' />
+            <img src={simplifyLogo} className='xsm:w-3/6 w-1/2' />
           </div>
 
           <div className='flex flex-col'>
@@ -75,6 +75,7 @@ const Signup = () => {
                      rounded text-sm text-textColor2 font-normal border
                       ${errors.email ? 'focus:border-reds' : 'focus:border-textColor'}    `}
                        type="email" placeholder="Email"
+
                       {...register("email", {
                         required: "Email is required.",
                         minLength: {
@@ -111,6 +112,7 @@ const Signup = () => {
                   className={` font-semibold tracking-wide xsm:w-full  ${(!isDirty || isSubmitting) && 'opacity-50'}  bg-textColor
                     text-white `}
                 />
+                
                 <Button
                   label={"Back to Login"}
                   onClick={() => { navigate("/login") }}

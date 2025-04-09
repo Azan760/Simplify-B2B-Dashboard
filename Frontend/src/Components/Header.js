@@ -1,9 +1,10 @@
 import React, { memo } from 'react'
-import smielsLogo from '../Assets/smiels-logo-icon.png'
+// import smielsLogo from '../Assets/smiels-logo-icon.png'
 import { Link } from 'react-router-dom'
 import '../Css/Header.css'
 import { dropdownMenu, useDropdown } from '../Data/Data'
 import { settingIcon } from './Icons'
+import simplifyLogo from "../Assets/simplify-title-logo.png"
 
 const Header = ({ toggleSidebar, menuClose, menuOpen }) => {
 
@@ -26,7 +27,7 @@ const Header = ({ toggleSidebar, menuClose, menuOpen }) => {
                 </span>
 
                 <div className="logo-text flex items-center gap-3">
-                    <img src={smielsLogo} alt="smiels-logo" />
+                    <img src={simplifyLogo} alt="smiels-logo" />
                     <span className='text-textColor2 font-semibold text-base sm:hidden'>  </span>
                 </div>
             </div>

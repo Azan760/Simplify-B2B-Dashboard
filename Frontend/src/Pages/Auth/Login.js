@@ -177,7 +177,7 @@ const Login = () => {
 
                                 <p className='flex items-center gap-1 text-xs xsm:mb-20 mb-24'>
                                     <span className='text-sectionColor'> Don't have an account? </span>
-                                    <Link className='text-downIcon flex gap-1 items-center' >
+                                    <Link to="/signup" className='text-downIcon flex gap-1 items-center' >
                                         <span >
                                             Register Here
                                         </span>

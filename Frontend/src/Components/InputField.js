@@ -8,19 +8,30 @@ const InputField = ({ fields, register, errors, password }) => {
 
         <>
 
+
+            <label className=' font-normal flex text-sectionColor   items-center text-xs mb-1.5'>
+                {fields.require &&
+                    <span className='text-reds w-3 h-3 '> {fields.label} </span>}
+                <span className='pr-1'> {fields.span} </span>
+                {fields.labelIcon}
+
+            </label>
+
             <div className="flex   relative  items-center w-full">
 
                 {fields.icon}
 
                 <input style={{ boxShadow: '0 0 6px #172b4d0a' }}
-                    className={` ${fields.disabled ? fields.disabled : 'bg-white'} w-full outline-none py-2 px-2 
-                 ${fields.paddingLeft} rounded text-sm text-textColor2 font-normal border
-                 ${fields.upperCase} ${errors[fields.inputName] ? 'focus:border-reds' : 'focus:border-textColor'}  `}
+                    className={`
+                                ${fields.disabled ? fields.disabled : 'bg-white'} w-full outline-none py-2 px-2 
+                                ${fields.paddingLeft} rounded text-sm text-textColor2 font-normal border
+                                ${fields.upperCase} ${errors[fields.inputName] ? 'focus:border-reds' : 'focus:border-textColor'}  `}
 
                     type={fields.types}
                     placeholder={fields.placeholder}
                     disabled={fields.disabled}
                     readOnly={fields.readonly}
+                    autoComplete="off"
 
 
                     {...register(fields.inputName, {

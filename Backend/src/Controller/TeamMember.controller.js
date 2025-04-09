@@ -13,15 +13,12 @@ let transporter = nodemailer.createTransport({
     }
 });
 
-
 const createTeamMember = asyncHandler(async (req, res) => {
-    const { active, email, firstName, lastName, userType } = req.body;
+    const { active, email, firstName, lastName, userType,createdBy } = req.body;
 
-    //  const name = "azaan";
 
     const userImage = req.file;
 
-    console.log(email, ' ', firstName, ' ', lastName, ' ', userType, ' ', userImage);
     try {
 
         if ([email, firstName, lastName, userType].map((item) => item.trim()).includes('')) {
@@ -31,6 +28,9 @@ const createTeamMember = asyncHandler(async (req, res) => {
         const existingUser = await TeamMember.findOne({ email });
         if (existingUser) {
             throw new ApiError(400, 'User already exists!');
+        }
+        if(!createdBy){
+            throw new ApiError(400, 'Created By is required!');
         }
 
         const fullName =  firstName + "" + lastName;
@@ -42,6 +42,7 @@ const createTeamMember = asyncHandler(async (req, res) => {
             fullName,
             userType,
             userImage: userImage?.path,
+            createdBy,
 
         });
 
@@ -60,12 +61,6 @@ const createTeamMember = asyncHandler(async (req, res) => {
             to: checkUser.email,
             subject: `Welcome ${checkUser.firstName} ${checkUser.lastName}`,
 
-            text: `
-            Hi ${checkUser.firstName} ${checkUser.lastName} 
-             ______ has added you to their team on simplify.
-             Please click on the following link to Choose a Password and get started.
-             http://localhost:3000/new-password/${checkUser._id}`,
-
             html: `
                 
              <div>
@@ -75,7 +70,7 @@ const createTeamMember = asyncHandler(async (req, res) => {
                </div>
 
                 <div style="margin-top: 20px;">  
-                     <p style="font-size : 18px;"> ______ has added you to their team on simplify. </p>
+                     <p style="font-size : 18px;"> ${createdBy?.name} has added you to their team on simplify. </p>
                        <p> Please click on the following link to Choose a Password and get started. </p> 
                 </div>
 
@@ -144,6 +139,59 @@ const createTeamMember = asyncHandler(async (req, res) => {
             {
                 data: user,
                 message: 'Password created successfully!'
+            }
+        ));
+
+    } catch (error) {
+        throw new ApiError(500, error.message);
+    }
+});
+
+
+export const allMember = asyncHandler(async(req,res) => {
+
+     try {
+
+          const { page = 1, limit = 10 } = req.query; 
+           const pageNumber = parseInt(page, 10) || 1;
+           const limitNumber = parseInt(limit, 10) || 10;
+    
+           const data = await TeamMember.find()
+          .skip((pageNumber - 1) * limitNumber) 
+           .limit(limitNumber).sort({createdAt : -1}).select('-refreshToken -password -__v -updatedAt'); 
+  
+
+           
+              res.status(200).json(new ApiResponse({ 
+                  message : "Data Fetch Successfully!", 
+                  data : data
+           }));
+       
+   
+
+     }catch(error) {
+          throw new ApiError(500, error.message);
+     }
+
+     
+});
+
+export const editView = asyncHandler(async(req,res) => {
+    const { id } = req.params;
+
+    try {
+        if(!id){
+            throw new ApiError(400, 'User ID is required!');
+        }
+        const user = await TeamMember.findById(id).select('-refreshToken -password -__v ');
+        if (!user) {
+            throw new ApiError(404, 'User not found!');
+        }
+
+        return res.status(200).json(new ApiResponse(
+            {
+                data: user,
+                message: 'User fetched successfully!'
             }
         ));
 

@@ -1,12 +1,13 @@
-import React, { memo, useState, useEffect } from 'react'
+import React from 'react'
 import Button from './Button'
-import { done, plus, plus1, trash } from './Icons'
-import InputField from './InputField';
+import { plus, plus1, trash } from './Icons'
+// import InputField from './InputField';
 import SelectOptions from './SelectOptions';
 
 const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, errors, remove, fields, append }) => {
 
     const calculatedValues = (index) => {
+
         const purchasePrice = watch(`${fieldName}.${index}.purchasePrice`);
         const salesPrice = watch(`${fieldName}.${index}.salePrice`);
         const profit = purchasePrice > 0 && salesPrice > 0 ?
@@ -58,7 +59,7 @@ const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, error
 
                             </tr>)}
 
-                        {console.log(fields)}
+
                         {fields.map((field, index) => {
                             const { profit } = calculatedValues(index);
 

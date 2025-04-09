@@ -3,11 +3,11 @@ import axios from "axios"
 
 export const useFetch = (url) => {
 
-    const getFetch = async (searchTerm) => {
+    const getFetch = async (pageNo,perPage) => {
 
         try {
             let  response = await axios.get(url,{
-                params: { search: searchTerm },  
+                params: { page : pageNo, limit : perPage },  
               });
               console.log(response.data);
             return response.data;

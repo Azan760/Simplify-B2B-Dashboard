@@ -10,6 +10,7 @@ import ProtectedRoute from './ProtectedRoute';
 import { Navigate, useNavigate } from 'react-router';
 
 const NewPassword = lazy(() => import("../Pages/Auth/NewPassword"));
+const Signup = lazy(() => import("../Pages/Auth/Signup"));
 const AllProduct = lazy(() => import("../Pages/Dashboard/Product/AllProduct"));
 const NewProduct = lazy(() => import("../Pages/Dashboard/Product/NewProduct"));
 const AllSaleInvoice = lazy(() => import("../Pages/Dashboard/Sale/AllSaleInvoice"));
@@ -26,6 +27,8 @@ const NewSupplier = lazy(() => import("../Pages/Dashboard/Purchase/NewSupplier")
 const NewOrder = lazy(() => import("../Pages/Dashboard/Purchase/NewOrder"));
 const NewMember = lazy(() => import("../Pages/Dashboard/Team/NewMember"));
 const AllMember = lazy(() => import("../Pages/Dashboard/Team/AllMember"));
+const TeamView = lazy(() => import("../Pages/Dashboard/Team/TeamView"));
+const ProductView = lazy(() => import("../Pages/Dashboard/Product/ProductView"));
 
 
 
@@ -51,10 +54,11 @@ const AppRoutes = () => {
     return (
         <BrowserRouter>
             <QueryClientProvider client={queryClient}>
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense >
                     <Routes>
                         <Route path="/" element={<Navigate to={localStorage.getItem("userToken") ? "/" : "/login"} replace />} />
-
+                        
+                        <Route path='/signup' element={<Signup />} />
                         <Route path='/login' element={<Login />} />
                         <Route path='new-password/:id' element={<NewPassword />} />
 
@@ -62,6 +66,7 @@ const AppRoutes = () => {
                             <Route element={<DashboardLayout />}>
                                 <Route index element={<Section />} />
                                 <Route path="product/list" element={<AllProduct />} />
+                                <Route path="product/view/:id" element={<ProductView />} />
                                 <Route path="product/new" element={<NewProduct />} />
                                 <Route path="sales/si/list" element={<AllSaleInvoice />} />
                                 <Route path="sales/si/new" element={<NewInvoice />} />
@@ -76,7 +81,9 @@ const AppRoutes = () => {
                                 <Route path="supplier/list" element={<AllSupplier />} />
                                 <Route path="supplier/new" element={<NewSupplier />} />
                                 <Route path="team/list" element={<AllMember />} />
+                                <Route path="team/view/:id" element={<TeamView />} />
                                 <Route path="team/new" element={<NewMember />} />
+
                             </Route>
                         </Route>
                     </Routes>

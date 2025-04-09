@@ -23,5 +23,15 @@ export const useDate = () => {
     const formattedDateForInput = formatForInput(formattedDate);
     const formattedDueDateForInput = formatForInput(formattedDueDate);
 
+  
+
     return [formattedDate, formattedDateForInput, formattedDueDateForInput];
 };
+
+
+export const formatDate = (isDate) => {
+    const date = new Date(isDate);
+    return date.toLocaleDateString("en-GB").replace(/\//g, "/");
+  };
+
+

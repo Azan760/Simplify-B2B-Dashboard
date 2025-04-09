@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import { clientDetail, clientIcon, contactPerson, location1, location2 } from './Data'
 import { useDate } from '../../../Components/Date'
 import { useForm, useFieldArray } from 'react-hook-form'
-// import { useFetch } from '../../../Components/Fetch'
 import FormInput from '../../../Components/FormInput'
 import Button from '../../../Components/Button'
 import { arrowClockwise, arrowLeft } from '../../../Components/Icons'
@@ -13,20 +12,55 @@ import '../../../Css/NewClient.css'
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import "../../../Css/NewProduct.css"
-import {useFetch} from "../../../Services/ApiService.js"
+import { useFetch } from "../../../Services/ApiService.js"
+import { useQuery } from 'react-query'
 
 
 
-const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClient" }) => {
+
+const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClient", url = "http://localhost:8000/client/new", Detail = [...clientDetail] }) => {
 
 
   const navigate = useNavigate();
-  NProgress.configure({ showSpinner: false }); // Optional: Hide the spinner
+  NProgress.configure({ showSpinner: false });
 
 
   const [formattedDate] = useDate();
-   const {postFetch} = useFetch("http://localhost:8000/client/new");
+  const { postFetch, getFetch } = useFetch(url);
 
+  const setAddress = (event) => {
+
+    const value = event.target.checked;
+
+    if (value) {
+      setValue("shipCity", watch("billCity"));
+      setValue("shipState", watch("billState"));
+      setValue("shipCountry", watch("billCountry"));
+      setValue("shipZipCode", watch("billZipCode"));
+      setValue("shipAddress1", watch("billAddress1"));
+      setValue("shipAddress2", watch("billAddress2"));
+    }
+  }
+
+
+  const { data: salesPerson, isLoading, error } = useQuery(
+    ['fetchAllData'],
+    async () => {
+      const response = await getFetch();
+      console.log(response);
+      return response.data;
+    },
+    {
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    }
+  );
+
+  salesPerson?.forEach(item => {
+    if (!contactPerson[0].inputs[3].selectOption.includes(item.fullName)) {
+      contactPerson[0].inputs[3].selectOption.push(item.fullName);
+    }
+  });
 
 
   const {
@@ -34,7 +68,9 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
-    reset
+    reset,
+    setValue
+    , watch
 
   } = useForm({
 
@@ -53,18 +89,19 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
   }, [append]);
 
   const onSubmit = async (data) => {
-
+    console.log(data);
     try {
       NProgress.start();
 
-       await  postFetch(data);
+      await postFetch(data);
+
       reset();
     } catch (error) {
 
       console.error('Error in form submission:', error.message);
-    }finally {
-            NProgress.done(); // Stop the loading bar
-          }
+    } finally {
+      NProgress.done(); // Stop the loading bar
+    }
 
   }
 
@@ -103,8 +140,8 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
                   return (
                     <div key={index} className={`flex items-center   ml-5 sm:mr-2.5 sm:ml-0 ${value.classname}`}>
                       {value.inputName &&
-                       <input  {...register(value.inputName)} defaultChecked type="checkbox"
-                        className={`${value.inputClass} ${value.classname2}`} />}
+                        <input  {...register(value.inputName)} defaultChecked type="checkbox"
+                          className={`${value.inputClass} ${value.classname2}`} />}
                       <label className={`my-0.5 mx-1.5 ${value.classname2} text-sectionColor text-xs`}> {value.label} </label>
                       {value.icon}
                       {index === 2 && <span className=' text-sm ml-2.5'> {formattedDate} </span>}
@@ -114,10 +151,10 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
             </div>
 
             <div >
-              <div  className='grid-cols-3 client-Details sm:grid-cols-1 xsm:grid-cols-1 mb-3.5 grid gap-2.5'>
+              <div className='grid-cols-3 client-Details sm:grid-cols-1 xsm:grid-cols-1 mb-3.5 grid gap-2.5'>
 
                 <FormInput
-                  fieldData={clientDetail}
+                  fieldData={Detail}
                   register={register}
                   errors={errors}
                 />
@@ -132,12 +169,17 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
             Locations
           </p>
 
-          <div  className=' grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1 location mb-5 grid gap-5'>
+          <div className=' grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1 location mb-5 grid gap-5'>
             {location1.map((field, index) => {
               return (
                 <div key={index} className=''>
-                  <div className='mb-2.5'>
+                  <div className='mb-2.5 flex justify-between items-center'>
                     <p className='text-heading font-semibold'> {field.title} </p>
+                    {index === 1 &&
+                      (<div className='flex gap-1'>
+                        <input type="checkbox" className='border-0' onChange={setAddress} />
+                        <span> Same as Bill To Address   </span>
+                      </div>)}
                   </div >
 
                   <FormInput
@@ -149,7 +191,7 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
                       return (
                         index === index2 && (
 
-                          <div key={index2}  className=' grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1  grid gap-2.5'>
+                          <div key={index2} className=' grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1  grid gap-2.5'>
                             <FormInput
                               register={register} errors={errors} fieldData={field2.address} className={'mb-2.5'}
                             />
@@ -162,11 +204,11 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
           </div>
 
 
-          <div className='mb-5 overflow-x-auto'>
+          <div className='mb-5 '>
             <DynamicField
 
               errors={errors} register={register} fields={fields} remove={remove} append={handleContactPerson}
-              fieldConfig={contactPerson} fieldName="contactPerson"
+              fieldConfig={contactPerson} fieldName="contactPerson" watch={watch} setValue={setValue}
             />
           </div>
 
@@ -198,6 +240,6 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
 
     </>
   )
-}
 
+}
 export default NewClient
