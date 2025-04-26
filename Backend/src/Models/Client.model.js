@@ -97,6 +97,14 @@ const detailsSchema = new mongoose.Schema({
     deafultCategory: {
         type: String,
     },
+    active :  {
+        type: Boolean,
+        default: true,
+    },
+    overdue : {
+        type : Boolean,
+        default : true,
+    }
 });
 
 const newClientSchema = new mongoose.Schema({
@@ -107,6 +115,17 @@ const newClientSchema = new mongoose.Schema({
         shipToAddress: addressSchema,
     },
     contactPersons: [contactPersonSchema],
+     createdBy: {
+    
+            id :  { 
+             type: mongoose.Schema.Types.ObjectId,
+              ref: 'TeamMember', 
+            },
+            name : {
+                type : String,
+                required : true
+            }
+        },
 }, { timestamps: true });
 
 export const NewClient = mongoose.model("Client", newClientSchema);

@@ -21,7 +21,9 @@ const DashboardLayout = () => {
                         menuOpen={sidebarOpen.menuOpen} />
                     <div style={{ height: 'calc(100vh - 60px)', padding: '30px' }}
                         className="containers overflow-y-auto ">
-                        <Outlet />
+                        <div className='overflow-x-auto'>
+                            <Outlet />
+                        </div>
                     </div>
                 </div>
 

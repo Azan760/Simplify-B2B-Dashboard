@@ -15,12 +15,12 @@ import { useQuery } from 'react-query';
 import { useFetch } from '../Services/ApiService';
 
 
-const NewInvoiceEstimates = ({ title, navigatePath, inputHeader }) => {
+const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url }) => {
 
 
     const [, formattedDateForInput, formattedDueDateForInput] = useDate();
     const navigate = useNavigate();
-    const { getFetch, postFetch } = useFetch("http://localhost:8000/sales/si/new");
+    const { getFetch, postFetch } = useFetch(url);
 
 
 
@@ -52,20 +52,44 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader }) => {
 
     const searchTerm = watch("clientName");
 
+    // Fetch Clients
     const { data: allClients = [], isLoading, error } = useQuery(
-        ['fetchAllData', searchTerm],
+        ['fetchAllClients', searchTerm],
         async () => {
             const response = await getFetch(searchTerm);
             console.log(response);
-            return response.data;
+            return response?.data?.clients;
         },
         {
-            enabled : searchTerm?.length > 1,
+            enabled: searchTerm?.length > 1,
             refetchOnWindowFocus: false,
-            keepPreviousData : true,
-        
+            keepPreviousData: true,
         }
     );
+
+    // const { data: allProduct = [] } = useQuery(
+    //     ['fetchAllProducts', searchTerm2],
+    //     async () => {
+    //         const response = await getFetch(searchTerm2);
+    //         console.log(response);
+    //         return response?.data?.products;
+    //     },
+    //     {
+    //         enabled: searchTerm2?.length > 1,
+    //         refetchOnWindowFocus: false,
+    //         keepPreviousData: true,
+    //     }
+    // );
+
+    // saleProduct[0].inputs[0].selectOption = [];
+
+    // allProduct?.forEach(item => {
+    //     if (!saleProduct[0].inputs[0].selectOption.includes(item.fullName)) {
+    //         saleProduct[0].inputs[0].selectOption.push(item.fullName);
+    //     }
+    // });
+
+
 
 
 
@@ -76,7 +100,7 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader }) => {
             saleClientDetail[0].selectOption = [];
 
 
-            allClients.forEach(item => {
+            allClients?.forEach(item => {
                 if (item?.details?.clientName &&
                     !saleClientDetail[0].selectOption.includes(item.details.clientName)) {
                     saleClientDetail[0].selectOption.push(item.details.clientName);
@@ -107,11 +131,6 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader }) => {
             }
         }
     }, [allClients, watch("clientName"), setValue]);
-
-
-
-
-
 
 
 
@@ -216,7 +235,7 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader }) => {
 
                         <DynamicField fieldConfig={saleProduct} register={register} errors={errors}
                             fields={fields} remove={remove} append={append} fieldName="Product"
-                            setValue={setValue} watch={watch}
+                            setValue={setValue} watch={watch} url={url}
                         />
 
                     </div>

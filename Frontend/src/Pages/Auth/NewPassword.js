@@ -111,10 +111,7 @@ const NewPassword = () => {
                                     return (
 
                                         <div key={index} className='flex flex-col'>
-                                            <label className=' font-normal flex text-sectionColor items-center text-xs mb-1.5'>
-                                                <span className='pr-1'> {fields.span}  </span>
-                                            </label>
-
+                                           
                                             <InputField
                                                 key={index}
                                                 fields={fields}

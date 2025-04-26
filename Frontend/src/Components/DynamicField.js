@@ -1,20 +1,31 @@
 import React from 'react'
 import Button from './Button'
 import { plus, plus1, trash } from './Icons'
-// import InputField from './InputField';
 import SelectOptions from './SelectOptions';
 
-const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, errors, remove, fields, append }) => {
+
+
+const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, errors, remove, fields, append, url }) => {
 
     const calculatedValues = (index) => {
 
         const purchasePrice = watch(`${fieldName}.${index}.purchasePrice`);
+        console.log(purchasePrice);
+
         const salesPrice = watch(`${fieldName}.${index}.salePrice`);
         const profit = purchasePrice > 0 && salesPrice > 0 ?
             Math.round(((salesPrice - purchasePrice) * 100) / purchasePrice) : undefined;
+        console.log(profit);
 
-        return { profit };
+        return {
+            profit,
+        };
+
     };
+
+
+
+
 
 
     return (
@@ -49,7 +60,6 @@ const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, error
                                     <p className='mb-7 mt-1 text-sm text-textColor2'> {fieldConfig[0].description} </p>
 
                                     <Button
-
                                         type="button" icon={plus1} label={fieldConfig[0].buttonLabel}
                                         className='font-semibold  inline-block bg-textColor text-white '
                                         onClick={append} disabled={fieldConfig[0].disabled}
@@ -62,6 +72,13 @@ const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, error
 
                         {fields.map((field, index) => {
                             const { profit } = calculatedValues(index);
+                            setValue(`${fieldName}.${index}.profit`, profit);
+                            const searchTerm2 =  watch(`${fieldName}.${index}.productServiceName`);
+                            console.log(searchTerm2);
+
+
+
+
 
                             return (
                                 <tr key={field.id}>
@@ -89,11 +106,6 @@ const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, error
                                                         (
 
                                                             <input type={inputFiled.type} placeholder={inputFiled.placeholder}
-                                                                value={
-                                                                    inputFiled.inputName === 'profit'
-                                                                        ? profit
-                                                                        : undefined
-                                                                }
 
                                                                 className={`w-full outline-none py-2 px-2  rounded
                                                          text-xs text-textColor2     font-normal border bg-white 
@@ -101,6 +113,7 @@ const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, error
                                                                                   
                                                         `}
                                                                 {...register(`${fieldName}.${index}.${inputFiled.inputName}`)}
+
 
                                                             />)}
                                                 </div>

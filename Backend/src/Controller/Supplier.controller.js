@@ -138,3 +138,160 @@ export const Supplier = asyncHandler(async (req, res) => {
         return res.status(500).json(new ApiError(500, "Failed to create new client", error.message));
     }
 });
+
+
+export const SupplierList = asyncHandler(async (req, res) => {
+    try {
+
+        const { page = 1, limit = 10 } = req.query;
+        const pageNumber = parseInt(page, 10) || 1;
+        const limitNumber = parseInt(limit, 10) || 10;
+
+        const data = await NewSupplier.find()
+            .skip((pageNumber - 1) * limitNumber)
+            .limit(limitNumber).sort({ createdAt: -1 }).select(' -__v -updatedAt');
+
+        res.status(200).json(new ApiResponse({
+            message: "Data Fetch Successfully!",
+            data: data
+        }));
+
+    } catch (error) {
+        return res.status(500).json(new ApiError(500, "Failed to fetch client list", error.message));
+    }
+
+});
+
+
+
+export const detailView = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        if (!id) {
+            throw new ApiError(400, 'Client ID is required!');
+        }
+        const Supplier = await NewSupplier.findById(id).select(' -__v ');
+
+        if (!Supplier) {
+            throw new ApiError(404, 'Client not found!');
+        }
+
+        return res.status(200).json(new ApiResponse(
+            {
+                data: Supplier,
+                message: 'Client fetched successfully!'
+            }
+        ));
+
+    } catch (error) {
+        throw new ApiError(500, error.message);
+    }
+});
+export const editView = asyncHandler(async (req, res) => {
+
+    const { id } = req.params;
+    const {
+        contactPerson = [],
+        defaultTerm,
+        active,
+        overdue,
+        supplierName,
+        registraion,
+        currency,
+        supplierEmail,
+        phone,
+        vatNumber,
+        vatRate,
+        eoriNo,
+        saleCategory,
+        billAddress1,
+        billAddress2,
+        billCity,
+        billState,
+        billCountry,
+        billZipCode,
+        shipAddress1,
+        shipAddress2,
+        shipCity,
+        shipState,
+        shipCountry,
+        shipZipCode,
+        updatedBy
+
+    } = req.body;
+
+    try {
+
+        if (!updatedBy) {
+            throw new ApiError(400, 'Created By is required!');
+        }
+
+        const details = {
+            supplierName,
+            registration: registraion,
+            currency,
+            email: supplierEmail,
+            phoneNo: phone,
+            defaultTerm,
+            vatNumber,
+            vatRate,
+            eoriNo,
+            active,
+            overdue,
+            defaultCategory: saleCategory
+        };
+
+        const billToAddress = {
+            address1: billAddress1,
+            address2: billAddress2,
+            city: billCity,
+            state: billState,
+            country: billCountry,
+            zipCode: billZipCode
+        };
+
+        const shipToAddress = {
+            address1: shipAddress1,
+            address2: shipAddress2,
+            city: shipCity,
+            state: shipState,
+            country: shipCountry,
+            zipCode: shipZipCode
+        };
+
+        const updatedUser = await NewSupplier.findByIdAndUpdate(
+            id,
+            {
+                details,
+                contactPersons: contactPerson,
+                locations: {
+                    billToAddress,
+                    shipToAddress
+                },
+                updatedBy,
+            },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            throw new ApiError(404, 'User not found!');
+        }
+
+        return res.status(200).json(
+            new ApiResponse({
+                data: updatedUser,
+                message: 'User updated successfully!'
+            })
+        );
+    } catch (error) {
+        res.status(500).json(
+            new ApiResponse({
+                data: null,
+                message: error.message
+            })
+        );
+    }
+});
+
+

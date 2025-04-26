@@ -79,13 +79,8 @@ const Sidebar = ({ sideOpen }) => {
                                          index !== 0 && linkDropdown(index)
                                         } }
                                      className={` 
-
-
-                                        ${selectedIndex === index ? 'bg-textColor text-white ' : 'hover:text-downIcon'}
-                                                
-                                        text-textColor2
-                    
-                                         nav-link p-3 flex items-center justify-between
+                                        ${selectedIndex === index ? 'bg-textColor text-white ' : 'hover:text-downIcon'}           
+                                        text-textColor2 nav-link p-3 flex items-center justify-between
                                          text-sm relative`} path="/">
                                         <div className=" tooltip-container flex items-center
                                              gap-3.5 " >
@@ -120,10 +115,8 @@ const Sidebar = ({ sideOpen }) => {
 
                 <footer className="footer">
                     <div className={`chat my-5  border border-textColor  ${sideOpen === 'side' ? 'px-2.5 py-2' : 'p-2.5'} rounded-md flex justify-center items-center gap-2 text-textColor font-semibold `} id="chat">
-
                         {chatIcon}
                         <span className={`${isOpen}`}> Chat with us </span>
-
                     </div>
 
                     <div className={`quickFile flex justify-between border rounded-md

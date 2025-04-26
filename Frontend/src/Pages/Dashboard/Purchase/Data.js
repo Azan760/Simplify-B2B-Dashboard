@@ -150,3 +150,18 @@ export const supplierDetail = [
 
 
 ];
+
+
+export const supplierHeader =[
+    "Supplier Name",
+    "Email",
+    "Contact Person",
+    "Created On",
+    "Created By",
+    "Assign",
+    "Currency",
+    "Active",
+    "Status",
+    "Action",
+    
+]

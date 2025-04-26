@@ -115,6 +115,28 @@ const newSupplierSchema = new mongoose.Schema({
         shipToAddress: addressSchema,
     },
     contactPersons: [contactPersonSchema], 
+    createdBy: {
+        id : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "TeamMember",
+        },
+        name: {
+            type: String,
+            required: false,
+        }
+
+    },
+    updatedBy: {
+        id : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "TeamMember",
+        },
+        name: {
+            type: String,
+            required: false,
+        }
+
+    },
 
 },{timestamps : true});
 

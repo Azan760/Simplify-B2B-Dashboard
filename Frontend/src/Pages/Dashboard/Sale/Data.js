@@ -362,5 +362,15 @@ export const saleInvoiceHeader = [
 ];
 
 export const clientsHeader =[
+    "Client Name",
+    "Email",
+    "Contact Person",
+    "Created On",
+    "Created By",
+    "Assign",
+    "Currency",
+    "Active",
+    "Status",
+    "Action",
     
 ]

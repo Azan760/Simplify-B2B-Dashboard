@@ -217,8 +217,8 @@ export const navItems = [
           <path fillRule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3.854 2.146a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2 7.293l1.146-1.147a.5.5 0 0 1 .708 0m0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0" />
         </svg>,
         value: "All Members",
-         Path : "/team/list"
-        
+        Path: "/team/list"
+
       }, {
         icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
           <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -981,8 +981,8 @@ export const saleClientDetail = [
     </svg>,
     paddingLeft: 'pl-8',
     isSelect: true,
-    selectOption : [
-       "Please Eneter two or more Characters."
+    selectOption: [
+      "Please Eneter two or more Characters."
     ]
 
   }, {
@@ -1002,8 +1002,8 @@ export const saleClientDetail = [
     </svg>,
     isSelect: true,
     paddingLeft: 'pl-8',
-    selectOption : [
-     
+    selectOption: [
+
     ]
 
 
@@ -1043,9 +1043,9 @@ export const saleClientDetail = [
     </svg>,
     isSelect: true,
 
-    disabled : false,
+    disabled: false,
 
-    selectOption : [
+    selectOption: [
       "Bill To Address",
       "Ship To Address"
     ]
@@ -1179,8 +1179,8 @@ export const saleProduct = [
   {
     title: "Products",
     heading: [
-      "SKU",
       "Name",
+      "Sku",
       "Category",
       "Qty(Req/Acq)",
       "Unit Price(GBP)",
@@ -1195,12 +1195,62 @@ export const saleProduct = [
     buttonLabel: "Let's Add Product",
     disabled: false,
 
-    inputs : [
+    inputs: [
       {
+        placeholder: "Product",
+        types: 'text',
+        inputName: "productServiceName",
+        isSelect: true,
+        selectOption: [
+        ],
+        icon: <svg style={{ left: '85%', top: '13.5px' }} xmlns="http://www.w3.org/2000/svg"
+          width="10" height="10"
+          fill="currentColor" className="bi bi-caret-down-fill text-browns absolute
+           " viewBox="0 0 16 16">
+          <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+        </svg>,
+
+
+      },
+      {
+        placeholder: "Sku",
+        types: 'text',
+        inputName: "sku",
+        upperCase: "uppercase",
+
+      },
+      {
+        placeholder: 'Category',
+        types: 'text',
+        inputName: "category",
+      },
+      {
+        placeholder: 'Quantity',
+        types: 'number',
+        inputName: "quantity",
+      },
+      {
+        placeholder: 'Unit Price',
+        types: 'number',
+        inputName: "unitPrice",
+      }, {
+        placeholder: 'Deafult VAT Rule',
+        types: 'number',
+        inputName: "vatRate",
+      },
+      {
+        placeholder: 'Vat Amount',
+        types: 'number',
+        inputName: "vatAmount",
+      },
+      {
+        placeholder: 'Gross Total',
+        types: 'number',
+        inputName: "grossTotal",
 
       }
-   
-   ]
+
+    ]
   }
 ]
 
@@ -1225,26 +1275,26 @@ export const register = [
 
 export const aggregateTable = [
   {
-    lable : "Total Quantity",
-    value : 0,
+    lable: "Total Quantity",
+    value: 0,
 
   },
   {
-    lable : "Dispatched/Sent Quantity",
-    value : 0,
-    
+    lable: "Dispatched/Sent Quantity",
+    value: 0,
+
   }, {
-    lable : "Sub Amount (GBP)",
-    value : 0,
-    
+    lable: "Sub Amount (GBP)",
+    value: 0,
+
   }, {
-    lable : "VAT Amount (GBP)",
-    value : 0,
-    
+    lable: "VAT Amount (GBP)",
+    value: 0,
+
   }, {
-    lable : "Total Amount (GBP)",
-    value : 0,
-    
+    lable: "Total Amount (GBP)",
+    value: 0,
+
   }
 ]
 

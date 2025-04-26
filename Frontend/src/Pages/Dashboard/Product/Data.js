@@ -93,7 +93,7 @@ export const ProductDetail = [
         types: 'text',
         inputName: "type",
         require : false,
-        selectOption : [
+       selectOption  : [
             "Inventory",
              "Service"
         ],
@@ -247,7 +247,7 @@ export const saleTable = [
                 name : "purchase",
                 placeholder : "Purchase Price",
                 type : "number",
-                inputName : 'purchaseCost',
+                inputName : 'purchasePrice',
                 number : true,
             },{
                 name : "sale",

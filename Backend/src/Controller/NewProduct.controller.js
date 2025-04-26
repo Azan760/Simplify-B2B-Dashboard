@@ -203,12 +203,12 @@ export const allProducts = asyncHandler(async (req, res) => {
 });
 
 
-export const editView = asyncHandler(async(req,res) => {
+export const detailView = asyncHandler(async (req, res) => {
 
     const { id } = req.params;
 
     try {
-        if(!id){
+        if (!id) {
             throw new ApiError(400, 'User ID is required!');
         }
         const user = await Product.findById(id).select('-refreshToken -password -__v ');
@@ -227,6 +227,139 @@ export const editView = asyncHandler(async(req,res) => {
         throw new ApiError(500, error.message);
     }
 });
+
+
+export const editView = asyncHandler(async (req, res) => {
+
+    const { id } = req.params;
+    console.log("ID", id);
+    const {
+        type,
+        buy,
+        sell,
+        active,
+        sku,
+        productServiceName,
+        salesPersonAssignment,
+        brand,
+        category,
+        subCategory,
+        color,
+        purchaseCost,
+        salePrice,
+        profit,
+        vatRate,
+        description,
+        createdBy,
+        updatedBy
+    } = req.body;
+  console.log(req.body);
+
+    try {
+
+        if (!sku && !productServiceName) {
+
+            return res.status(400).json(new ApiError(400, "Missing required fields (sku or productService)"));
+        }
+
+
+
+        let updatedSalesPersonAssignment = [...salesPersonAssignment];
+        console.log("updatedSalesPersonAssignment", updatedSalesPersonAssignment);
+
+        if (updatedSalesPersonAssignment.length === 0) {
+            // const assignedUser = await assignSalesPerson();
+            // console.log("Assigned Sales Person:", assignedUser);
+
+            // if (assignedUser) {
+            //     updatedSalesPersonAssignment.push({ assignedUser });
+            // }
+
+
+        } else {
+
+            for (const i of updatedSalesPersonAssignment) {
+
+                if (!i.assignedUser) {
+
+                    return res.status(400).json(new ApiError(400, "Missing required fields (assignedUser)"));
+
+                } else {
+
+                    const assignUser = await TeamMember.findOne({ fullName: i.assignedUser });
+
+                    if (!assignUser) {
+
+                        return res.status(400).json(new ApiError(400, "Assigned user not found"));
+                    }
+
+                    i.assignedUser = {
+                        id: assignUser._id,
+                        name: assignUser.fullName
+                    };
+                }
+            }
+        }
+
+        console.log("enter");
+        console.log("updatedSalesPersonAssignment", updatedSalesPersonAssignment);
+
+
+    
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            {
+                details: {
+                    sku,
+                    productServiceName,
+                    brand,
+                    category,
+                    subCategory,
+                    color,
+                    purchaseCost,
+                    type,
+                    salePrice,
+                    profit,
+                    vatRate,
+                    description,
+                    active,
+                    buy,
+                    sell
+                },
+                salesPersonAssignment: updatedSalesPersonAssignment,
+                createdBy,
+                updatedBy
+            },
+            { new: true }
+        );
+
+        console.log("Updated Product", updatedProduct);
+
+        if (!updatedProduct) {
+            throw new ApiError(404, 'Product not found!');
+        }
+
+        return res.status(200).json(
+            new ApiResponse({
+                data: updatedProduct,
+                message: 'Product updated successfully!'
+            })
+        );
+    } catch (error) {
+        res.status(500).json(
+            new ApiResponse({
+                data: null,
+                message: error.message
+            })
+        );
+    }
+});
+
+
+
+
+
+
 
 
 

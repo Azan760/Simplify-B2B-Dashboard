@@ -3,6 +3,7 @@ import { clientDetail, clientIcon, contactPerson, location1, location2 } from '.
 import { useDate } from '../../../Components/Date'
 import { useForm, useFieldArray } from 'react-hook-form'
 import FormInput from '../../../Components/FormInput'
+import InputField from '../../../Components/InputField.js'
 import Button from '../../../Components/Button'
 import { arrowClockwise, arrowLeft } from '../../../Components/Icons'
 import { useNavigate } from 'react-router'
@@ -14,6 +15,9 @@ import 'nprogress/nprogress.css';
 import "../../../Css/NewProduct.css"
 import { useFetch } from "../../../Services/ApiService.js"
 import { useQuery } from 'react-query'
+import SelectOptions from '../../../Components/SelectOptions.js'
+import { useSelector } from 'react-redux'
+
 
 
 
@@ -23,6 +27,9 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
 
   const navigate = useNavigate();
   NProgress.configure({ showSpinner: false });
+
+      const user = useSelector((state) => state.auth.user);
+  
 
 
   const [formattedDate] = useDate();
@@ -89,18 +96,16 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
   }, [append]);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    data = { ...data, createdBy: { id: user?._id, name: user?.fullName } };
     try {
       NProgress.start();
-
       await postFetch(data);
-
       reset();
     } catch (error) {
 
       console.error('Error in form submission:', error.message);
     } finally {
-      NProgress.done(); // Stop the loading bar
+      NProgress.done();
     }
 
   }
@@ -116,7 +121,6 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
 
 
     <>
-
 
       <div style={{ height: "calc(100% - 60px)" }}>
         <div className="heading mb-5 gap-2.5  items-center flex sm:mb-8 xsm:mb-8">
@@ -152,13 +156,25 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
 
             <div >
               <div className='grid-cols-3 client-Details sm:grid-cols-1 xsm:grid-cols-1 mb-3.5 grid gap-2.5'>
+                {
+                  Detail.map((fields, index) => {
+                    return (
+                      <div key={index} className={`flex flex-col`}>
 
-                <FormInput
-                  fieldData={Detail}
-                  register={register}
-                  errors={errors}
-                />
+                        {fields.isSelect ?
 
+                          (<SelectOptions field={fields} setValue={setValue} register={register}
+                            errors={errors} />)
+                          :
+                          (<InputField fields={fields} errors={errors}
+                            register={register} />
+                          )
+                        }
+                      </div>
+
+                    )
+                  }
+                  )}
               </div>
             </div>
 

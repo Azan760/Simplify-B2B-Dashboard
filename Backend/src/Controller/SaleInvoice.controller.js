@@ -2,6 +2,7 @@ import { asyncHandler } from "../Utils/AsyncHandler.js";
 import { ApiError } from "../Utils/ApiError.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
 import { NewClient } from "../Models/Client.model.js";
+import { Product } from "../Models/product.model.js"; 
 
 export const getClients = asyncHandler(async (req, res) => {
     const { search } = req.query;
@@ -15,13 +16,24 @@ export const getClients = asyncHandler(async (req, res) => {
             "details.clientName"   : { $regex: search.trim(), $options: "i" }
         }).select("-__v -_id -createdAt -updatedAt");
 
+        const product = await Product.find({
+            "details.productServiceName"   : { $regex: search.trim(), $options: "i" }
+        }).select("-__v -_id -createdAt  -updatedAt");
+
+        
+
         console.log("Fetched Clients:", clients); 
 
-        if (clients.length === 0) {
+        if (clients.length === 0 || product.length === 0) {
             return res.status(404).json(new ApiError(404, "No client found"));
         }
 
-        return res.status(200).json(new ApiResponse(200, clients, "Clients fetched successfully"));
+        const data = {
+            clients,
+            product
+        }
+
+        return res.status(200).json(new ApiResponse(200, data, "Clients fetched successfully"));
 
     } catch (error) {
 

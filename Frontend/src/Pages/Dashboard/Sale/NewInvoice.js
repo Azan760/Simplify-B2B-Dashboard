@@ -7,7 +7,8 @@ const NewEstimate = HocInputForm(NewInvoiceEstimates, {
   
   title: "New Sale Invoice",
   navigatePath: '/Sale/AllSaleInvoice',
-  inputHeader : "Client Details"
+  inputHeader : "Client Details",
+  url : "http://localhost:8000/sales/si/new",
 
 
 });

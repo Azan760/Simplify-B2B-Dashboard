@@ -7,7 +7,7 @@ import { supplierDetail } from './Data';
 const NewSupplier = HocInputForm(NewClient, {
   
   title: "New Supplier",
-  navigatePath : "/Purchase/AllNewSupplier",
+  navigatePath : "/supplier/all",
   url : "http://localhost:8000/supplier/new",
   Detail : [...supplierDetail]
   

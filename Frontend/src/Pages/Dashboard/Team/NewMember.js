@@ -15,10 +15,6 @@ import { useSelector } from 'react-redux'
 const NewMember = () => {
 
 
-    const { postFetchFile } = useFetch("http://localhost:8000/team/new");
-    const user = useSelector((state) => state.auth.user);
-
-
     const {
         register,
         handleSubmit,
@@ -28,22 +24,20 @@ const NewMember = () => {
         reset,
 
     } = useForm();
-
-
-
+    
+    const { postFetchFile } = useFetch("http://localhost:8000/team/new");
+    const user = useSelector((state) => state.auth.user);
     const [formattedDate] = useDate();
-
     const navigate = useNavigate();
-
     const [onFileChange, fileInputRef, resetFileInput, triggerFileInput, imagePreview] = useFile(setValue);
+
+
 
     const onSubmit = async (data) => {
 
-        data = {...data, createdBy : {id : user?._id, name : user?.fullName}};
+        data = { ...data, createdBy: { id: user?._id, name: user?.fullName } };
         console.log(data);
-
         try {
-
             await postFetchFile(data);
             resetFileInput();
             reset();
@@ -51,7 +45,6 @@ const NewMember = () => {
         }
         catch (error) {
             console.log("Error : ", error.message);
-
         }
 
     }
@@ -76,7 +69,7 @@ const NewMember = () => {
                     <div className='mb-3.5'>
                         <div className='flex justify-between   sm:flex-col sm:gap-5 xsm:gap-5 xsm:flex-col  mb-2.5'>
                             <div className='flex items-center'>
-                                <p className='text-base text-textColor font-semibold tracking-wider'> User Detais: </p>
+                                <p className='text-base text-textColor font-semibold tracking-wider'> User Details: </p>
                             </div>
 
                             <div className='flex sm:flex-col sm:items-start xsm:items-start xsm:flex-col sm:gap-2.5 xsm:gap-2.5'>
@@ -102,13 +95,13 @@ const NewMember = () => {
 
                     <div className='xsm:overflow-x-auto  grid-cols-[3fr_1fr] xsm:grid-cols-1 grid gap-5'>
                         <div>
-                            <div className='grid-cols-3 md:grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1 mb-3 grid gap-2.5'>
+                            <div className='grid-cols-3 md:grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1 mb-3 grid gap-3'>
                                 {
                                     userDetail.map((fields, index) => {
                                         return (
 
                                             <div key={index} className={`flex flex-col`}>
-                                              
+
                                                 {fields.isSelect ?
 
                                                     (<SelectOptions field={fields} setValue={setValue} register={register}
@@ -130,7 +123,7 @@ const NewMember = () => {
 
                                         (watch("userType") === "Sales Manager" || watch("userType") === "Sales Person") &&
                                         (<div key={index} className={`flex flex-col`}>
-                                        
+
                                             {fields.isSelect ?
 
                                                 (<SelectOptions field={fields} setValue={setValue} register={register}
@@ -149,7 +142,7 @@ const NewMember = () => {
 
                         </div>
 
-                        <div style={{ height: '270px', width: '270px' }} className={` xsm:m-auto mb-5 ${imagePreview ? `  border-8 bg-white ` : 'border-8'
+                        <div style={{ height: '250px', width: '250px' }} className={` xsm:m-auto mb-5 ${imagePreview ? `  border-8 bg-white ` : 'border-8'
                             } relative shadow-sideShadow flex justify-center items-center  rounded  border-white`}>
 
                             {imagePreview ? (

@@ -77,9 +77,9 @@ const NewProduct = () => {
     saleTable[0].inputs[0].selectOption = [];
 
     salesPerson?.forEach(item => {
-        if (!saleTable[0].inputs[0].selectOption.includes(item.fullName)) {
-            saleTable[0].inputs[0].selectOption.push(item.fullName);
-        }
+        // if (!saleTable[0].inputs[0].selectOption.includes(item.fullName)) {
+        //     saleTable[0].inputs[0].selectOption.push(item.fullName);
+        // }
     });
 
 

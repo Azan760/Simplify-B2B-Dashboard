@@ -14,7 +14,7 @@ let transporter = nodemailer.createTransport({
 });
 
 const createTeamMember = asyncHandler(async (req, res) => {
-    const { active, email, firstName, lastName, userType,createdBy } = req.body;
+    const { active, email, firstName, lastName, userType,createdBy,contractType,corporateTax,commissionRate} = req.body;
 
 
     const userImage = req.file;
@@ -33,7 +33,7 @@ const createTeamMember = asyncHandler(async (req, res) => {
             throw new ApiError(400, 'Created By is required!');
         }
 
-        const fullName =  firstName + "" + lastName;
+        const fullName =    `${firstName} ${lastName}`;
        
 
         const user = new TeamMember({
@@ -43,7 +43,9 @@ const createTeamMember = asyncHandler(async (req, res) => {
             userType,
             userImage: userImage?.path,
             createdBy,
-
+            contractType,
+            commissionRate,
+            corporateTax
         });
 
         await user.save();
@@ -176,7 +178,7 @@ export const allMember = asyncHandler(async(req,res) => {
      
 });
 
-export const editView = asyncHandler(async(req,res) => {
+export const detailView = asyncHandler(async(req,res) => {
     const { id } = req.params;
 
     try {
@@ -200,6 +202,83 @@ export const editView = asyncHandler(async(req,res) => {
     }
 });
 
+export const editView = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+    const {
+      active,
+      email,
+      firstName,
+      lastName,
+      userType,
+      contractType,
+      corporateTax,
+      commissionRate,
+      updatedBy
+    } = req.body;
+
+    console.log(req.body);
+  
+    const userImage = req?.file;
+    console.log(userImage?.path);
+  
+    try {
+
+      if ([email, firstName, lastName, userType].map((item) => item.trim()).includes('')) {
+         return res.status(400).json(
+          new ApiResponse({
+            data: null,
+            message: 'All fields are required!'
+          }))};
+
+          if(!updatedBy){
+            return res.status(400).json(
+                new ApiResponse({
+                  data: null,
+                  message: 'Updated By is required!'
+                }))}
+  
+      const fullName = `${firstName} ${lastName}`;
+      console.log(fullName);
+  
+      const updatedUser = await TeamMember.findByIdAndUpdate(
+        id,
+        {
+          active,
+          email,
+          fullName,
+          userType,
+          userImage: userImage?.path,
+          contractType,
+          commissionRate,
+          corporateTax,
+           updatedBy
+        },
+        { new: true } 
+      );
+
+      console.log(updatedUser);
+  
+      if (!updatedUser) {
+        throw new ApiError(404, 'User not found!');
+      }
+  
+      return res.status(200).json(
+        new ApiResponse({
+          data: updatedUser,
+          message: 'User updated successfully!'
+        })
+      );
+    } catch (error) {
+      res.status(500).json(
+        new ApiResponse({
+          data: null,
+          message: error.message
+        })
+      );
+    }
+  });
+  
 
 export { createTeamMember, createPassword };
 

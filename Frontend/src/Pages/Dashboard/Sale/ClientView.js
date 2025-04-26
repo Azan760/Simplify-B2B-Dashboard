@@ -1,45 +1,38 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback,useEffect,useState } from 'react'
+import { clientDetail, clientIcon, contactPerson, location1, location2 } from './Data'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { ProductDetail, ProductIcon, saleTable, } from './Data.js'
-import { formatDate } from '../../../Components/Date.js'
-import '../../../Css/NewProduct.css'
-import { arrowClockwise, arrowLeft, back,refresh, deleteIcon  } from '../../../Components/Icons.js'
+import FormInput from '../../../Components/FormInput'
+import InputField from '../../../Components/InputField.js'
+import Button from '../../../Components/Button'
+import { arrowClockwise, arrowLeft } from '../../../Components/Icons'
 import { useNavigate } from 'react-router'
-import Button from '../../../Components/Button.js'
-import DynamicField from '../../../Components/DynamicField.js'
-import TextArea from '../../../Components/TextArea.js'
+import DynamicField from '../../../Components/DynamicField'
+import { back,deleteIcon,refresh } from '../../../Components/Icons'
+import '../../../Css/NewClient.css'
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import InputField from '../../../Components/InputField.js'
-import SelectOptions from '../../../Components/SelectOptions.js'
+import "../../../Css/NewProduct.css"
 import { useFetch } from "../../../Services/ApiService.js"
 import { useQuery } from 'react-query'
+import SelectOptions from '../../../Components/SelectOptions.js'
 import { useSelector } from 'react-redux'
-import { Helmet } from "react-helmet";
 import { useParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
+import { formatDate } from '../../../Components/Date'
 
 
 
+const ClientView = ({ title = "Add New Client", navigatePath = "client/all", url = "http://localhost:8000/client/view", Detail = [...clientDetail] }) => {
 
-const ProductView = () => {
-
-    NProgress.configure({ showSpinner: false });
-    const user = useSelector((state) => state.auth.user);
 
     const { id } = useParams();
+    const { getFetch, updateFetch } = useFetch(`${url}/${id}`);
+ const user = useSelector((state) => state.auth.user);
+       const navigate = useNavigate();
 
-    const { getFetch, updateFetch } = useFetch(`http://localhost:8000/product/view/${id}`);
-
-    const {
-        register, handleSubmit, control, watch, formState: { errors, isSubmitting, isDirty }, reset, setValue }
-        = useForm(
-        );
-
-    const { fields, append, remove } = useFieldArray({ control, name: "salesPersonAssignment" });
-
-    const navigate = useNavigate();
+    
     const { data: allData, isLoading, error } = useQuery(
-        'productData',
+        'clientData',
         async () => {
             const response = await getFetch();
             return response.statusCode["data"];
@@ -49,115 +42,93 @@ const ProductView = () => {
             keepPreviousData: true,
         }
     );
-
-    console.log(allData);
+    
+    
+    
     useEffect(() => {
         if (allData) {
-            setValue("sku", allData?.details?.sku);
-            setValue("productServiceName", allData?.details?.productServiceName);
-            setValue("type", allData?.details?.type);
-            setValue("category", allData?.details?.category);
-            setValue("subCategory", allData?.details?.subCategory);
-            setValue("brand", allData?.details?.brand);
-            setValue("buy", allData?.details?.buy);
-            setValue("sell", allData?.details?.sell);
-            setValue("salePrice", allData?.details?.salePrice);
-            setValue("purchaseCost", allData?.details?.purchaseCost);
-            setValue("profit", allData?.details?.profit);
-            setValue("color", allData?.details?.color);
-            setValue("vatRate", allData?.details?.vatRate);
-            setValue("description", allData?.details?.description);
-
-            allData?.salesPersonAssignment?.forEach((item) => {
-                append({
-                    assignedUser: item?.assignedUser?.name,
-                    purchasePrice: item?.purchasePrice,
-                    salePrice: item?.salePrice,
-                    profit: item?.profit
-                });
-
-            })
-
+            
         }
     }, [allData]);
 
-
-
-    const handleAddPerson = useCallback(() => {
-        append({ assignedUser: '', purchasePrice: '', salePrice: '', profit: '' });
+    const {
+        register,
+        control,
+        handleSubmit,
+        formState: { errors, isSubmitting, isDirty },
+        reset,
+        setValue
+        , watch
+        
+    } = useForm({
+        
+        defaultValues: {
+            defaultTerm: 14,
+            contactPerson: [],
+            
+        },
+    });
+    
+    const { fields, append, remove } = useFieldArray({ control, name: "contactPerson" });
+    
+    const handleContactPerson = useCallback(() => {
+        append({ fullName: '', email: '', phoneNo: '', salePerson: '' });
     }, [append]);
-
-    const handleRemovePerson = useCallback((index) => {
-        remove(index);
-    }, [remove]);
-
-    const handleBack = useCallback(() => {
-
-        // navigate('/product/AllProduct');
-    }, [navigate]);
-
-    const handleReset = useCallback(() => {
-        reset();
-    }, []);
-
-
+    
 
     const onSubmit = async (data) => {
-
         data = { ...data, updatedBy: { id: user?._id, name: user?.fullName } };
+        console.log(data);
         try {
             await updateFetch(data);
-            NProgress.start();
-        } catch (error) {
-            console.error('Error in form submission:', error.message);
-        } finally {
-            NProgress.done();
         }
-
-    };
+        catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <>
-
             <Helmet>
-                <title> View/Edit Product </title>
+                <title> Client </title>
             </Helmet>
 
             <div style={{ height: "calc(100% - 60px)" }}>
-                <div className="heading mb-5 xsm:mb-8 gap-2.5  items-center flex sm:justify-center 
-                xsm:justify-center ">
-                    <span onClick={() => { navigate("/Product/AllProduct") }}
+                <div className="heading mb-5 gap-2.5  items-center flex sm:mb-8 xsm:mb-8">
+                    <span onClick={() => { navigate(navigatePath) }}
                         className='border border-textColor2 rounded p-2 shadow-sideShadow'>
                         {back}
                     </span>
-                    <h6 className="font-semibold
-                 text-heading  text-xl  xsm:text-lg"> Edit Product/Service </h6>
+                    <h6 style={{ letterSpacing: '1px' }} className="font-semibold
+                 text-heading  text-xl  xsm:text-lg">  {title} </h6>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                    <div className='mb-3.5'>
-                        <div className='flex justify-between sm:items-start xsm:items-start sm:flex-col xsm:flex-col xsm:gap-2.5 mb-2.5 sm:gap-2.5'>
+                    <div className=''>
+                        <div className='flex justify-between sm:flex-col sm:gap-2.5 xsm:gap-2.5 xsm:flex-col  mb-2.5'>
                             <div className='flex items-center'>
-                                <p className='text-base text-textColor font-semibold tracking-wider'> Product Details </p>
+                                <p className='text-base text-textColor font-semibold tracking-wider'> Detail: </p>
                             </div>
-                            <div className='flex xsm:flex-col xsm:gap-2.5'>
+                            <div className='flex detail-icon '>
 
-                                {ProductIcon.map((value, index) => {
+                                {clientIcon.map((value, index) => {
                                     return (
-                                        <div key={index} className={`flex items-center mr-5 sm:mr-1  ${value.classname}`}>
-                                            {value.inputName && <input {...register(value.inputName)} type="checkbox" defaultChecked className={`${value.inputClass} ${value.classname2}`} />}
-                                            <label className={`my-0.5 mx-1.5 ${value.classname2}
-                                             text-sectionColor text-xs`}> {value.label} </label>
+                                        <div key={index} className={`flex items-center   ml-5 sm:mr-2.5 sm:ml-0 ${value.classname}`}>
+                                            {value.inputName &&
+                                                <input  {...register(value.inputName)} defaultChecked type="checkbox"
+                                                    className={`${value.inputClass} ${value.classname2}`} />}
+                                            <label className={`my-0.5 mx-1.5 ${value.classname2} text-sectionColor text-xs`}> {value.label} </label>
                                             {value.icon}
-                                            {index === 3 && <span className=' text-sm ml-2.5'> {formatDate(allData?.createdAt)} </span>}
+                                            {index === 2 && <span className=' text-sm ml-2.5'> {formatDate()} </span>}
                                         </div>)
                                 })}
                             </div>
                         </div>
+
                         <div >
-                            <div className='mb-5 grid gap-3  md:grid-cols-1 sm:grid-cols-1 xsm:grid-cols-1 grid-cols-3'>
+                            <div className='grid-cols-3 client-Details sm:grid-cols-1 xsm:grid-cols-1 mb-3.5 grid gap-2.5'>
                                 {
-                                    ProductDetail.map((fields, index) => {
+                                    Detail.map((fields, index) => {
                                         return (
                                             <div key={index} className={`flex flex-col`}>
 
@@ -171,28 +142,69 @@ const ProductView = () => {
                                                     )
                                                 }
                                             </div>
-                                        )
-                                    })
 
-                                }
+                                        )
+                                    }
+                                    )}
                             </div>
                         </div>
+
                     </div>
 
-                    <DynamicField
-                        fieldConfig={saleTable} register={register} setValue={setValue} errors={errors}
-                        fields={fields} remove={handleRemovePerson} append={handleAddPerson}
-                        fieldName="salesPersonAssignment" watch={watch}
-                    />
 
-                    <TextArea label="Description" register={register} inputName="description"
-                        placeholder="Description" />
+                    <p className='flex my-5 border-b border-b-searchIcon pb-5 font-semibold text-textColor'>
+                        Locations
+                    </p>
+
+                    <div className=' grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1 location mb-5 grid gap-5'>
+                        {location1.map((field, index) => {
+                            return (
+                                <div key={index} className=''>
+                                    <div className='mb-2.5 flex justify-between items-center'>
+                                        <p className='text-heading font-semibold'> {field.title} </p>
+                                        {index === 1 &&
+                                            (<div className='flex gap-1'>
+                                                <input type="checkbox" className='border-0'  />
+                                                <span> Same as Bill To Address   </span>
+                                            </div>)}
+                                    </div >
+
+                                    <FormInput
+                                        register={register} errors={errors} fieldData={field.address} className={'mb-2.5'}
+                                    />
+
+                                    {
+                                        location2.map((field2, index2) => {
+                                            return (
+                                                index === index2 && (
+
+                                                    <div key={index2} className=' grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1  grid gap-2.5'>
+                                                        <FormInput
+                                                            register={register} errors={errors} fieldData={field2.address} className={'mb-2.5'}
+                                                        />
+
+                                                    </div>))
+                                        })}
+                                </div>
+                            )
+                        })}
+                    </div>
+
+
+                    <div className='mb-5 '>
+                        <DynamicField
+
+                            errors={errors} register={register} fields={fields} remove={remove} append={handleContactPerson}
+                            fieldConfig={contactPerson} fieldName="contactPerson" watch={watch} setValue={setValue}
+                        />
+                    </div>
+
 
                     <div className='pb-5 pt-5'>
                         <div className='flex justify-between button'>
 
                             <Button
-                                type="button" label="Back" onClick={handleBack}
+                                type="button" label="Back" onClick={() => { navigate('/team/all') }}
                                 icon={arrowLeft}
                                 className={` flex  border border-blanche bg-white text-textColor2`}
                             />
@@ -233,7 +245,7 @@ const ProductView = () => {
                                 <div className="bg-gray-100 rounded p-3.5">
                                     <p className="font-semibold text-gray-800 text-sm">Update</p>
                                     <p className="text-sm text-gray-500">
-                                        last updated by <span className="text-blue-600 font-semibold cursor-pointer">{allData?.updatedBy?.name}</span>
+                                        last updated by <span className="text-blue-600 font-semibold cursor-pointer">{allData?.updatedByBy?.name}</span>
                                     </p>
                                 </div>
                             </div>
@@ -262,12 +274,14 @@ const ProductView = () => {
                         </div>
                     </div>
 
-                </form >
-            </div >
+                </form>
+            </div>
 
-        </>)
+
+
+
+        </>
+    )
 }
 
-
-
-export default ProductView
+export default ClientView

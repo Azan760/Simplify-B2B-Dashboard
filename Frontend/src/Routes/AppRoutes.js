@@ -29,6 +29,7 @@ const NewMember = lazy(() => import("../Pages/Dashboard/Team/NewMember"));
 const AllMember = lazy(() => import("../Pages/Dashboard/Team/AllMember"));
 const TeamView = lazy(() => import("../Pages/Dashboard/Team/TeamView"));
 const ProductView = lazy(() => import("../Pages/Dashboard/Product/ProductView"));
+const ClientView = lazy(() => import("../Pages/Dashboard/Sale/ClientView"));
 
 
 
@@ -72,6 +73,7 @@ const AppRoutes = () => {
                                 <Route path="sales/si/new" element={<NewInvoice />} />
                                 <Route path="sales/se/list" element={<AllSaleEstimate />} />
                                 <Route path="sales/se/new" element={<NewEstimate />} />
+                                <Route path="client/view/:id" element={<ClientView />} />
                                 <Route path="client/list" element={<AllClient />} />
                                 <Route path="client/new" element={<NewClient />} />
                                 <Route path="purchases/po/list" element={<AllPurchaseOrder />} />

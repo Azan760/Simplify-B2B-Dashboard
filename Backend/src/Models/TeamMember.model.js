@@ -57,11 +57,22 @@ const TeamMemberSchema = new mongoose.Schema({
 
         id :  { 
          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User' 
+          ref: 'TeamMember', 
         },
         name : {
             type : String,
-            required : true
+            required : false
+        }
+    },
+    updatedBy: {
+
+        id :  { 
+         type: mongoose.Schema.Types.ObjectId,
+          ref: 'TeamMember', 
+        },
+        name : {
+            type : String,
+            required : false
         }
     },
     password: {         

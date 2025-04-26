@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { getClients } from "../Controller/NewSaleInvoice.controller.js";
+import { getClients } from "../Controller/SaleInvoice.controller.js";
 
 
 
