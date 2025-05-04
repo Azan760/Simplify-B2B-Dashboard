@@ -31,6 +31,7 @@ export const Supplier = asyncHandler(async (req, res) => {
     console.log(req.body);
 
     const {
+        createdBy,
         contactPerson = [], 
         defaultTerm,
         active,
@@ -63,6 +64,10 @@ export const Supplier = asyncHandler(async (req, res) => {
 
             return res.status(400).json(new ApiError(400, "Missing required fields (Client Name, Currency, or Default Term)"));
         }
+
+        if(!createdBy) {
+            return res.status(400).json(new ApiError(400, "Created By is required!"));
+        }   
 
         const details = {
             supplierName,
@@ -126,7 +131,8 @@ export const Supplier = asyncHandler(async (req, res) => {
             locations: {
                 billToAddress,
                 shipToAddress
-            }
+            },
+            createdBy,
 
         });
         console.log(newSupplier);
@@ -149,7 +155,7 @@ export const SupplierList = asyncHandler(async (req, res) => {
 
         const data = await NewSupplier.find()
             .skip((pageNumber - 1) * limitNumber)
-            .limit(limitNumber).sort({ createdAt: -1 }).select(' -__v -updatedAt');
+            .limit(limitNumber).sort({ createdAt: -1 }).select(' -__v -updatedAt  -locations');
 
         res.status(200).json(new ApiResponse({
             message: "Data Fetch Successfully!",
@@ -157,7 +163,7 @@ export const SupplierList = asyncHandler(async (req, res) => {
         }));
 
     } catch (error) {
-        return res.status(500).json(new ApiError(500, "Failed to fetch client list", error.message));
+        return res.status(500).json(new ApiError(500, "Failed to fetch Supplier list", error.message));
     }
 
 });
@@ -169,18 +175,18 @@ export const detailView = asyncHandler(async (req, res) => {
 
     try {
         if (!id) {
-            throw new ApiError(400, 'Client ID is required!');
+            throw new ApiError(400, 'Supplier ID is required!');
         }
         const Supplier = await NewSupplier.findById(id).select(' -__v ');
 
         if (!Supplier) {
-            throw new ApiError(404, 'Client not found!');
+            throw new ApiError(404, 'Supplier not found!');
         }
 
         return res.status(200).json(new ApiResponse(
             {
                 data: Supplier,
-                message: 'Client fetched successfully!'
+                message: 'Supplier fetched successfully!'
             }
         ));
 
@@ -188,6 +194,7 @@ export const detailView = asyncHandler(async (req, res) => {
         throw new ApiError(500, error.message);
     }
 });
+
 export const editView = asyncHandler(async (req, res) => {
 
     const { id } = req.params;
@@ -275,13 +282,13 @@ export const editView = asyncHandler(async (req, res) => {
         );
 
         if (!updatedUser) {
-            throw new ApiError(404, 'User not found!');
+            throw new ApiError(404, 'Supplier not found!');
         }
 
         return res.status(200).json(
             new ApiResponse({
                 data: updatedUser,
-                message: 'User updated successfully!'
+                message: 'Supplier updated successfully!'
             })
         );
     } catch (error) {

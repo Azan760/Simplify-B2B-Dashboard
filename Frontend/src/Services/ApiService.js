@@ -9,7 +9,6 @@ export const useFetch = (url) => {
             let  response = await axios.get(url,{
                 params: { search : searchTerm, page : pageNo, limit : perPage },  
               });
-              console.log(response.data);
             return response.data;
     
         } catch (error) {

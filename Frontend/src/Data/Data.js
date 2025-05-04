@@ -1119,13 +1119,14 @@ export const saleInvoiceDetail = [
     span: "Exchange Rate",
     required: true,
     placeholder: "",
-    types: 'text',
+    types: 'number',
     inputName: "exchangeRate",
     icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
       fill="currentColor" className="bi bi-grid text-browns absolute top-3 left-2" viewBox="0 0 16 16">
       <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z" />
     </svg>,
     require: true,
+    number : true,
 
   }, {
     label: "*",
@@ -1183,10 +1184,10 @@ export const saleProduct = [
       "Sku",
       "Category",
       "Qty(Req/Acq)",
-      "Unit Price(GBP)",
+      "Unit Price",
       "VAT (%)",
-      "VAT Amount (GBP)",
-      "Gross Total (GBP)",
+      "VAT Amount",
+      "Gross Total",
       "Action",
     ],
 
@@ -1221,31 +1222,43 @@ export const saleProduct = [
       },
       {
         placeholder: 'Category',
-        types: 'text',
+        types: 'select',
+        isSelect: true,
+        selectOption: ["General Sales", "Goodwill", "Insurance Claims", "Stock", "Rent Income", "Sales of Assets",
+          "Royalties Recived", "Plant and Machinery", "Office Equipment", "Motor Vehicles",
+          "Bank Charges", "Capital Expenditure", "Commissions Received", "Credit Charges (Late Payments)",
+          "Discounts Allowed", "Distribution and Carriage", "Flat Rate VAT Sales Adjustment",
+          "Furniture and Fixtures", "General Export Sales", "Goodwill Amortisation", "Intangible Asset Amortisation",
+          "Miscellaneous Income",
+        ],
         inputName: "category",
       },
       {
         placeholder: 'Quantity',
         types: 'number',
         inputName: "quantity",
+        number : true,
       },
       {
         placeholder: 'Unit Price',
         types: 'number',
         inputName: "unitPrice",
+        number : true,
       }, {
         placeholder: 'Deafult VAT Rule',
         types: 'number',
         inputName: "vatRate",
+        number : true,
       },
       {
         placeholder: 'Vat Amount',
-        types: 'number',
+        types: 'decimal',
         inputName: "vatAmount",
+        
       },
       {
         placeholder: 'Gross Total',
-        types: 'number',
+        types: 'decimal',
         inputName: "grossTotal",
 
       }
@@ -1284,15 +1297,15 @@ export const aggregateTable = [
     value: 0,
 
   }, {
-    lable: "Sub Amount (GBP)",
+    lable: "Sub Amount",
     value: 0,
 
   }, {
-    lable: "VAT Amount (GBP)",
+    lable: "VAT Amount",
     value: 0,
 
   }, {
-    lable: "Total Amount (GBP)",
+    lable: "Total Amount",
     value: 0,
 
   }

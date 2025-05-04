@@ -1,11 +1,12 @@
 import {Router} from 'express';
-import { getClients } from "../Controller/SaleInvoice.controller.js";
+import { getClients,getProducts,NewSaleInvoice } from "../Controller/SaleInvoice.controller.js";
 
 
 
 const router = Router();
 router.route('/si/new').get(getClients);
-// router.route('/new').post(Client);
+router.route('/si/new/products').get(getProducts);
+router.route('/si/new').post(NewSaleInvoice);
 
 
 export default router;

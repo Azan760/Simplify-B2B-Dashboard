@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { ProductDetail, ProductIcon, saleTable, } from './Data.js'
 import { formatDate } from '../../../Components/Date.js'
 import '../../../Css/NewProduct.css'
-import { arrowClockwise, arrowLeft, back,refresh, deleteIcon  } from '../../../Components/Icons.js'
+import {arrowLeft, back,refresh, deleteIcon  } from '../../../Components/Icons.js'
 import { useNavigate } from 'react-router'
 import Button from '../../../Components/Button.js'
 import DynamicField from '../../../Components/DynamicField.js'
@@ -19,8 +19,6 @@ import { Helmet } from "react-helmet";
 import { useParams } from 'react-router-dom'
 
 
-
-
 const ProductView = () => {
 
     NProgress.configure({ showSpinner: false });
@@ -31,11 +29,11 @@ const ProductView = () => {
     const { getFetch, updateFetch } = useFetch(`http://localhost:8000/product/view/${id}`);
 
     const {
-        register, handleSubmit, control, watch, formState: { errors, isSubmitting, isDirty }, reset, setValue }
+        register, handleSubmit, control ,watch,  formState: { errors, isSubmitting, isDirty }, reset, setValue }
         = useForm(
         );
 
-    const { fields, append, remove } = useFieldArray({ control, name: "salesPersonAssignment" });
+    const { fields, append, remove,replace } = useFieldArray({ control, name: "salesPersonAssignment" });
 
     const navigate = useNavigate();
     const { data: allData, isLoading, error } = useQuery(
@@ -50,7 +48,6 @@ const ProductView = () => {
         }
     );
 
-    console.log(allData);
     useEffect(() => {
         if (allData) {
             setValue("sku", allData?.details?.sku);
@@ -68,18 +65,18 @@ const ProductView = () => {
             setValue("vatRate", allData?.details?.vatRate);
             setValue("description", allData?.details?.description);
 
-            allData?.salesPersonAssignment?.forEach((item) => {
-                append({
-                    assignedUser: item?.assignedUser?.name,
-                    purchasePrice: item?.purchasePrice,
-                    salePrice: item?.salePrice,
-                    profit: item?.profit
-                });
-
-            })
-
+            if (allData?.salesPersonAssignment) {
+                replace(
+                    allData.salesPersonAssignment.map((item) => ({
+                        assignedUser: item?.assignedUser?.name || '',
+                        purchasePrice: item?.purchasePrice || '',
+                        salePrice: item?.salePrice || '',
+                        profit: item?.profit || '',
+                    }))
+                );
+            }
         }
-    }, [allData]);
+    }, [allData, setValue, replace]);
 
 
 
@@ -93,12 +90,8 @@ const ProductView = () => {
 
     const handleBack = useCallback(() => {
 
-        // navigate('/product/AllProduct');
+       navigate('/product/list');
     }, [navigate]);
-
-    const handleReset = useCallback(() => {
-        reset();
-    }, []);
 
 
 
@@ -126,7 +119,7 @@ const ProductView = () => {
             <div style={{ height: "calc(100% - 60px)" }}>
                 <div className="heading mb-5 xsm:mb-8 gap-2.5  items-center flex sm:justify-center 
                 xsm:justify-center ">
-                    <span onClick={() => { navigate("/Product/AllProduct") }}
+                    <span onClick={() => { navigate("/product/all") }}
                         className='border border-textColor2 rounded p-2 shadow-sideShadow'>
                         {back}
                     </span>

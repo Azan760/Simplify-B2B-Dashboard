@@ -33,11 +33,18 @@ const clientDetails = new mongoose.Schema({
 });
 
 const product = new mongoose.Schema({
+    productID : {
+        type : mongoose.Types.ObjectId,
+        ref : "Product",
+        required : true,
+    },
     sku : {
        type : String,
+       required : [true, "Product SKU is required"],
     },
-    name : {
-        type : String
+    productServiceName : {
+        type : String,
+        required : [true, "Product name is required"],
     },
     category : {
       type : String,
@@ -51,20 +58,23 @@ const product = new mongoose.Schema({
 
     },
     quantity : {
-        type : Number
+        type : Number,
+        required : [true, "Product quantity is required"],
     },
     unitPrice : {
-        type : Number
+        type : Number,
+        required : [true, "Product unit price is required"],
     },
     vatPercent : {
-        type : Number,
-        
+        type : Number,  
     },
     vatAmount : {
-        type : Number,
+        type : mongoose.Schema.Types.Decimal128,
     },
     grossTotal : {
-        type : String,
+        type : mongoose.Schema.Types.Decimal128,
+
+        required : [true, "Product gross total is required"],
 
     }
 })
@@ -108,19 +118,6 @@ const invoiceNotesDetail = new mongoose.Schema({
     paymentTerm : {
         type : String,
     },
-
-    totalQuantity : {
-        type : Number
-    },
-    dispatched : {
-        type : Number,
-    },
-    subAmount : {
-        type : String,
-    },
-    totalAmount : {
-        type : String,
-    }
 })
 
 
@@ -133,6 +130,26 @@ const saleInvoice = new mongoose.Schema({
     product : [product],
 
     invoiceNotesDetail : invoiceNotesDetail,
+    createdBy : {
+        id : {
+        type : mongoose.Types.ObjectId,
+        ref : "TeamMember",
+        required : true,
+        },
+        name : {
+            type : String,
+            required : true,
+        },
+     updatedBy : {
+        id : {
+            type : mongoose.Types.ObjectId,
+            ref : "TeamMember",
+        },
+        name : {
+            type : String,
+        },
+    }
+    },
 
     
 },{timestamps: true});

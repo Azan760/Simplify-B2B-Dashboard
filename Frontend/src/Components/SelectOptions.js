@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-const SelectOptions = ({ fieldName, setValue, register, field, errors }) => {
-
+const SelectOptions = ({ fieldName, setValue, register, field, errors, onOptionSelect }) => {
     const [isOpen, setOpen] = useState(false);
     const [filteredOptions, setFilteredOptions] = useState([]);
 
@@ -11,9 +10,13 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors }) => {
     }
 
     const handleOptionClick = (field, indexOption, option) => {
-        console.log(field.inputName, option);
+
         setValue(field.inputName, option);
         setOpen(false);
+
+         if(onOptionSelect) {
+            onOptionSelect(option);
+         }
     }
 
 
@@ -30,13 +33,19 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors }) => {
         if (options.length === 1 && options[0].toLowerCase() === value.toLowerCase()) {
             setValue(field.inputName, options[0]);
             setOpen(false);
+
+            if (onOptionSelect) {
+                onOptionSelect(options[0]);
+            }
         }
+
+
     }
 
     const containerRef = useRef(null);
 
     useEffect(() => {
-        
+
         const handleClickOutside = (event) => {
             if (containerRef.current && !containerRef.current.contains(event.target)) {
                 setTimeout(() => setOpen(false), 500);
@@ -79,7 +88,7 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors }) => {
                     {...register(field.inputName, {
                         required: field.required,
                     })}
-                    
+
                     onChange={(e) => {
                         setValue(field.inputName, e.target.value);
                         handleInputChange(field, e)
@@ -89,7 +98,7 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors }) => {
                 />
 
                 {isOpen &&
-                    <div className={` opacity-100   bg-white border border-searchIcon border-r border-l border-b w-full  
+                    <div className={` opacity-100  overflow-y-auto  bg-white border border-searchIcon border-r border-l border-b w-full  
                    absolute top-full  left-0`} style={{ zIndex: 2000 }} >
 
                         {filteredOptions.length > 0 ? (

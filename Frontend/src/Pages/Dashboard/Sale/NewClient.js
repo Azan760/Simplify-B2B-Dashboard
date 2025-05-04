@@ -96,8 +96,11 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
   }, [append]);
 
   const onSubmit = async (data) => {
+
     data = { ...data, createdBy: { id: user?._id, name: user?.fullName } };
+
     try {
+      
       NProgress.start();
       await postFetch(data);
       reset();

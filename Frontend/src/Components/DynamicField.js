@@ -1,28 +1,109 @@
-import React from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import Button from './Button'
 import { plus, plus1, trash } from './Icons'
 import SelectOptions from './SelectOptions';
 
+//setIndex, setGrossSum,setTotalQuanity, setTotalVat, setTotalAmount, onOptionSelect
 
+const DynamicField = ({
+    setValue, watch, fieldName, fieldConfig, allProduct,
 
-const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, errors, remove, fields, append, url }) => {
+    register, errors, remove, fields, append,setGrossSum,setTotalQuanity, setTotalVat, setTotalAmount, 
+}) => {
+
+    console.log("render");
 
     const calculatedValues = (index) => {
 
         const purchasePrice = watch(`${fieldName}.${index}.purchasePrice`);
-        console.log(purchasePrice);
-
         const salesPrice = watch(`${fieldName}.${index}.salePrice`);
         const profit = purchasePrice > 0 && salesPrice > 0 ?
             Math.round(((salesPrice - purchasePrice) * 100) / purchasePrice) : undefined;
-        console.log(profit);
 
         return {
             profit,
+
         };
+
 
     };
 
+    const [selectedProduct, setSelectedProduct] = useState("");
+
+
+    const handleOptionSelect = useCallback((option, currentIndex) => {
+        setSelectedProduct(option);
+
+        const selected = allProduct.find(
+            item => item?.details?.productServiceName === option
+        );
+
+        if (selected) {
+            setValue(`Product.${currentIndex}.sku`, selected.details.sku);
+            setValue(`Product.${currentIndex}.unitPrice`, selected.details.salePrice);
+        } else if (selectedProduct) {
+            //console.log("Product not found");
+        }
+    }, [allProduct, selectedProduct, setValue]);
+
+    const calculateGrossSum = (index) => {
+        const quantity = watch(`${fieldName}.${index}.quantity`);
+        const unitPrice = watch(`${fieldName}.${index}.unitPrice`);
+        const vatRate = watch(`${fieldName}.${index}.vatRate`);
+
+        let totalPrice = unitPrice * quantity || 0;
+        const vatAmount = (totalPrice * (vatRate || 0)) / 100;
+        totalPrice = totalPrice + vatAmount;
+
+        return {
+            totalPrice,
+            vatAmount
+        };
+    };
+
+
+    useEffect(() => {
+        const subscription = watch((value) => {
+
+            const total = fields.reduce((sum, _, index) => {
+                const gross = parseFloat(value?.[fieldName]?.[index]?.grossTotal || 0);
+                return sum + gross;
+            }, 0);
+
+            const totalQuantity = fields.reduce((sum, _, index) => {
+                const quantity = parseFloat(value?.[fieldName]?.[index]?.quantity || 0);
+                return sum + quantity;
+            }, 0);
+
+            const totalVat = fields.reduce((sum, _, index) => {
+                const vat = parseFloat(value?.[fieldName]?.[index]?.vatAmount || 0);
+                return sum + vat;
+            }
+                , 0);
+
+            const totalAmount = fields.reduce((sum, _, index) => {
+                const amount = parseFloat(value?.[fieldName]?.[index]?.grossTotal || 0);
+                return (sum + amount) - totalVat;
+            }, 0);
+
+            if (typeof setGrossSum === 'function') {
+                setGrossSum(total ?? '0');
+
+                setGrossSum(total ?? '0');
+                setTotalQuanity(totalQuantity ?? '0');
+                setTotalVat(totalVat ?? '0');
+                setTotalAmount(totalAmount ?? '0');
+            }
+
+        });
+
+
+        return () => subscription.unsubscribe();
+    }, [watch, fields, fieldName]);
+
+    const handleInputChange = (index, fieldName, value) => {
+        setValue(`${fieldName}.${index}.${fieldName}`, value);
+    }
 
 
 
@@ -72,13 +153,11 @@ const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, error
 
                         {fields.map((field, index) => {
                             const { profit } = calculatedValues(index);
-                            setValue(`${fieldName}.${index}.profit`, profit);
-                            const searchTerm2 =  watch(`${fieldName}.${index}.productServiceName`);
-                            console.log(searchTerm2);
+                                 const {totalPrice, vatAmount} = calculateGrossSum(index);
 
-
-
-
+                            profit && setValue(`${fieldName}.${index}.profit`, profit);
+                              totalPrice &&   setValue(`${fieldName}.${index}.grossTotal`, totalPrice.toFixed(2));
+                                vatAmount &&  setValue(`${fieldName}.${index}.vatAmount`, vatAmount);
 
                             return (
                                 <tr key={field.id}>
@@ -100,23 +179,39 @@ const DynamicField = ({ setValue, watch, fieldName, fieldConfig, register, error
                                                                 }}
 
                                                                 setValue={setValue} register={register}
-                                                                errors={errors} />)
+                                                                errors={errors}
+                                                                onOptionSelect={(option) => handleOptionSelect(option, index)} 
+
+
+                                                            />)
                                                         :
 
                                                         (
 
-                                                            <input type={inputFiled.type} placeholder={inputFiled.placeholder}
+                                                            <input type={inputFiled.types} placeholder={inputFiled.placeholder}
 
                                                                 className={`w-full outline-none py-2 px-2  rounded
                                                          text-xs text-textColor2     font-normal border bg-white 
                                                          ${errors[inputFiled.inputName] ? 'focus:border-reds' : 'focus:border-textColor'}
                                                                                   
                                                         `}
-                                                                {...register(`${fieldName}.${index}.${inputFiled.inputName}`)}
+                                                                {...register(`${fieldName}.${index}.${inputFiled.inputName}`, {
+                                                                    ValueAsNumber: inputFiled.number
+
+                                                                })}
 
 
                                                             />)}
                                                 </div>
+                                                {/* {errors?.[fieldName]?.[index]?.[inputFiled.inputName] && (
+                                                    <div className='flexs  items-center'>
+
+                                                        <small className='text-reds text-xs font-medium'>
+                                                            {errors[fieldName][index][inputFiled.inputName].message}
+                                                        </small>
+                                                    </div>
+                                                )} */}
+
 
                                                 {errors[`${fieldName}.${index}.${inputFiled.inputName}`] &&
                                                     <div className='flexs  items-center'>

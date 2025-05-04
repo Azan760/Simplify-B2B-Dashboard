@@ -64,9 +64,7 @@ const listView = (WrappedComponent, url, title, tableHeader, path) => {
 
     return (
       <>
-        <Helmet>
-          <title> Team Setting </title>
-        </Helmet>
+        
 
         <div className='min-w-max w-full'>
 

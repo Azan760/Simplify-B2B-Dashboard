@@ -13,16 +13,38 @@ import TextArea from './TextArea';
 import '../Css/NewInvoiceEstimates.css'
 import { useQuery } from 'react-query';
 import { useFetch } from '../Services/ApiService';
+import { useSelector } from 'react-redux'
 
 
-const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url }) => {
+
+const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2 }) => {
+
+    console.log("render");
 
 
     const [, formattedDateForInput, formattedDueDateForInput] = useDate();
+    const [grossSum, setGrossSum] = useState();
+    const [totalQuanity, setTotalQuanity] = useState(0);
+    const [totalVat, setTotalVat] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(0);
+
+
+    useEffect(() => {
+
+        if (totalQuanity > 0 || totalVat > 0 || totalVat > 0 || grossSum > 0) {
+            aggregateTable[0].value = totalQuanity;
+            aggregateTable[3].value = totalVat;
+            aggregateTable[2].value = totalAmount;
+            aggregateTable[4].value = grossSum.toFixed(2);
+        }
+    }, [totalQuanity,totalVat,totalVat,grossSum])
+
+
+
+
     const navigate = useNavigate();
     const { getFetch, postFetch } = useFetch(url);
-
-
+    const { getFetch: getProducts } = useFetch(url2);
 
     const {
         register,
@@ -52,13 +74,46 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url }) => {
 
     const searchTerm = watch("clientName");
 
-    // Fetch Clients
     const { data: allClients = [], isLoading, error } = useQuery(
         ['fetchAllClients', searchTerm],
         async () => {
             const response = await getFetch(searchTerm);
-            console.log(response);
-            return response?.data?.clients;
+            const allClient = response?.data;
+
+            if (allClient) {
+
+                saleClientDetail[0].selectOption = [];
+
+                allClient?.forEach(item => {
+                    if (item?.details?.clientName &&
+                        !saleClientDetail[0].selectOption.includes(item.details.clientName)) {
+                        saleClientDetail[0].selectOption.push(item.details.clientName);
+                    }
+                });
+
+                const selectedClient = allClient.find(items => items?.details?.clientName === watch("clientName"));
+
+                if (selectedClient) {
+
+                    selectedClient.contactPersons.forEach(person => {
+                        if (!saleClientDetail[1].selectOption.includes(person.fullName)) {
+                            saleClientDetail[1].selectOption.push(person.fullName);
+                        }
+                    });
+
+                    setValue("email", selectedClient.details.email);
+                    setValue("addressType", "Bill To Address");
+
+                    if (selectedClient) {
+                        if (watch("addressType") === "Bill To Address") {
+                            setValue("shipToAddress", selectedClient?.locations?.billToAddress?.address1 || "");
+                        } else if (watch("addressType") === "Ship To Address") {
+                            setValue("shipToAddress", selectedClient?.locations?.shipToAddress?.address1 || "");
+                        }
+                    }
+
+                }
+            }
         },
         {
             enabled: searchTerm?.length > 1,
@@ -67,88 +122,55 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url }) => {
         }
     );
 
-    // const { data: allProduct = [] } = useQuery(
-    //     ['fetchAllProducts', searchTerm2],
-    //     async () => {
-    //         const response = await getFetch(searchTerm2);
-    //         console.log(response);
-    //         return response?.data?.products;
-    //     },
-    //     {
-    //         enabled: searchTerm2?.length > 1,
-    //         refetchOnWindowFocus: false,
-    //         keepPreviousData: true,
-    //     }
-    // );
-
-    // saleProduct[0].inputs[0].selectOption = [];
-
-    // allProduct?.forEach(item => {
-    //     if (!saleProduct[0].inputs[0].selectOption.includes(item.fullName)) {
-    //         saleProduct[0].inputs[0].selectOption.push(item.fullName);
-    //     }
-    // });
+    const handleAddProduct = useCallback(() => {
+        append({
+            productServiceName: '', sku: '', category: '', quantity: '', unitPrice: '',
+            vatRate: '', vatAmount: '', grossTotal: ''
+        });
+    }, [append]);
 
 
-
-
+    const { data: allProduct = [] } = useQuery(
+        ['fetchAllProducts'],
+        async () => {
+            const response = await getProducts();
+            return response?.data;
+        },
+        {
+            refetchOnWindowFocus: false,
+            keepPreviousData: true,
+        }
+    );
 
     useEffect(() => {
+        if (allProduct.length > 0) {
+            saleProduct[0].inputs[0].selectOption = [];
 
-        if (allClients) {
-
-            saleClientDetail[0].selectOption = [];
-
-
-            allClients?.forEach(item => {
-                if (item?.details?.clientName &&
-                    !saleClientDetail[0].selectOption.includes(item.details.clientName)) {
-                    saleClientDetail[0].selectOption.push(item.details.clientName);
+            allProduct.forEach(item => {
+                const name = item?.details?.productServiceName;
+                if (name && !saleProduct[0].inputs[0].selectOption.includes(name)) {
+                    saleProduct[0].inputs[0].selectOption.push(name);
                 }
             });
-
-            const selectedClient = allClients.find(items => items?.details?.clientName === watch("clientName"));
-
-            if (selectedClient) {
-
-                selectedClient.contactPersons.forEach(person => {
-                    if (!saleClientDetail[1].selectOption.includes(person.fullName)) {
-                        saleClientDetail[1].selectOption.push(person.fullName);
-                    }
-                });
-
-                setValue("email", selectedClient.details.email);
-                setValue("addressType", "Bill To Address");
-
-                if (selectedClient) {
-                    if (watch("addressType") === "Bill To Address") {
-                        setValue("shipToAddress", selectedClient?.locations?.billToAddress?.address1 || "");
-                    } else if (watch("addressType") === "Ship To Address") {
-                        setValue("shipToAddress", selectedClient?.locations?.shipToAddress?.address1 || "");
-                    }
-                }
-
-            }
         }
-    }, [allClients, watch("clientName"), setValue]);
 
+    }, [allProduct]);
 
-
+        const user = useSelector((state) => state.auth.user);
+  
     async function onSubmit(data) {
+        data = { ...data, createdBy: { id: user?._id, name: user?.fullName } };
+
 
         try {
-
-            await postFetch(data);
+            console.log(data);
+           await postFetch(data);
             reset();
         } catch (error) {
             console.error('Error in form submission:', error.message);
         }
     }
 
-    const handleAddProduct = () => {
-        // append({  });
-
-    };
 
 
     const handleNavigate = useCallback(() => {
@@ -171,7 +193,7 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url }) => {
                  text-heading  text-xl  xsm:text-lg">  {title} </h6>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} >
+                <form onSubmit={handleSubmit(onSubmit)} noValidate >
 
                     <div className='mb-5'>
                         <div className='flex justify-between mb-2.5'>
@@ -193,7 +215,9 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url }) => {
                                                 {fields.isSelect ?
 
                                                     (<SelectOptions field={fields} setValue={setValue} register={register}
-                                                        errors={errors} />)
+                                                        errors={errors}
+                                                    />
+                                                    )
                                                     :
                                                     (<InputField fields={fields} errors={errors}
                                                         register={register} />
@@ -201,7 +225,6 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url }) => {
                                                 }
                                             </div>
                                         )
-
                                     })}
 
                             </div>
@@ -224,21 +247,39 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url }) => {
                         </div>
 
                         <div className='grid gap-3 sm:grid-cols-1 xsm:grid-cols-1 grid-cols-3'>
-                            <FormInput fieldData={saleInvoiceDetail} register={register}
-                                errors={errors} setValue={setValue} />
+                            {/* <FormInput fieldData={saleInvoiceDetail} register={register}
+                                errors={errors} setValue={setValue} /> */}
+                                {saleInvoiceDetail.map((fields, index) => {
+                                        return (
+
+                                            <div key={index} className={`flex flex-col`}>
+
+                                                {fields.isSelect ?
+
+                                                    (<SelectOptions field={fields} setValue={setValue} register={register}
+                                                        errors={errors} />)
+                                                    :
+                                                    (<InputField fields={fields} errors={errors}
+                                                        register={register} />
+                                                    )
+                                                }
+                                            </div>
+                                        )
+
+                                    })}
 
                         </div>
 
                     </div>
 
-                    <div className='mb-5 xsm:overflow-x-auto'>
 
-                        <DynamicField fieldConfig={saleProduct} register={register} errors={errors}
-                            fields={fields} remove={remove} append={append} fieldName="Product"
-                            setValue={setValue} watch={watch} url={url}
-                        />
-
-                    </div>
+                    <DynamicField fieldConfig={saleProduct} register={register} errors={errors}
+                        fields={fields} remove={remove} append={handleAddProduct} fieldName="Product"
+                        setValue={setValue} watch={watch} 
+                       // setIndex={setIndex} 
+                         setGrossSum={setGrossSum} setTotalQuanity={setTotalQuanity} allProduct={allProduct}
+                        setTotalVat={setTotalVat} setTotalAmount={setTotalAmount}
+                    />
 
 
                     <div className=' grid-cols-[3fr_2fr] grid gap-5 xsm:grid-cols-1'>

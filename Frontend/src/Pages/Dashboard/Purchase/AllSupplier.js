@@ -44,13 +44,13 @@ export const AllSupplier = ({ searchTerm, allData, lengthData}) => {
         {filteredData?.map((field) => (
           <tr key={field._id} className=' hover:bg-searchIcon border border-b-2 border-b-searchIcon '>
             <td>
-              <Link to={`/supplier/view/${field._id}`} className='p-3 text-xs font-semibold text-textColor hover:underline'>
+              <Link to={`/supplier/view/${field._id}`} style={{ fontSize: '12.5px' }} className='p-3  font-semibold text-textColor hover:underline'>
                 {field?.details?.supplierName}
               </Link>
             </td>
-            <td className='p-3 font-medium text-textColor2 text-xs'>{field?.details?.email}</td>
-            <td className='p-3 font-medium text-textColor2 text-xs'>{field?.contactPersons[0]?.fullName}</td>
-            <td className='p-3 font-medium text-textColor2 text-xs'>
+            <td style={{ fontSize: '12.5px' }} className='p-3 font-medium text-textColor2'>{field?.details?.email}</td>
+            <td style={{ fontSize: '12.5px' }} className='p-3 font-medium text-textColor2 '>{field?.contactPersons[0]?.fullName}</td>
+            <td style={{ fontSize: '12.5px' }} className='p-3 font-medium text-textColor2 '>
               {
                 formatDate(field?.createdAt)
               }
@@ -63,20 +63,20 @@ export const AllSupplier = ({ searchTerm, allData, lengthData}) => {
               </Link>
             </td>
             <td >
-              <Link target='_blank' rel="noopener noreferrer"
-                to={`/team/view/${field?.contactPersons[0]?.salePerson?._id}`} className='p-3 text-xs  text-textColor2 hover:underline hover:text-textColor' >
+              <Link target='_blank'  style={{ fontSize: '12.5px' }} rel="noopener noreferrer"
+                to={`/team/view/${field?.contactPersons[0]?.salePerson?._id}`} className='p-3  text-textColor2 hover:underline hover:text-textColor' >
                 {field?.contactPersons[0]?.salePerson?.name}
               </Link>
 
             </td>
-            <td className='p-3 font-medium text-textColor2 text-xs'>{field?.details?.currency?.toUpperCase()}</td>
-            <td className='p-3 font-medium text-textColor2 text-xs'>
+            <td style={{ fontSize: '12.5px' }} className='p-3 font-medium text-textColor2 '>{field?.details?.currency?.toUpperCase()}</td>
+            <td style={{ fontSize: '12.5px' }} className='p-3 font-medium text-textColor2 '>
               <input type="checkbox"
                 className="toggle-btn" checked={field?.details?.active ?? false} />
             </td>
-            <td className='p-3 font-medium text-textColor2 text-xs'></td>
+            <td style={{ fontSize: '12.5px' }} className='p-3 font-medium text-textColor2 '></td>
 
-            <td className="p-3 font-medium text-textColor2 text-xs relative group">
+            <td style={{ fontSize: '12.5px' }} className="p-3 font-medium text-textColor2  relative group">
               <span>
                 {three_Dots_icon}
               </span>
