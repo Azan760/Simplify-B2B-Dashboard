@@ -9,8 +9,6 @@ export const loginUser = createAsyncThunk(
             const response = await axios.post("http://localhost:8000/api/login", userData, {
                 withCredentials: true,
             });
-
-            console.log(response);
             const data = response.data;
 
             if (!data.success) {

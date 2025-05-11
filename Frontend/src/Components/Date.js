@@ -35,3 +35,21 @@ export const formatDate = (isDate) => {
   };
 
 
+  // src/hooks/useFormattedDate.js
+
+export const FormattedDate = (dateString) => {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+
+  const options = {
+    day: "2-digit",
+    month: "short", // "Jan", "Feb", etc.
+    year: "numeric"
+  };
+
+  return date.toLocaleDateString("en-GB", options); // Output: "11 May 2025"
+};
+
+
+

@@ -8,9 +8,7 @@ const generateAccessTokenandRefreshToken = async (userID) => {
 
     try {
 
-        const user = await TeamMember.findById(userID);
-
-          
+        const user = await TeamMember.findById(userID);  
 
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();

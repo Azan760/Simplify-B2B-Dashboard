@@ -6,8 +6,10 @@ import NewInvoiceEstimates from '../../../Components/NewInvoiceEstimates'
 const NewEstimate = HocInputForm(NewInvoiceEstimates, {
   
   title: "New Sale Estimate",
-  navigatePath: '/Sale/AllSaleEstimate',
-  inputHeader : "Client Details"
+  navigatePath: '/sales/se/list',
+  url : "http://localhost:8000/sales/se/new",
+  inputHeader : "Client Details",
+  url2 : "http://localhost:8000/sales/se/products",
 
 
 });

@@ -563,7 +563,7 @@ export let useSidebarDropdown = () => {
 
 };
 
-export const tableData = [
+export const saleTableData = [
 
   {
     title: 'Recent Sale Invoices',
@@ -578,137 +578,13 @@ export const tableData = [
     SelectOption: [
       "Sale Invoice",
       "Sale Estimate",
-      "Purchase Invoice",
-      "Purchase Order",
     ],
     type: "text",
     placeholder: "Sale Invoice",
-    rows: [
+   
+  }];
 
-      {
-
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 
-                  0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '08 Jun 2023',
-        value3: 'Ashley Aldington',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: '$14.95',
-        value5: 'Draft',
-        status: 'bg-textColor3',
-      },
-      {
-        value: 'SI-2023-6',
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '05 Jun 2023',
-        value3: 'Margalit Weeks',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: 'zt149,247.45',
-        value5: 'Approved',
-        status: 'bg-bgColor',
-      },
-      {
-
-        value: ' SI-2023-5',
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '29 May 2023',
-        value3: 'ml',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: '£75.00',
-        value5: 'Processed',
-        status: 'bg-heading'
-      },
-      {
-        value: 'SI-2023-4',
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '06 Apr 2023',
-        value3: 'DEMO',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: ' $945.00',
-        value5: 'processed',
-        status: 'bg-heading'
-      },
-      {
-        value: '  SI-2023-3',
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '06 Apr 2023',
-        value3: 'DEMO',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: '$1,485.00',
-        value5: 'Approved',
-        status: 'bg-bgColor'
-      }
-    ]
-  },
+export const purchaseTableData = [
   {
 
     title: 'Recent Dispatchs',
@@ -721,136 +597,11 @@ export const tableData = [
     ],
 
     SelectOption: [
-      "Dispatch",
-      "Acquire"
+
     ],
     type: "text",
     placeholder: "Dispatch",
     inputName: "searchWareHouse",
-    rows: [
-
-      {
-
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '08 Jun 2023',
-        value3: 'Ashley Aldington',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: '$14.95',
-        value5: 'Draft',
-        status: 'bg-textColor3',
-      },
-      {
-        value: 'SI-2023-6',
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '05 Jun 2023',
-        value3: 'Margalit Weeks',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: 'zt149,247.45',
-        value5: 'Approved',
-        status: 'bg-bgColor',
-      },
-      {
-
-        value: ' SI-2023-5',
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '29 May 2023',
-        value3: 'ml',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: '£75.00',
-        value5: 'Processed',
-        status: 'bg-heading'
-      },
-      {
-        value: 'SI-2023-4',
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '06 Apr 2023',
-        value3: 'DEMO',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: ' $945.00',
-        value5: 'processed',
-        status: 'bg-heading'
-      },
-      {
-        value: '  SI-2023-3',
-        icon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value2: '06 Apr 2023',
-        value3: 'DEMO',
-        icon2: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-          fill="currentColor" className="bi bi-box-arrow-up-right"
-          viewBox="0 0 16 16">
-          <path fillRule="evenodd"
-            d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z" />
-          <path fillRule="evenodd"
-            d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
-        </svg>,
-        value4: '$1,485.00',
-        value5: 'Approved',
-        status: 'bg-bgColor'
-      }
-    ]
 
   }
 ];
@@ -1290,23 +1041,29 @@ export const aggregateTable = [
   {
     lable: "Total Quantity",
     value: 0,
+    inputName : "totalQuantity",
+  
 
   },
   {
     lable: "Dispatched/Sent Quantity",
     value: 0,
+    inputName : "dispatchedQuantity",
 
   }, {
     lable: "Sub Amount",
     value: 0,
+    inputName : "subAmount",
 
   }, {
     lable: "VAT Amount",
     value: 0,
+    inputName : "vatAmount",
 
   }, {
     lable: "Total Amount",
     value: 0,
+    inputName : "totalAmount",
 
   }
 ]

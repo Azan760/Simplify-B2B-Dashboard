@@ -17,7 +17,7 @@ import { useSelector } from 'react-redux'
 
 
 
-const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2 }) => {
+const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Detail = [...saleClientDetail] }) => {
 
     console.log("render");
 
@@ -207,7 +207,7 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2 }) =>
 
                             <div className=' grid gap-3 grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1'>
                                 {
-                                    saleClientDetail.map((fields, index) => {
+                                    Detail.map((fields, index) => {
                                         return (
 
                                             <div key={index} className={`flex flex-col`}>
@@ -299,7 +299,7 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2 }) =>
                                         <div key={index} className="grid  grid-cols-2 border-b  border-darkBlue   ">
                                             <span className='flex items-center justify-end text-sm px-2.5 text-darkBlue'>{field.lable} </span>
                                             <p className='flex items-center justify-end px-2.5 pr-5 bg-darkBlue text-white  border-b border-white '>
-                                                <span className=' text-sm  block '> {field.value}  </span>
+                                                <span {...register(field.inputName)} className=' text-sm  block '> {field.value}  </span>
                                             </p>
                                         </div>
                                     )

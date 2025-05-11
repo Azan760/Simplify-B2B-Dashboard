@@ -1,23 +1,71 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { sale, section, sectionProduct, tableData, } from '../Data/Data'
 import '../Css/Section.css'
 import { expandIcon, plus, caretDown } from './Icons'
 import { useNavigate } from 'react-router'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
 import SelectOptions from './SelectOptions'
-import { useDispatch, useSelector } from 'react-redux';
-
-
+import { useSelector } from 'react-redux';
+import { useQuery } from 'react-query'
+import { FormattedDate } from './Date'
+import { saleTableData, purchaseTableData } from '../Data/Data'
+import SectionTable from './SectionTable'
+import { useFetch } from '../Services/ApiService'
+import { useForm } from 'react-hook-form'
+// import { useState } from 'react'
 
 
 const Section = () => {
 
+
   const navigate = useNavigate();
-  const { register, handleSubmit, reset, setValue } = useForm();
-        const user = useSelector((state) => state.auth.user);
-        console.log(user);
-  
+  const { register, handleSubmit, reset, setValue, watch } = useForm();
+
+  let path = "si/list";
+
+  const recentSales = watch("searchBar");
+
+
+  if (recentSales === "Sale Estimate") {
+    path = "se/list";
+  } else {
+    path = "si/list";
+  }
+
+
+  const user = useSelector((state) => state.auth.user);
+  console.log(user);
+
+  const { getFetch: saleFetch } = useFetch(`http://localhost:8000/main/${path}`);
+  const { getFetch: purchaseFetch } = useFetch("http://localhost:8000/main/pi/list");
+
+  const { data: salesInvoice, isLoading, error } = useQuery(
+    ['salesInvoice', path],
+    async () => {
+
+      const response = await saleFetch();
+      return response.data;
+    },
+    {
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    }
+  );
+
+
+  const { data: purchaseInvoice } = useQuery(
+    ['purchaseInvoice'],
+    async () => {
+      const response = await purchaseFetch();
+      console.log(response);
+      return response.data;
+    },
+    {
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    }
+  );
+
+
 
 
   return (
@@ -25,7 +73,7 @@ const Section = () => {
     <>
 
       <div className="heading mb-5">
-        <h6 style={{ letterSpacing: '1px' }} className="font-semibold text-heading  sm:text-lg text-xl">{ ` Welcome back, ${user?.fullName}  ` }</h6>
+        <h6 style={{ letterSpacing: '1px' }} className="font-semibold text-heading  sm:text-lg text-xl">{` Welcome back, ${user?.fullName}  `}</h6>
       </div>
 
       <section style={{ height: 'calc(100% - 60px)' }} className='grid' >
@@ -66,95 +114,24 @@ const Section = () => {
 
           <div style={{ gridTemplateRows: '1fr 1fr' }} className='grid gap-5'>
 
-            {tableData.map((table, index) => {
-              return (
+            <SectionTable
 
-                <div style={{ borderRadius: '10px', boxShadow: '0 0 10px #172b4d1a' }}
-                  key={index} className="row-2 flex flex-col p-5 bg-dashboard">
+              register={register} setValue={setValue}
+              tableData={salesInvoice}
+              tables={saleTableData}
 
-                  <div className="recent-sales flex justify-between xsm:flex-col xsm:gap-2.5 items-center mb-5 relative ">
-                    <p className='text-black font-semibold text-lg'> {table.title} </p>
-                    <div className="sales-right-bar flex items-center gap-2.5">
-                      <div className='  flex  relative  items-center w-full'>
-                        <SelectOptions
-                          setValue={setValue} register={register}
-                          field={{
-                            type: table.type,
-                            placeholder: table.placeholder,
-                            inputName: table.inputName,
-                            selectOption: table.SelectOption
-                          }}
-                          icon={caretDown}
-                          index={index}
+            />
 
-
-                        />
-                      </div>
-                      <span onClick={() => navigate("/")}
-                        className="add-new border border-searchIcon rounded py-2 px-2 ">
-                        {plus}
-                      </span>
-                      <span className="view-all border border-searchIcon rounded py-2 px-2 ">
-                        {expandIcon}
-                      </span>
-                    </div>
-                  </div>
-
-
-                  <table style={{ borderRadius: '10px', boxShadow: '0 0 10px #172b4d1a' }} className="table border-collapse w-full">
-                    <thead className='bg-placeHolder'>
-                      <tr >
-                        {table.heading.map((head, index) => {
-                          return (
-                            <th key={index} className={`p-2.5 ${index === 4 ? 'text-center' : 'text-left'}
-                        text-white text-xs
-                       font-semibold `}> {head} </th>)
-                        })
-                        }
-                      </tr>
-                    </thead>
-                    <tbody className='rounded border border-searchIcon box-border shadow-sideShadow'>
-                      {table.rows.map((row, index) => {
-                        return (
-                          <tr key={index} className='border border-b-2  border-b-searchIcon '>
-
-                            <td className=' p-2.5 text-textColor2 ' style={{ fontSize: '12.5px' }}>
-                              <a className='text-downIcon  decoration-0 font-medium '>
-                                <span>{row.value} </span>
-                                {/* {row.icon} */}
-                              </a>
-                            </td>
-                            <td className='p-2.5 text-textColor2 ' style={{ fontSize: '12.5px' }}> {row.value2} </td>
-                            <td className='p-2.5 text-textColor2 ' style={{ fontSize: '12.5px' }}>
-                              <a className='text-downIcon  decoration-0 
-                              font-medium '>
-                                {row.value3}
-                                {/* {row.icon2} */}
-                              </a>
-                            </td>
-                            <td className='p-2.5 text-textColor2 ' style={{ fontSize: '12.5px' }}> {row.value4} </td>
-                            <td className='p-2.5 text-textColor2 ' >
-                              <span className={` text-xs text-white rounded md:py-1 md:px-0 block text-center py-1 px-1.5 ${row.status}`}>
-                                {row.value5}
-                              </span>
-                            </td>
-                          </tr>)
-                      })}
-
-                    </tbody>
-                  </table>
-
-
-                </div>
-              )
-
-
-            })}
-
-
+            <SectionTable
+              register={register} setValue={setValue}
+              tableData={purchaseInvoice}
+              tables={purchaseTableData}
+            />
 
 
           </div>
+
+
           <div style={{ gridTemplateRows: '1fr 1fr' }} className='grid gap-5'>
 
             {sale.map((value, index) => {

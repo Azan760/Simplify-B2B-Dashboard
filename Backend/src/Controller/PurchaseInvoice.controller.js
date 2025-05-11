@@ -1,16 +1,14 @@
 import { asyncHandler } from "../Utils/AsyncHandler.js";
 import { ApiError } from "../Utils/ApiError.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
-import { Product } from "../Models/product.model.js";
-import { NewClient } from "../Models/Client.model.js"
-
-import { SaleInvoice } from "../Models/saleInvoice.model.js";
+import { PurchaseInvoice } from "../Models/purchaseInvoice.model.js";
 
 
-export const NewSaleInvoice = asyncHandler(async (req, res) => {
+
+export const NewPurchaseInvoice = asyncHandler(async (req, res) => {
 
     const {
-        clientName,
+        supplierName,
         contactPerson,
         email,
         addressType,
@@ -30,33 +28,33 @@ export const NewSaleInvoice = asyncHandler(async (req, res) => {
 
     try {
 
-        if ([clientName, currency, vatType].some(item => !item || typeof item !== 'string' || item.trim() === '')) {
+        if ([supplierName,currency, vatType].map((item) => item.trim()).includes('')) {
             console.log("client name", clientName, "currency", currency, "vat type", vatType);
             return res.status(400).json(new ApiError(400, "Please fill all the required fields"));
         }
 
-
-        const client = await NewClient.findOne({ "details.clientName": clientName }).select("_id");
-
-        if (!client) {
-            return res.status(404).json(new ApiError(404, "Client not found"));
+        
+        const supplier = await NewSupplier.findOne({ "details.supplierName": supplierName }).select("_id");
+        
+        if (!supplier) {
+            return res.status(404).json(new ApiError(404, "supplier not found"));
         }
-
+        
         if (Products.length === 0) {
             return res.status(400).json(new ApiError(400, "Please add at least one product"));
         }
 
         if (
             Products.some((item) =>
-                item.productServiceName === '' ||
-                item.sku === ''
+                item.productServiceName.trim() === '' ||
+                item.sku.trim() === '' 
             )
         ) {
             return res.status(400).json(new ApiError(400, "Please fill all the required fields in product"));
         }
 
         const productNames = Products.map(item => item.productServiceName);
-
+        
         const products = await Product.find({ "details.productServiceName": { $in: productNames } }).select("_id");
 
         if (products.length !== Products.length) {
@@ -66,11 +64,13 @@ export const NewSaleInvoice = asyncHandler(async (req, res) => {
         const mergedProducts = Products.map((item, index) => ({
             ...item,
             productID: products[index]._id
-        }));
+          }));
+          
+          console.log(mergedProducts, "merged products");
+          
 
-
-        const clientDetails = {
-            clientId: client._id,
+        const supplierDetails = {
+            supplierId: supplier._id,
             clientName,
             contactPerson,
             email,
@@ -92,19 +92,19 @@ export const NewSaleInvoice = asyncHandler(async (req, res) => {
             paymentTerm: paymentTerms,
         }
 
-        const newSaleInvoice = await SaleInvoice.create({
-            clientDetails,
+        const newPurchaseInvoice = await PurchaseInvoice.create({
+            supplierDetails,
             invoiceDetails,
-            product: mergedProducts,
+            product : mergedProducts,
             invoiceNotesDetail,
             createdBy
         });
 
-        if (!newSaleInvoice) {
+        if (!newPurchaseInvoice) {
             return res.status(400).json(new ApiError(400, "Failed to create invoice"));
         }
 
-        return res.status(201).json(new ApiResponse(201, newSaleInvoice, "Invoice created successfully"));
+        return res.status(201).json(new ApiResponse(201, newPurchaseInvoice, "Invoice created successfully"));
 
 
 
@@ -113,22 +113,17 @@ export const NewSaleInvoice = asyncHandler(async (req, res) => {
     }
 
 })
-
-
-export const GetAllSaleInvoice = asyncHandler(async (req, res) => {
-
+export const GetPurchaseInvoice = asyncHandler(async (req, res) => {
     try {
-        const saleInvoices = await SaleInvoice.find({}).select("-__v");
+        const purchaseInvoice = await PurchaseInvoice.find().select("-__v");
 
-        if (!saleInvoices) {
-            return res.status(404).json(new ApiError(404, "No invoices found"));
+        if (!purchaseInvoice) {
+            return res.status(404).json(new ApiError(404, "No purchase invoice found"));
         }
 
-        return res.status(200).json(new ApiResponse(200, saleInvoices, "Invoices fetched successfully"));
+        return res.status(200).json(new ApiResponse(200, purchaseInvoice, "Purchase invoice fetched successfully"));
+        
+    } catch (error) {
+        return res.status(500).json(new ApiError(500, "Failed to fetch purchase invoice", error.message));
     }
-    catch (error) {
-        return res.status(500).json(new ApiError(500, "Failed to fetch invoices", error.message));
-    }
-
-
 })
