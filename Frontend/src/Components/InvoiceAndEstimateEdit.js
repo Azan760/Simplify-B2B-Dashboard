@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { saleClientDetail, saleInvoiceDetail, saleProduct, aggregateTable } from '../Data/Data';
 import FormInput from './FormInput';
 import InputField from './InputField';
-import { useDate } from './Date';
+import { useDate, formatDate } from './Date';
 import { useNavigate } from 'react-router';
 import SelectOptions from './SelectOptions';
 import DynamicField from './DynamicField';
@@ -14,10 +14,15 @@ import '../Css/NewInvoiceEstimates.css'
 import { useQuery } from 'react-query';
 import { useFetch } from '../Services/ApiService';
 import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 
 
-const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Detail = [...saleClientDetail] }) => {
+const EditInvoiceAndEstimate = ({ title, navigatePath, inputHeader, url, url2,
+    Detail = [...saleClientDetail] }) => {
+
+
+    const { id } = useParams();
 
 
 
@@ -30,20 +35,22 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
 
     useEffect(() => {
 
-        if (totalQuanity > 0 || totalVat > 0  || grossSum > 0) {
+        if (totalQuanity > 0 || totalVat > 0 || grossSum > 0) {
             aggregateTable[0].value = totalQuanity;
             aggregateTable[3].value = totalVat;
             aggregateTable[2].value = totalAmount;
             aggregateTable[4].value = grossSum.toFixed(2);
         }
-    }, [totalQuanity,totalVat,grossSum])
+    }, [totalQuanity, totalVat, grossSum])
 
 
 
 
     const navigate = useNavigate();
-    const { getFetch, postFetch } = useFetch(url);
-    const { getFetch: getProducts } = useFetch(url2);
+
+    const { getFetch, updateFetch } = useFetch(`${url}/${id}`);
+
+    //const { getFetch: getProducts } = useFetch(url2);
 
     const {
         register,
@@ -52,7 +59,7 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
         formState: { errors, isSubmitting, isDirty },
         reset,
         setValue,
-        watch
+        watch,
 
     } = useForm(
         {
@@ -69,57 +76,53 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
         },
     );
 
-    const { fields, append, remove } = useFieldArray({ control, name: "Product" });
+    const { fields, append, remove, replace } = useFieldArray({ control, name: "Product" });
 
-    const searchTerm = watch("clientName");
-
-    const { data: allClients = [], isLoading, error } = useQuery(
-        ['fetchAllClients', searchTerm],
+    const { data: allData } = useQuery(
+        'fetchInvoice',
         async () => {
-            const response = await getFetch(searchTerm);
-            const allClient = response?.data;
-
-            if (allClient) {
-
-                saleClientDetail[0].selectOption = [];
-
-                allClient?.forEach(item => {
-                    if (item?.details?.clientName &&
-                        !saleClientDetail[0].selectOption.includes(item.details.clientName)) {
-                        saleClientDetail[0].selectOption.push(item.details.clientName);
-                    }
-                });
-
-                const selectedClient = allClient.find(items => items?.details?.clientName === watch("clientName"));
-
-                if (selectedClient) {
-
-                    selectedClient.contactPersons.forEach(person => {
-                        if (!saleClientDetail[1].selectOption.includes(person.fullName)) {
-                            saleClientDetail[1].selectOption.push(person.fullName);
-                        }
-                    });
-
-                    setValue("email", selectedClient.details.email);
-                    setValue("addressType", "Bill To Address");
-
-                    if (selectedClient) {
-                        if (watch("addressType") === "Bill To Address") {
-                            setValue("shipToAddress", selectedClient?.locations?.billToAddress?.address1 || "");
-                        } else if (watch("addressType") === "Ship To Address") {
-                            setValue("shipToAddress", selectedClient?.locations?.shipToAddress?.address1 || "");
-                        }
-                    }
-
-                }
-            }
+            const response = await getFetch();
+            console.log(response);
+            return response.statusCode["data"];
         },
         {
-            enabled: searchTerm?.length > 1,
             refetchOnWindowFocus: false,
             keepPreviousData: true,
         }
     );
+
+    useEffect(() => {
+        if (allData) {
+            setValue("clientName", allData?.clientDetails?.clientName);
+            setValue("contactPerson", allData?.clientDetails?.contactPerson);
+            setValue("email", allData?.clientDetails?.email);
+            setValue("addressType", allData?.clientDetails?.addressType);
+            setValue("date", formatDate(allData?.invoiceDetails?.date));
+            setValue("dueDate", formatDate(allData?.invoiceDetails?.dueDate));
+            setValue("purchaseRefernce", allData?.invoiceDetails?.purchaseRefernce);
+            setValue("currency", allData?.invoiceDetails?.currency);
+            setValue("exchangeRate", allData?.invoiceDetails?.exchangeRate);
+            setValue("vatType", allData?.invoiceDetails?.vatType);
+            setValue("shipToAddress", allData?.details?.shipToAddress);
+            setValue("notes", allData?.invoiceNotesDetail?.additionalNotes);
+            setValue("paymentTerms", allData?.invoiceNotesDetail?.paymentTerm);
+
+            if (allData?.salesPersonAssignment) {
+                replace(
+                    allData.salesPersonAssignment.map((item) => ({
+                        assignedUser: item?.assignedUser?.name || '',
+                        purchasePrice: item?.purchasePrice || '',
+                        salePrice: item?.salePrice || '',
+                        profit: item?.profit || '',
+                    }))
+                );
+            }
+        }
+    }, [allData, setValue, replace]);
+
+
+
+   
 
     const handleAddProduct = useCallback(() => {
         append({
@@ -132,8 +135,8 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
     const { data: allProduct = [] } = useQuery(
         ['fetchAllProducts'],
         async () => {
-            const response = await getProducts();
-            return response?.data;
+            //    const response = await getProducts();
+            //  return response?.data;
         },
         {
             refetchOnWindowFocus: false,
@@ -155,15 +158,15 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
 
     }, [allProduct]);
 
-        const user = useSelector((state) => state.auth.user);
-  
+    const user = useSelector((state) => state.auth.user);
+
     async function onSubmit(data) {
         data = { ...data, createdBy: { id: user?._id, name: user?.fullName } };
 
 
         try {
             console.log(data);
-           await postFetch(data);
+            //  await postFetch(data);
             reset();
         } catch (error) {
             console.error('Error in form submission:', error.message);
@@ -189,7 +192,9 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
                         {back}
                     </span>
                     <h6 style={{ letterSpacing: '1px' }} className="font-semibold
-                 text-heading  text-xl  xsm:text-lg">  {title} </h6>
+                 text-heading  text-xl  xsm:text-lg">  {title}
+                        <span className='text-textColor font-semibold text-xl xsm:text-lg' > #{allData?.SINumber} </span>
+                    </h6>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} noValidate >
@@ -248,24 +253,24 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
                         <div className='grid gap-3 sm:grid-cols-1 xsm:grid-cols-1 grid-cols-3'>
                             {/* <FormInput fieldData={saleInvoiceDetail} register={register}
                                 errors={errors} setValue={setValue} /> */}
-                                {saleInvoiceDetail.map((fields, index) => {
-                                        return (
+                            {saleInvoiceDetail.map((fields, index) => {
+                                return (
 
-                                            <div key={index} className={`flex flex-col`}>
+                                    <div key={index} className={`flex flex-col`}>
 
-                                                {fields.isSelect ?
+                                        {fields.isSelect ?
 
-                                                    (<SelectOptions field={fields} setValue={setValue} register={register}
-                                                        errors={errors} />)
-                                                    :
-                                                    (<InputField fields={fields} errors={errors}
-                                                        register={register} />
-                                                    )
-                                                }
-                                            </div>
-                                        )
+                                            (<SelectOptions field={fields} setValue={setValue} register={register}
+                                                errors={errors} />)
+                                            :
+                                            (<InputField fields={fields} errors={errors}
+                                                register={register} />
+                                            )
+                                        }
+                                    </div>
+                                )
 
-                                    })}
+                            })}
 
                         </div>
 
@@ -274,9 +279,9 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
 
                     <DynamicField fieldConfig={saleProduct} register={register} errors={errors}
                         fields={fields} remove={remove} append={handleAddProduct} fieldName="Product"
-                        setValue={setValue} watch={watch} 
-                       // setIndex={setIndex} 
-                         setGrossSum={setGrossSum} setTotalQuanity={setTotalQuanity} allProduct={allProduct}
+                        setValue={setValue} watch={watch}
+                        // setIndex={setIndex} 
+                        setGrossSum={setGrossSum} setTotalQuanity={setTotalQuanity} allProduct={allProduct}
                         setTotalVat={setTotalVat} setTotalAmount={setTotalAmount}
                     />
 
@@ -347,4 +352,4 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
     )
 }
 
-export default NewInvoiceEstimates
+export default EditInvoiceAndEstimate

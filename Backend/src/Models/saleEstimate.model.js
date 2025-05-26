@@ -1,4 +1,6 @@
 import mongoose from "mongoose"
+import { Counter } from "./Counter.model.js";
+
 mongoose.pluralize(null);
 
 const clientDetails = new mongoose.Schema({
@@ -101,7 +103,10 @@ const invoiceDetails = new mongoose.Schema({
 });
 
 const invoiceNotesDetail = new mongoose.Schema({
+
     
+    SINumber: { type: String, unique: true },
+
     additionalNotes : {
         type: String,
     },
@@ -136,6 +141,32 @@ const saleEstimate = new mongoose.Schema({
 
     
 },{timestamps: true});
+
+
+saleEstimate.pre('save', async function (next) {
+    if (this.isNew) {
+        const currentYear = new Date().getFullYear();
+
+        let counter = await Counter.findOne({ name: 'saleEstimate', year: currentYear });
+
+        if (!counter) {
+            counter = await Counter.create({
+                name: 'saleEstimate',
+                year: currentYear,
+                seq: 1
+            });
+            
+        } else {
+            counter.seq++;
+            await counter.save();
+        }
+
+
+        this.SINumber = `SE-${currentYear}-${counter.seq}`;
+    }
+
+    next();
+});
 
 
 export const SaleEstimate = mongoose.model("SaleEstimate",saleEstimate)

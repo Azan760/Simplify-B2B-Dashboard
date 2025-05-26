@@ -36,6 +36,7 @@ const ProductView = () => {
     const { fields, append, remove,replace } = useFieldArray({ control, name: "salesPersonAssignment" });
 
     const navigate = useNavigate();
+    
     const { data: allData, isLoading, error } = useQuery(
         'productData',
         async () => {

@@ -8,15 +8,15 @@ import { chatIcon, circle, dotsIcon, search } from './Icons';
 import { useDispatch } from "react-redux";
 import { logout } from "../Features/AuthSlice";
 import { useNavigate } from "react-router-dom";
-import {useFetch} from "../Services/ApiService.js"
+import { useFetch } from "../Services/ApiService.js"
 
 const Sidebar = ({ sideOpen }) => {
 
     const [isOpen, setOpen] = useState('hidden');
     const [linkDropdown, links] = useSidebarDropdown();
-    
 
-    const {postFetch} = useFetch("http://localhost:8000/api/logout");
+
+    const { postFetch } = useFetch("http://localhost:8000/api/logout");
 
     useEffect(() => {
         sideOpen === 'side' ? setOpen('') : setOpen('hidden');
@@ -28,28 +28,28 @@ const Sidebar = ({ sideOpen }) => {
 
     const [selectedIndex, setSelectedIndex] = useState(0);
 
-    const handleLogout = async() => {
+    const handleLogout = async () => {
         try {
             // const response = await postFetch();
             // if (response?.success) {  
-                dispatch(logout());
-                navigate("/login");
+            dispatch(logout());
+            navigate("/login");
             // } else {
             //     console.log("Logout failed:", response?.message);
             // }
-    
+
         }
         catch (error) {
-          console.log(error.message);
+            console.log(error.message);
         }
     };
-    
 
-    
+
+
     return (
-        
-        
-        
+
+
+
         <div className="smiels-sidebar " id="sidebar">
             <div
                 className={`${sideOpen}  top-0 left-0  transition-all ease delay-75 
@@ -74,11 +74,11 @@ const Sidebar = ({ sideOpen }) => {
                             return (
                                 <li className="nav-item list-none" key={index}>
                                     <Link to={menu.Path}
-                                     onClick={() => {
-                                        setSelectedIndex(index); 
-                                         index !== 0 && linkDropdown(index)
-                                        } }
-                                     className={` 
+                                        onClick={() => {
+                                            setSelectedIndex(index);
+                                            index !== 0 && linkDropdown(index)
+                                        }}
+                                        className={` 
                                         ${selectedIndex === index ? 'bg-textColor text-white ' : 'hover:text-downIcon'}           
                                         text-textColor2 nav-link p-3 flex items-center justify-between
                                          text-sm relative`} path="/">
@@ -91,7 +91,7 @@ const Sidebar = ({ sideOpen }) => {
                                             {menu.icon2}
                                         </span>}
                                     </Link>
-                                    
+
                                     {index !== 0 &&
                                         <ul className={`${show} h-full my-2.5  rounded  `}>
                                             {menu.dropdown.map((dropdownMenu, index) => {
@@ -134,24 +134,53 @@ const Sidebar = ({ sideOpen }) => {
                     </div>
 
 
-                    <div className="smiles-user flex items-center justify-between mb-5" id="close">
+                    <div className="smiles-user flex items-center justify-between mb-5 relative group" id="close">
                         <div className='flex items-center gap-2.5'>
                             <img src="https://app.smiels.com/assets/user-profile.svg" alt="" className="profile-logo" />
                             <span className={` ${isOpen} user text-textColor2  font-normal  text-sm`}> SMIELS User </span>
                         </div>
-                        <span className={`${isOpen}`}  onClick={handleLogout}>
+                        <span className={`${isOpen}  `} >
                             {dotsIcon}
                         </span>
+
+                        <div className="dropdown-menu-2 w-32 hidden group-hover:flex flex-col absolute left-14 -top-16
+                         bg-dashboard border border-searchIcon rounded" id="dropdown-menu-2">
+                            <ul className="setting-menu flex items-center flex-col" >
+                                <li className='list-none w-full hover:bg-searchIcon ' >
+
+                                    <Link to="" className="setting-link flex gap-2.5 items-center p-2.5 text-xs border-b border-dashbaord  decoration-0 text-black ">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
+                                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                            <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                                        </svg>
+                                        <span> My Profile  </span>
+                                    </Link>
+                                </li>
+
+                                <li className='list-none w-full hover:bg-searchIcon ' onClick={handleLogout} >
+                                    <span className="setting-link flex gap-2.5 items-center p-2.5 text-xs border-b border-dashbaord  decoration-0 text-black ">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" className="bi bi-power" viewBox="0 0 16 16">
+                                            <path d="M7.5 1v7h1V1h-1z" />
+                                            <path d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z" />
+                                        </svg>
+                                        Logout
+
+                                    </span>
+
+                                </li>
+                            </ul>
+
+                        </div>
                     </div>
 
                     <p style={{ fontSize: '10px' }} className='text-textColor2 text-center '> 2023, SMIELS | 0.0.1-BETA.73 </p>
                 </footer>
-            </div>
-        </div>
+            </div >
+        </div >
 
 
 
-)
+    )
 }
 
 export default memo(Sidebar)

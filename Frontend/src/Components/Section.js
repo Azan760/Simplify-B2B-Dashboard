@@ -128,7 +128,6 @@ const Section = () => {
               tables={purchaseTableData}
             />
 
-
           </div>
 
 

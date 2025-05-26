@@ -43,6 +43,7 @@ const listView = (WrappedComponent, url, title, tableHeader, path) => {
       ['fetchAllData', searchTerm, pageNo, perPage],
       async () => {
         const response = await getFetch(searchTerm, pageNo, perPage);
+        console.log(response.statusCode["data"]);
         return response.statusCode["data"];
       },
       {

@@ -357,7 +357,12 @@ export const contactPerson = [
 export const saleInvoiceHeader = [
     "SI Number",
     "Issue Date",
-    "Due Date",
+    "Detail",
+    "Created By",
+    "Assignee",
+    "Total Amount",
+    "Status",
+    "Action",
 
 ];
 
@@ -373,4 +378,5 @@ export const clientsHeader =[
     "Status",
     "Action",
     
-]
+];
+

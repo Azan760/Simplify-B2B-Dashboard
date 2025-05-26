@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import Login from "../Pages/Auth/Login";
 import ProtectedRoute from './ProtectedRoute';
 import { Navigate, useNavigate } from 'react-router';
+import EditSaleInvoice from '../Pages/Dashboard/Sale/SaleInvoiceEdit';
 
 const NewPassword = lazy(() => import("../Pages/Auth/NewPassword"));
 const Signup = lazy(() => import("../Pages/Auth/Signup"));
@@ -59,7 +60,7 @@ const AppRoutes = () => {
                 <Suspense >
                     <Routes>
                         <Route path="/" element={<Navigate to={localStorage.getItem("userToken") ? "/" : "/login"} replace />} />
-                        
+
                         <Route path='/signup' element={<Signup />} />
                         <Route path='/login' element={<Login />} />
                         <Route path='new-password/:id' element={<NewPassword />} />
@@ -72,6 +73,7 @@ const AppRoutes = () => {
                                 <Route path="product/new" element={<NewProduct />} />
                                 <Route path="sales/si/list" element={<AllSaleInvoice />} />
                                 <Route path="sales/si/new" element={<NewInvoice />} />
+                                <Route path="sales/si/edit/:id" element={<EditSaleInvoice />} />
                                 <Route path="sales/se/list" element={<AllSaleEstimate />} />
                                 <Route path="sales/se/new" element={<NewEstimate />} />
                                 <Route path="client/view/:id" element={<ClientView />} />

@@ -209,9 +209,9 @@ export const detailView = asyncHandler(async (req, res) => {
 
     try {
         if (!id) {
-            throw new ApiError(400, 'User ID is required!');
+            throw new ApiError(400, ' ID is required!');
         }
-        const user = await Product.findById(id).select('-refreshToken -password -__v ');
+        const user = await Product.findById(id).select(' -__v ');
         if (!user) {
             throw new ApiError(404, 'Product not found!');
         }
