@@ -6,12 +6,13 @@ import { useNavigate } from 'react-router'
 import SelectOptions from './SelectOptions'
 import { useSelector } from 'react-redux';
 import { useQuery } from 'react-query'
-import { FormattedDate } from './Date'
 import { saleTableData, purchaseTableData } from '../Data/Data'
 import SectionTable from './SectionTable'
 import { useFetch } from '../Services/ApiService'
 import { useForm } from 'react-hook-form'
-// import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import dataImg from "../Assets/undraw_Data_re_80ws.svg";
+
 
 
 const Section = () => {
@@ -21,6 +22,7 @@ const Section = () => {
   const { register, handleSubmit, reset, setValue, watch } = useForm();
 
   let path = "si/list";
+  let path2 = "client/list"
 
   const recentSales = watch("searchBar");
 
@@ -31,12 +33,24 @@ const Section = () => {
     path = "si/list";
   }
 
+  const clientsSuppler = watch("searchUsers");
+  console.log(clientsSuppler);
+
+  if (clientsSuppler === "Supplier") {
+    path2 = "supplier/list";
+  } else {
+    path2 = "client/list";
+  }
+
 
   const user = useSelector((state) => state.auth.user);
   console.log(user);
 
   const { getFetch: saleFetch } = useFetch(`http://localhost:8000/main/${path}`);
   const { getFetch: purchaseFetch } = useFetch("http://localhost:8000/main/pi/list");
+  const { getFetch: allClients } = useFetch(`http://localhost:8000/main/${path2}`);
+  const { getFetch: TeamFetch } = useFetch("http://localhost:8000/main/team/list");
+
 
   const { data: salesInvoice, isLoading, error } = useQuery(
     ['salesInvoice', path],
@@ -64,6 +78,71 @@ const Section = () => {
       keepPreviousData: true,
     }
   );
+
+  const { data: clients } = useQuery(
+    ['allClients', path2],
+    async () => {
+      const response = await allClients();
+      console.log("response", response);
+      return response.data;
+    },
+    {
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    }
+  );
+
+  const { data: Teams } = useQuery(
+    ['AllTeams'],
+    async () => {
+      const response = await TeamFetch();
+      console.log(response);
+      return response.data;
+    },
+    {
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    }
+  );
+
+  //Role-based dashboard view - moved after all hooks
+  if (user && (user.userType === 'Sales Person' || user.userType === 'Sales Manager')) {
+    return (
+      <>
+        <div className="heading mb-5">
+          <h6 style={{ letterSpacing: '1px' }} className="font-semibold text-heading  sm:text-lg text-xl">{` Welcome back, ${user?.fullName}  `}</h6>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+          <img src={dataImg} alt="No Dashboard" style={{ maxWidth: 400, width: '100%' }} />
+        </div>
+      </>
+    );
+  }
+
+  sectionProduct[0].item = [];
+
+  if (clients) {
+    sectionProduct[0].item = clients.map((client) => {
+      return {
+        id: client._id,
+        name: client.details.clientName || client.details.supplierName,
+        path: "/client/view/" + client._id || "/supplier/view/" + client._id
+
+      }
+    });
+
+  }
+
+  if (Teams) {
+    sectionProduct[1].item = Teams.map((team) => {
+      return {
+        id: team._id,
+        name: team.fullName,
+        path: "/team/view/" + team._id
+      }
+    });
+  }
+
 
 
 
@@ -112,7 +191,7 @@ const Section = () => {
 
         <div style={{ gridTemplateColumns: '4fr 3fr' }} className=" pb-5 pt-5 section-2 grid gap-5">
 
-          <div style={{ gridTemplateRows: '1fr 1fr' }} className='grid gap-5'>
+          <div className='grid gap-5 auto-rows-auto'>
 
             <SectionTable
 
@@ -216,10 +295,29 @@ const Section = () => {
                     <div className="span-group flex items-center gap-2.5 flex-wrap">
                       {row.item.map((value, index) => {
                         return (
-                          <span key={index} style={{ height: '30px', width: '30px', borderRadius: '50%' }}
-                            className="span-group-item bg-heading text-white flex items-center justify-center text-xs">
-                            <span> {value} </span>
-                          </span>)
+                          <Link
+                            to={`${value.path}`}
+                            key={index}
+                            className="relative group"
+                          >
+                            <div
+                              style={{ height: '30px', width: '30px', borderRadius: '50%' }}
+                              className="bg-heading text-white flex items-center justify-center text-xs"
+                            >
+                              <span>
+                                {value?.name
+                                  ?.split(" ")
+                                  ?.map(word => word[0])
+                                  ?.join("")}
+                              </span>
+                            </div>
+
+                            {/* Tooltip */}
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                              {value.name}
+                            </div>
+                          </Link>
+                        )
                       })}
 
                     </div>
@@ -228,7 +326,6 @@ const Section = () => {
               })}
             </div>
           </div>
-
 
         </div>
       </section>

@@ -1,8 +1,18 @@
 import mongoose from "mongoose";
+import {Counter} from "../Models/Counter.model.js"
 mongoose.pluralize(null);
 
 
 const contactPersonSchema = new mongoose.Schema({
+    active : {
+        type : Boolean,
+       // default : true,
+
+    },
+    defaultContact : {
+        type: Boolean,
+      //  default: true,
+    },
     fullName: {
         type: String,
         trim: true,
@@ -10,7 +20,6 @@ const contactPersonSchema = new mongoose.Schema({
     },
     email: {
         type: String, 
-        required: [true, "Email is required."],
         unique : true,
         trim : true,
         
@@ -109,6 +118,11 @@ const detailsSchema = new mongoose.Schema({
 
 const newClientSchema = new mongoose.Schema({
 
+    CLINumber :{ type: String, unique: true },
+    Status : {
+        type : String,
+       // required : true,
+    },
     details: detailsSchema,
     locations: {
         billToAddress: addressSchema,
@@ -123,9 +137,44 @@ const newClientSchema = new mongoose.Schema({
             },
             name : {
                 type : String,
-                required : true
+                
             }
         },
+         updatedBy: {
+                    id: {
+                        type: mongoose.Types.ObjectId,
+                        ref: "TeamMember",
+                    },
+                    name: {
+                        type: String,
+                    },
+                }
 }, { timestamps: true });
+
+
+newClientSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        const currentYear = new Date().getFullYear();
+
+        let counter = await Counter.findOne({ name: 'newClientSchema', year: currentYear });
+
+        if (!counter) {
+            counter = await Counter.create({
+                name: 'newClientSchema',
+                year: currentYear,
+                seq: 1
+            });
+            
+        } else {
+            counter.seq++;
+            await counter.save();
+        }
+
+
+        this.CLINumber = `CLI-${currentYear}-${counter.seq}`;
+    }
+
+    next();
+});
 
 export const NewClient = mongoose.model("Client", newClientSchema);

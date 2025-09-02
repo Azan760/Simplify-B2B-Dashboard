@@ -71,6 +71,10 @@ export const clientDetail = [
             <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
         </svg>,
         require: true,
+        isSelect : true,
+        selectOption : [
+            "Pakistani Rupee | PKRs"
+        ]
 
     }, {
 
@@ -84,7 +88,7 @@ export const clientDetail = [
         </svg>,
         paddingLeft: "pl-8",
         pattren: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-               , size: 4,
+        , size: 4,
         message2: "Email can only contain letters and digits",
         message: "Email is required to be at least 4 character.",
 
@@ -121,7 +125,7 @@ export const clientDetail = [
         </svg>,
         span: "VAT Number",
         placeholder: "5J6RE4H48BL023237",
-        types: 'number',
+        types: 'text',
         inputName: "vatNumber",
         require: false,
         size: 2,
@@ -173,6 +177,15 @@ export const clientDetail = [
             fill="currentColor" className="bi bi-caret-down-fill text-browns absolute  " viewBox="0 0 16 16">
             <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
         </svg>,
+        selectOption: ["General Sales", "Goodwill", "Insurance Claims", "Stock", "Rent Income", "Sales of Assets",
+          "Royalties Recived", "Plant and Machinery", "Office Equipment", "Motor Vehicles",
+          "Bank Charges", "Capital Expenditure", "Commissions Received", "Credit Charges (Late Payments)",
+          "Discounts Allowed", "Distribution and Carriage", "Flat Rate VAT Sales Adjustment",
+          "Furniture and Fixtures", "General Export Sales", "Goodwill Amortisation", "Intangible Asset Amortisation",
+          "Miscellaneous Income",
+        ],
+        isSelect: true,
+        styles: "h-40"
 
     }
 
@@ -191,14 +204,14 @@ export const location1 = [{
             span: "Address Line 1",
             placeholder: "Line 1 ",
             inputName: "billAddress1",
-            type: "text",
+            types: "text",
 
         }, {
 
             span: "Address Line 2",
             placeholder: "Line 2",
             inputName: "billAddress2",
-            type: "text",
+            types: "text",
 
 
         },
@@ -256,6 +269,20 @@ export const location2 = [
                 </svg>,
                 inputName: "billCountry",
                 type: "text",
+             isSelect: true,
+                selectOption: [
+                    "Pakistan",
+                    "United States",
+                    "United Kingdom",
+                    "Canada",
+                    "Australia",
+                    "India",
+                    "Germany",
+                    "France",
+                    "Italy",
+                    "Spain"
+                    ],
+                    styles: "h-40"
             }, {
                 span: "Postal / Zip Code",
                 placeholder: "Zip Code ",
@@ -292,6 +319,20 @@ export const location2 = [
                 </svg>,
                 inputName: "shipCountry",
                 type: "text",
+                isSelect: true,
+                selectOption: [
+                    "Pakistan",
+                    "United States",
+                    "United Kingdom",
+                    "Canada",
+                    "Australia",
+                    "India",
+                    "Germany",
+                    "France",
+                    "Italy",
+                    "Spain"
+                ],
+                styles: "h-40"
             }, {
                 span: "Postal / Zip Code",
                 placeholder: "Zip Code ",
@@ -310,7 +351,7 @@ export const contactPerson = [
         description: "Assign Sales Person with this Product.",
         buttonLabel: "Let's Add Person",
 
-        
+
         heading: [
 
             "Full Name",
@@ -326,12 +367,12 @@ export const contactPerson = [
 
             {
                 inputName: "fullName",
-                type: "text",
+                types: "text",
                 placeholder: "Full Name",
 
             }, {
                 inputName: "email",
-                type: "text",
+                types: "text",
                 placeholder: "Email",
 
             }, {
@@ -341,10 +382,21 @@ export const contactPerson = [
             }, {
                 inputName: "salePerson",
                 placeholder: "Sale Person",
-                type: "text",
-                isSelect : true,
-                selectOption : [],
+                types: "text",
+                isSelect: true,
+                selectOption: [],
+                label_text: "hidden",
             },
+            {
+                inputClass: 'toggle-btn',
+                inputName: "active",
+                types : "checkbox"
+            }
+            ,{
+                inputClass: 'toggle-btn',
+                inputName: "defaultContact",
+                types : "checkbox"
+            }
         ]
     }
 ];
@@ -366,8 +418,10 @@ export const saleInvoiceHeader = [
 
 ];
 
-export const clientsHeader =[
+export const clientsHeader = [
     "Client Name",
+                "Reference #",
+
     "Email",
     "Contact Person",
     "Created On",
@@ -377,6 +431,6 @@ export const clientsHeader =[
     "Active",
     "Status",
     "Action",
-    
+
 ];
 

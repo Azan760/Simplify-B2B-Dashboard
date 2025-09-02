@@ -61,7 +61,8 @@ const AllProduct = ({ searchTerm, allData, lengthData }) => {
                 </Link>
               </td>
               <td className='p-2 font-medium text-white  '>
-                <span style={{ fontSize: '12.5px' }} className=' p-1  rounded md:p-1 md:px-0  block text-center  bg-heading' >
+                <span style={{ fontSize: '12.5px' }} 
+                className=' p-1  rounded md:p-1 md:px-0  block text-center  bg-heading' >
                   {field?.details?.type}
                 </span>
               </td>

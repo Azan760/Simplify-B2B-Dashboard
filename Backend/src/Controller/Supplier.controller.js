@@ -67,7 +67,20 @@ export const Supplier = asyncHandler(async (req, res) => {
 
         if(!createdBy) {
             return res.status(400).json(new ApiError(400, "Created By is required!"));
-        }   
+        } 
+        
+          const userRole = await TeamMember.findById(createdBy.id).select("userType");
+                let Status = "";
+        
+                if (userRole && userRole.userType === "Admin") {
+                    console.log("User is Admin");
+                    Status = "Approved";
+                } else {
+                    console.log("User is not Admin");
+                    Status = "Pending";
+                }
+        
+        
 
         const details = {
             supplierName,
@@ -125,7 +138,7 @@ export const Supplier = asyncHandler(async (req, res) => {
         }
 
         const newSupplier = await NewSupplier.create({
-
+            Status,
             details,
             contactPersons: updatedSalesPersonAssignment,
             locations: {
@@ -195,11 +208,119 @@ export const detailView = asyncHandler(async (req, res) => {
     }
 });
 
-export const editView = asyncHandler(async (req, res) => {
+// export const editView = asyncHandler(async (req, res) => {
 
-    const { id } = req.params;
+//     const { id } = req.params;
+//     const {
+//         contactPerson = [],
+//         defaultTerm,
+//         active,
+//         overdue,
+//         supplierName,
+//         registraion,
+//         currency,
+//         supplierEmail,
+//         phone,
+//         vatNumber,
+//         vatRate,
+//         eoriNo,
+//         saleCategory,
+//         billAddress1,
+//         billAddress2,
+//         billCity,
+//         billState,
+//         billCountry,
+//         billZipCode,
+//         shipAddress1,
+//         shipAddress2,
+//         shipCity,
+//         shipState,
+//         shipCountry,
+//         shipZipCode,
+//         updatedBy
+
+//     } = req.body;
+
+//     try {
+
+//         if (!updatedBy) {
+//             throw new ApiError(400, 'Created By is required!');
+//         }
+
+//         const details = {
+//             supplierName,
+//             registration: registraion,
+//             currency,
+//             email: supplierEmail,
+//             phoneNo: phone,
+//             defaultTerm,
+//             vatNumber,
+//             vatRate,
+//             eoriNo,
+//             active,
+//             overdue,
+//             defaultCategory: saleCategory
+//         };
+
+//         const billToAddress = {
+//             address1: billAddress1,
+//             address2: billAddress2,
+//             city: billCity,
+//             state: billState,
+//             country: billCountry,
+//             zipCode: billZipCode
+//         };
+
+//         const shipToAddress = {
+//             address1: shipAddress1,
+//             address2: shipAddress2,
+//             city: shipCity,
+//             state: shipState,
+//             country: shipCountry,
+//             zipCode: shipZipCode
+//         };
+
+//         const updatedUser = await NewSupplier.findByIdAndUpdate(
+//             id,
+//             {
+//                 details,
+//                 contactPersons: contactPerson,
+//                 locations: {
+//                     billToAddress,
+//                     shipToAddress
+//                 },
+//                 updatedBy,
+//             },
+//             { new: true }
+//         );
+
+//         if (!updatedUser) {
+//             throw new ApiError(404, 'Supplier not found!');
+//         }
+
+//         return res.status(200).json(
+//             new ApiResponse({
+//                 data: updatedUser,
+//                 message: 'Supplier updated successfully!'
+//             })
+//         );
+//     } catch (error) {
+//         res.status(500).json(
+//             new ApiResponse({
+//                 data: null,
+//                 message: error.message
+//             })
+//         );
+//     }
+// });
+
+
+export const editView = asyncHandler(async (req, res) => {
+        const { id } = req.params;
+
+
     const {
-        contactPerson = [],
+        contactPerson = [], 
         defaultTerm,
         active,
         overdue,
@@ -211,7 +332,7 @@ export const editView = asyncHandler(async (req, res) => {
         vatNumber,
         vatRate,
         eoriNo,
-        saleCategory,
+        purchaseCategory,
         billAddress1,
         billAddress2,
         billCity,
@@ -225,15 +346,18 @@ export const editView = asyncHandler(async (req, res) => {
         shipCountry,
         shipZipCode,
         updatedBy
-
     } = req.body;
 
     try {
-
-        if (!updatedBy) {
-            throw new ApiError(400, 'Created By is required!');
+        if (!supplierName || !currency || !defaultTerm) {
+            return res.status(400).json(new ApiError(400, "Missing required fields (Supplier Name, Currency, or Default Term)"));
         }
 
+        if (!updatedBy) {
+            throw new ApiError(400, 'Updated By is required!');
+        }
+
+    
         const details = {
             supplierName,
             registration: registraion,
@@ -246,7 +370,7 @@ export const editView = asyncHandler(async (req, res) => {
             eoriNo,
             active,
             overdue,
-            defaultCategory: saleCategory
+            defaultCategory: purchaseCategory
         };
 
         const billToAddress = {
@@ -267,37 +391,43 @@ export const editView = asyncHandler(async (req, res) => {
             zipCode: shipZipCode
         };
 
-        const updatedUser = await NewSupplier.findByIdAndUpdate(
-            id,
-            {
-                details,
-                contactPersons: contactPerson,
-                locations: {
-                    billToAddress,
-                    shipToAddress
-                },
-                updatedBy,
-            },
-            { new: true }
-        );
+        let updatedSalesPersonAssignment = Array.isArray(contactPerson) ? [...contactPerson] : [];
 
-        if (!updatedUser) {
-            throw new ApiError(404, 'Supplier not found!');
+        if (updatedSalesPersonAssignment.length > 0) {
+            for (const i of updatedSalesPersonAssignment) {
+                if (!i.salePerson) {
+                    return res.status(400).json(new ApiError(400, "Missing required fields (assignedUser)"));
+                } else {
+                    const assignUser = await TeamMember.findOne({ fullName: i.salePerson });
+
+                    if (!assignUser) {
+                        return res.status(400).json(new ApiError(400, "Assigned user not found"));
+                    }
+
+                    i.salePerson = {
+                        id: assignUser._id,
+                        name: assignUser.fullName
+                    };
+                }
+            }
         }
 
-        return res.status(200).json(
-            new ApiResponse({
-                data: updatedUser,
-                message: 'Supplier updated successfully!'
-            })
-        );
+        const newClient = await NewSupplier.findByIdAndUpdate(id,{
+            
+            details,
+            contactPersons: updatedSalesPersonAssignment,
+            locations: {
+                billToAddress,
+                shipToAddress
+            },
+            updatedBy,
+        });
+
+        const checkClient = await NewSupplier.findById(newClient._id).select(" -__v");
+
+        return res.status(201).json(new ApiResponse(201, checkClient, "New supplier created successfully"));
     } catch (error) {
-        res.status(500).json(
-            new ApiResponse({
-                data: null,
-                message: error.message
-            })
-        );
+        return res.status(500).json(new ApiError(500, "Failed to create new supplier", error.message));
     }
 });
 

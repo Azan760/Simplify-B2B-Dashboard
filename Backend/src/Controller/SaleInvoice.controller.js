@@ -3,8 +3,31 @@ import { ApiError } from "../Utils/ApiError.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
 import { Product } from "../Models/product.model.js";
 import { NewClient } from "../Models/Client.model.js"
+import { TeamMember } from "../Models/TeamMember.model.js";
 
 import { SaleInvoice } from "../Models/saleInvoice.model.js";
+
+
+export const SalesPerson = asyncHandler(async (req, res) => {
+
+    try {
+
+        const salesPerson = await TeamMember.find({ userType: "Sales Person" }).select("fullName -_id");
+
+        if (!salesPerson) {
+            return res.status(404).json(new ApiError(404, "No sales person found"));
+        }
+
+        return res.status(200).json(new ApiResponse(200, salesPerson, "Sales person fetched successfully"));
+
+    }
+    catch (error) {
+
+        return res.status(500).json(new ApiError(500, "Failed to fetch sales person", error.message));
+
+    }
+
+});
 
 
 export const NewSaleInvoice = asyncHandler(async (req, res) => {
@@ -25,6 +48,7 @@ export const NewSaleInvoice = asyncHandler(async (req, res) => {
         notes,
         paymentTerms,
         createdBy,
+        assignTo
 
     } = req.body;
 
@@ -41,6 +65,8 @@ export const NewSaleInvoice = asyncHandler(async (req, res) => {
         if (!client) {
             return res.status(404).json(new ApiError(404, "Client not found"));
         }
+
+
 
         if (Products.length === 0) {
             return res.status(400).json(new ApiError(400, "Please add at least one product"));
@@ -68,6 +94,19 @@ export const NewSaleInvoice = asyncHandler(async (req, res) => {
             productID: products[index]._id
         }));
 
+        let assignedSalesPerson = assignTo;
+
+        console.log(assignedSalesPerson);
+        if (assignTo) {
+            const salesPerson = await TeamMember.findOne({ fullName: assignTo }).select("_id fullName");
+
+            if (salesPerson) {
+                assignedSalesPerson = {
+                    id: salesPerson._id,
+                    name: salesPerson.fullName,
+                };
+            }
+        }
 
         const clientDetails = {
             clientId: client._id,
@@ -84,6 +123,7 @@ export const NewSaleInvoice = asyncHandler(async (req, res) => {
             currency,
             exchangeRate,
             vatType,
+            assigneTo: assignedSalesPerson,
 
         }
 
@@ -117,14 +157,21 @@ export const NewSaleInvoice = asyncHandler(async (req, res) => {
 
 export const GetAllSaleInvoice = asyncHandler(async (req, res) => {
     try {
-
         const { page = 1, limit = 10 } = req.query;
         const pageNumber = parseInt(page, 10) || 1;
         const limitNumber = parseInt(limit, 10) || 10;
 
-        const data = await SaleInvoice.find()
+        let query = {};
+        if (req.user.userType === 'Sales Person') {
+            query = { 'invoiceDetails.assigneTo.id': req.user._id };
+        }
+        // Sales Manager and Admin get all records (default query = {})
+
+        const data = await SaleInvoice.find(query)
             .skip((pageNumber - 1) * limitNumber)
-            .limit(limitNumber).sort({ createdAt: -1 }).select(' -__v -updatedAt');
+            .limit(limitNumber)
+            .sort({ createdAt: -1 })
+            .select(' -__v -updatedAt');
 
         res.status(200).json(new ApiResponse({
             message: "Data Fetch Successfully!",
@@ -134,7 +181,6 @@ export const GetAllSaleInvoice = asyncHandler(async (req, res) => {
     } catch (error) {
         return res.status(500).json(new ApiError(500, "Failed to fetch client list", error.message));
     }
-
 });
 
 
@@ -166,9 +212,10 @@ export const Invoice_detailView = asyncHandler(async (req, res) => {
 
 
 
-export const EditView = asyncHandler(async (req, res) => {
+export const SaleInvoice_EditView = asyncHandler(async (req, res) => {
 
-        const { id } = req.params;
+    const { id } = req.params;
+    console.log("id", id);
 
 
     const {
@@ -187,6 +234,8 @@ export const EditView = asyncHandler(async (req, res) => {
         notes,
         paymentTerms,
         createdBy,
+        updatedBy,
+        assignTo
 
     } = req.body;
 
@@ -199,14 +248,18 @@ export const EditView = asyncHandler(async (req, res) => {
 
 
         const client = await NewClient.findOne({ "details.clientName": clientName }).select("_id");
+        console.log("client", client);
 
         if (!client) {
             return res.status(404).json(new ApiError(404, "Client not found"));
         }
 
+       
         if (Products.length === 0) {
             return res.status(400).json(new ApiError(400, "Please add at least one product"));
         }
+
+        console.log("Products", Products);
 
         if (
             Products.some((item) =>
@@ -218,9 +271,12 @@ export const EditView = asyncHandler(async (req, res) => {
         }
 
         const productNames = Products.map(item => item.productServiceName);
+        console.log("productNames", productNames);
 
         const products = await Product.find({ "details.productServiceName": { $in: productNames } }).select("_id");
 
+        console.log("products", products);
+        
         if (products.length !== Products.length) {
             return res.status(400).json(new ApiError(400, "Some products not found in database"));
         }
@@ -229,6 +285,24 @@ export const EditView = asyncHandler(async (req, res) => {
             ...item,
             productID: products[index]._id
         }));
+
+        console.log("mergedProducts", mergedProducts);
+
+        let assignedSalesPerson = assignTo;
+
+        console.log("assign",assignedSalesPerson);
+
+        if (assignTo) {
+            const salesPerson = await TeamMember.findOne({ fullName: assignTo }).select("_id fullName");
+
+            if (salesPerson) {
+                assignedSalesPerson = {
+                    id: salesPerson._id,
+                    name: salesPerson.fullName,
+                };
+            }
+        }
+
 
 
         const clientDetails = {
@@ -254,24 +328,37 @@ export const EditView = asyncHandler(async (req, res) => {
             paymentTerm: paymentTerms,
         }
 
-        const newSaleInvoice = await SaleInvoice.create({
-            clientDetails,
-            invoiceDetails,
-            product: mergedProducts,
-            invoiceNotesDetail,
-            createdBy
-        });
+        const updateInvoice = await SaleInvoice.findByIdAndUpdate(
+            id,
+            {
 
-        if (!newSaleInvoice) {
+                clientDetails,
+                invoiceDetails,
+                product: mergedProducts,
+                invoiceNotesDetail,
+                createdBy,
+                updatedBy,
+            }, { new: true }
+        );
+
+        if (!updateInvoice) {
             return res.status(400).json(new ApiError(400, "Failed to create invoice"));
         }
 
-        return res.status(201).json(new ApiResponse(201, newSaleInvoice, "Invoice created successfully"));
+        return res.status(200).json(new ApiResponse({
+            data: updateInvoice, message: "Invoice created successfully"
+        })
+        );
 
 
 
     } catch (error) {
-        return res.status(500).json(new ApiError(500, "Failed to create invoice", error.message));
+        res.status(500).json(
+            new ApiResponse({
+                data: null,
+                message: error.message
+            })
+        );
     }
 
 })

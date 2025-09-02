@@ -40,13 +40,20 @@ const AllSaleInvoice = ({ searchTerm, allData, lengthData }) => {
       <tbody className='rounded border border-searchIcon box-border shadow-sideShadow'>
         {
           filteredData?.map((field) => (
-            <tr key={field._id} className='  hover:bg-searchIcon border border-b-1 border-b-searchIcon '>
-              <td >
-                <Link to={`/sales/si/view/${field._id}`} style={{ fontSize: '12.5px' }} className='p-3  font-semibold text-textColor hover:underline'>
+            <tr key={field._id} className='  hover:bg-searchIcon border border-b-2 border-b-searchIcon '>
+              {/* <td >
+                <Link to={`/sales/si/edit/${field._id}`} style={{ fontSize: '12.5px' }} className='p-3  font-semibold text-textColor hover:underline'>
+                  {field?.SINumber}
+                </Link>
+              </td> */}
+
+              <td className="px-2.5 py-3 text-xs font-semibold text-textColor whitespace-nowrap">
+                <Link to={`/sales/si/edit/${field._id}`} className="hover:underline">
                   {field?.SINumber}
                 </Link>
               </td>
-              <td className='p-3 font-medium text-textColor2 text-xs'>{formatDate(field?.createdAt)}</td>
+
+              <td className='p-3 font-semibold text-textColor2 text-xs'>{formatDate(field?.createdAt)}</td>
 
 
 
@@ -54,15 +61,42 @@ const AllSaleInvoice = ({ searchTerm, allData, lengthData }) => {
                 {field?.product?.map((pr) => pr?.productServiceName).join(", ")}
               </td>
 
-              <td className='p-3 font-medium text-textColor2 text-xs'>{user?.fullName}</td>
-              <td className='p-3 font-medium text-textColor2 text-xs'>---</td>
+              <td className="px-2.5 py-3  align-middle whitespace-nowrap">
+                <Link
+                  to={`/team/view/${field?.createdBy?._id}`}
+                  className="relative group inline-block"
+                >
+                  <div className="w-[30px] h-[30px] rounded-full bg-heading text-white flex items-center justify-center text-xs mx-auto">
+                    <span>
+                      {field?.createdBy?.name
+                        ?.split(" ")
+                        ?.map(word => word[0])
+                        ?.join("")}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                    {field?.createdBy?.name}
+                  </div>
+                </Link>
+              </td>
+              <td >
+                <Link to={`/team/view/${field?.invoiceDetails?.assigneTo?._id}`} style={{ fontSize: '12.5px' }}
+                  className='p-3   text-textColor2 hover:underline hover:text-textColor'>
+                  {field?.invoiceDetails?.assigneTo?.name}
+                </Link>
+              </td>
               <td className='p-3 font-medium text-textColor2 text-xs'>
+                {
+                  field?.product?.reduce((sum, product) =>
+                    sum + parseFloat(product.grossTotal.$numberDecimal), 0).toFixed(2)
+
+                }
 
               </td>
 
               <td className='p-3 font-medium text-textColor2 text-xs'>
                 {
-                  
+
 
                 }
 

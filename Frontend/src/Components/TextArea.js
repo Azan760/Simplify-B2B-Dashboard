@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TextArea = ({label,register,inputName,disabled,placeholder}) => {
+const TextArea = ({label,register,inputName,disabled,placeholder,customClass}) => {
     return (
         <>
 
@@ -11,7 +11,7 @@ const TextArea = ({label,register,inputName,disabled,placeholder}) => {
                 <textarea style={{ boxShadow: '0 0 6px #172b4d0a' }} type="text" cols={30} rows={4}
                     formcontrolname="description" autoComplete="description"
                     maxLength="1000" trim="blur" placeholder={placeholder} disabled={disabled}
-                    className='border-white text-sm text-browns outline-none border rounded focus:border-textColor p-2.5 w-full h-full'
+                    className={`border-white text-sm text-browns outline-none border rounded focus:border-textColor ${customClass} p-2.5 w-full h-full`}
                     {...register(inputName)}
                 />
 

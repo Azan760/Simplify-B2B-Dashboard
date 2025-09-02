@@ -8,7 +8,7 @@ const generateAccessTokenandRefreshToken = async (userID) => {
 
     try {
 
-        const user = await TeamMember.findById(userID);  
+        const user = await TeamMember.findById(userID);
 
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();
@@ -26,11 +26,11 @@ const generateAccessTokenandRefreshToken = async (userID) => {
 export const Login = asyncHandler(async (req, res) => {
 
     const { email, password } = req.body;
-      console.log(email,password);
+    console.log(email, password);
 
     try {
 
-        if (!email && !password) {
+        if (!email || !password) {
             return res.status(400).json(new ApiError(400, "Email and Password are required"));
         }
 
@@ -48,7 +48,7 @@ export const Login = asyncHandler(async (req, res) => {
         console.log(isPasswordCorrect);
 
         if (!isPasswordCorrect) {
-            return res.status(400).json(new ApiError(400, "Invalid Password"));
+            return res.status(400).json(new ApiResponse(400,"Invalid Password"));
         }
 
         const { accessToken, refreshToken } = await generateAccessTokenandRefreshToken(user._id);

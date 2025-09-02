@@ -22,7 +22,7 @@ import { useSelector } from 'react-redux'
 
 
 
-const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClient", url = "http://localhost:8000/client/new", Detail = [...clientDetail] }) => {
+const NewClient = ({ title = "Add New Client", navigatePath = "/client/list", url = "http://localhost:8000/client/new", Detail = [...clientDetail] }) => {
 
 
   const navigate = useNavigate();
@@ -84,6 +84,9 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
     defaultValues: {
       defaultTerm: 14,
       contactPerson: [],
+      currency : "Pakistani Rupee | PKRs",
+      saleCategory: "General Sales",
+
 
     },
   });
@@ -98,6 +101,7 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
   const onSubmit = async (data) => {
 
     data = { ...data, createdBy: { id: user?._id, name: user?.fullName } };
+    console.log('Form data submitted:', data);
 
     try {
       
@@ -109,6 +113,7 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
       console.error('Error in form submission:', error.message);
     } finally {
       NProgress.done();
+      navigate(navigatePath);
     }
 
   }
@@ -166,8 +171,8 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
 
                         {fields.isSelect ?
 
-                          (<SelectOptions field={fields} setValue={setValue} register={register}
-                            errors={errors} />)
+                          (<SelectOptions field={fields} setValue={setValue} watch={watch} register={register}
+                            errors={errors}  styles={"h-40"} />)
                           :
                           (<InputField fields={fields} errors={errors}
                             register={register} />
@@ -201,6 +206,8 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
                       </div>)}
                   </div >
 
+                  
+
                   <FormInput
                     register={register} errors={errors} fieldData={field.address} className={'mb-2.5'}
                   />
@@ -212,7 +219,7 @@ const NewClient = ({ title = "Add New Client", navigatePath = "/Sale/AllNewClien
 
                           <div key={index2} className=' grid-cols-2 sm:grid-cols-1 xsm:grid-cols-1  grid gap-2.5'>
                             <FormInput
-                              register={register} errors={errors} fieldData={field2.address} className={'mb-2.5'}
+                              register={register} setValue={setValue} errors={errors} fieldData={field2.address} className={'mb-2.5'}
                             />
 
                           </div>))

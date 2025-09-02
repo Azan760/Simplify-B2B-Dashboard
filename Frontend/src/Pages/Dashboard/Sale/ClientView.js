@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router'
 import DynamicField from '../../../Components/DynamicField'
 import { back, deleteIcon, refresh } from '../../../Components/Icons'
 import '../../../Css/NewClient.css'
-import NProgress from 'nprogress';
+import NProgress, { set } from 'nprogress';
 import 'nprogress/nprogress.css';
 import "../../../Css/NewProduct.css"
 import { useFetch } from "../../../Services/ApiService.js"
@@ -22,11 +22,13 @@ import { formatDate } from '../../../Components/Date'
 
 
 
-const ClientView = ({ title = "Add New Client", navigatePath = "client/all", url = "http://localhost:8000/client/view", Detail = [...clientDetail] }) => {
+const ClientView = ({ title = "Edit Client", navigatePath = "/client/list",
+    url = "http://localhost:8000/client/view", url2 = "http://localhost:8000/client/edit", Detail = [...clientDetail] }) => {
 
 
     const { id } = useParams();
-    const { getFetch, updateFetch } = useFetch(`${url}/${id}`);
+    const { getFetch } = useFetch(`${url}/${id}`);
+    const { updateFetch } = useFetch(`${url2}/${id}`);
     const user = useSelector((state) => state.auth.user);
     const navigate = useNavigate();
 
@@ -45,16 +47,53 @@ const ClientView = ({ title = "Add New Client", navigatePath = "client/all", url
 
 
 
+
     useEffect(() => {
         if (allData) {
 
             setValue("clientName", allData?.details?.clientName);
-            setValue("registraion", allData?.details?.registraion);
+            setValue("supplierName", allData.details?.supplierName);
+            setValue("registraion", allData?.details?.registration);
             setValue("currency", allData?.details?.currency);
-            setValue("clientEmail", allData?.details?.clientEmail);
-            setValue("phone", allData?.details?.phone);
+            setValue("clientEmail", allData?.details?.email);
+             setValue("supplierEmail", allData?.details?.email);
+            setValue("phone", allData?.details?.phoneNo);
             setValue("defaultTerm", allData?.details?.defaultTerm);
+           setValue("saleCategory", allData?.details?.defaultCategory);
+            setValue("purchaseCategory", allData?.details?.defaultCategory);
+
             setValue("vatNumber", allData?.details?.vatNumber);
+            setValue("active", allData?.details?.active);
+            setValue("vatRate", allData?.details?.vatRate);
+            setValue("eoriNo", allData?.details?.eoriNo);
+            setValue("overdue", allData?.details?.overdue);
+            setValue("billAddress1", allData?.locations?.billToAddress?.address1);
+            setValue("billAddress2", allData?.locations?.billToAddress?.address2);
+            setValue("billCity", allData?.locations?.billToAddress?.city);
+            setValue("billState", allData?.locations?.billToAddress?.country);
+            setValue("billCountry", allData?.locations?.billToAddress?.state);
+            setValue("billZipCode", allData?.locations?.billToAddress?.zipCode);
+            setValue("shipAddress1", allData?.locations?.shipToAddress?.address1);
+            setValue("shipAddress2", allData?.locations?.shipToAddress?.address2);
+            setValue("shipCity", allData?.locations?.shipToAddress?.city);
+            setValue("shipState", allData?.locations?.shipToAddress?.country);
+            setValue("shipCountry", allData?.locations?.shipToAddress?.state);
+            setValue("shipZipCode", allData?.locations?.shipToAddress?.zipCode);
+
+
+            if (allData?.contactPersons) {
+                replace(
+                    allData.contactPersons.map((item) => ({
+                        fullName: item?.fullName || '',
+                        email: item?.email || '',
+                        phoneNo: item?.phoneNo || '',
+                        salePerson: item?.salePerson?.name || '',
+                        active: item?.active || false,
+                        defaultContact: item?.defaultContact || false,
+
+                    }))
+                );
+            }
 
 
 
@@ -79,26 +118,31 @@ const ClientView = ({ title = "Add New Client", navigatePath = "client/all", url
         },
     });
 
-    const { fields, append, remove } = useFieldArray({ control, name: "contactPerson" });
+    const { fields, append, remove, replace } = useFieldArray({ control, name: "contactPerson" });
 
     const handleContactPerson = useCallback(() => {
-        append({ fullName: '', email: '', phoneNo: '', salePerson: '' });
+        append({ fullName: '', email: '', phoneNo: '', salePerson: '', active: true, defaultContact: true });
     }, [append]);
 
 
     const onSubmit = async (data) => {
+        
 
         data = { ...data, updatedBy: { id: user?._id, name: user?.fullName } };
-
+        
         try {
+            console.log(data);
             await updateFetch(data);
             NProgress.start();
+
         }
         catch (error) {
             console.log(error);
         }
         finally {
             NProgress.done();
+            navigate(navigatePath);
+
         }
     }
 
@@ -109,20 +153,34 @@ const ClientView = ({ title = "Add New Client", navigatePath = "client/all", url
             </Helmet>
 
             <div style={{ height: "calc(100% - 60px)" }}>
-                <div className="heading mb-5 gap-2.5  items-center flex sm:mb-8 xsm:mb-8">
-                    <span onClick={() => { navigate(navigatePath) }}
-                        className='border border-textColor2 rounded p-2 shadow-sideShadow'>
+                <div className="flex items-center gap-2.5 mb-5 sm:mb-8 xsm:mb-8">
+                    {/* Back Button */}
+                    <span
+                        onClick={() => navigate(navigatePath)}
+                        className="cursor-pointer border border-textColor2 rounded p-2 shadow-sideShadow hover:bg-gray-100 transition"
+                    >
                         {back}
                     </span>
-                    <h6 style={{ letterSpacing: '1px' }} className="font-semibold
-                 text-heading  text-xl  xsm:text-lg">  {title} </h6>
+
+                    {/* Title and Status */}
+                    <h6 className="flex items-center gap-2 text-heading font-semibold text-xl xsm:text-lg tracking-wide">
+                        {title}
+                        {allData?.Status && (
+                            <span className="text-[12.5px] font-medium bg-bgColor text-white rounded px-2.5 py-1">
+                                {allData.Status}
+                            </span>
+                        )}
+                    </h6>
                 </div>
+
 
                 <form onSubmit={handleSubmit(onSubmit)} noValidate>
                     <div className=''>
                         <div className='flex justify-between sm:flex-col sm:gap-2.5 xsm:gap-2.5 xsm:flex-col  mb-2.5'>
                             <div className='flex items-center'>
-                                <p className='text-base text-textColor font-semibold tracking-wider'> Detail: </p>
+                                <p className='text-base text-textColor font-semibold tracking-wider'> Detail:  </p>
+                                <span className='ml-1 text-darkBlue font-semibold text-base xsm:text-lg' > {allData?.CLINumber} </span>
+
                             </div>
                             <div className='flex detail-icon '>
 
@@ -260,7 +318,7 @@ const ClientView = ({ title = "Add New Client", navigatePath = "client/all", url
                                 <div className="bg-gray-100 rounded p-3.5">
                                     <p className="font-semibold text-gray-800 text-sm">Update</p>
                                     <p className="text-sm text-gray-500">
-                                        last updated by <span className="text-blue-600 font-semibold cursor-pointer">{allData?.updatedByBy?.name}</span>
+                                        last updated by <span className="text-blue-600 font-semibold cursor-pointer">{allData?.updatedBy?.name}</span>
                                     </p>
                                 </div>
                             </div>

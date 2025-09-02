@@ -72,7 +72,9 @@ export const userDetail = [
             "Inventory Clerk",
             "Inventory Manager",
             "Sales Manager",
-            "Sales Person"]
+            "Sales Person"],
+              styles: "h-40"
+
 
 
     }

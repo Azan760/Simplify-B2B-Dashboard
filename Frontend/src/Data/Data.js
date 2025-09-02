@@ -308,6 +308,7 @@ export const dropdownMenu = [
       <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2ZM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96c.026-.163.04-.33.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1.006 1.006 0 0 1 1 12V4Z" />
     </svg>,
     value: 'My Company',
+    path : "company"
 
   }, {
     icon: <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" className="bi bi-gear" viewBox="0 0 16 16">
@@ -581,7 +582,7 @@ export const saleTableData = [
     ],
     type: "text",
     placeholder: "Sale Invoice",
-   
+
   }];
 
 export const purchaseTableData = [
@@ -597,10 +598,13 @@ export const purchaseTableData = [
     ],
 
     SelectOption: [
-
+      "Purchase Invoice",
+      "Purchase Order",
     ],
+
+
     type: "text",
-    placeholder: "Dispatch",
+    placeholder: "Purchase Invoice",
     inputName: "searchWareHouse",
 
   }
@@ -645,7 +649,7 @@ export const sectionProduct = [
     title: 'Client',
     type: "text",
     placeholder: "Client",
-    inputName: "searchSalePurchase",
+    inputName: "searchUsers",
     selectOption: [
       "Client",
       "Supplier"
@@ -669,16 +673,7 @@ export const sectionProduct = [
         d="M3.646 9.146a.5.5 0 0 1 .708 0L8 12.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zm0-2.292a.5.5 0 0 0 .708 0L8 3.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708z" />
     </svg>,
     item: [
-      "A",
-      "R",
-      "M",
-      "D",
-      "TC",
-      "TR",
-      "KG",
-      "T",
-      "P",
-      "RC",
+
     ],
 
   },
@@ -697,13 +692,7 @@ export const sectionProduct = [
         d="M3.646 9.146a.5.5 0 0 1 .708 0L8 12.793l3.646-3.647a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 0-.708zm0-2.292a.5.5 0 0 0 .708 0L8 3.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708z" />
     </svg>,
     item: [
-      "MA",
-      "MH",
-      "MA",
-      "MM",
-      "MS",
-      "PN",
-      "SU",
+
     ],
 
   }
@@ -869,6 +858,8 @@ export const saleInvoiceDetail = [
     label: "*",
     span: "Exchange Rate",
     required: true,
+    paddingLeft: "pl-8",
+
     placeholder: "",
     types: 'number',
     inputName: "exchangeRate",
@@ -877,7 +868,7 @@ export const saleInvoiceDetail = [
       <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z" />
     </svg>,
     require: true,
-    number : true,
+    number: true,
 
   }, {
     label: "*",
@@ -920,6 +911,9 @@ export const saleInvoiceDetail = [
     </svg>,
     isSelect: true,
     types: "text",
+    selectOption: [
+
+    ]
 
 
   }
@@ -940,7 +934,35 @@ export const saleProduct = [
       "VAT Amount",
       "Gross Total",
       "Action",
+      // {
+      //   head: "Name", styles: "w-[15%]"
+      // },
+      // {
+      //   head: "Sku", styles: "w-[10%]"
+      // },
+      // {
+      //   head: "Category", styles: "w-[15%]"
+      // },
+      // {
+      //   head: "Qty(Req/Acq)", styles: "w-[10%]"
+      // },
+      // {
+      //   head: "Unit Price", styles: "w-[10%]"
+      // },
+      // {
+      //   head: "VAT (%)", styles: "w-[10%]"
+      // },
+      // {
+      //   head: "VAT Amount", styles: "w-[10%]"
+      // },
+      // {
+      //   head: "Gross Total", styles: "w-[10%]"
+      // },
+      // {
+      //   head: "Action", styles: "w-[5%]"
+      // }
     ],
+
 
     bodyTitle: "No Product",
     description: "Add products to your Invoice",
@@ -955,6 +977,7 @@ export const saleProduct = [
         isSelect: true,
         selectOption: [
         ],
+        styles: "h-40",
         icon: <svg style={{ left: '85%', top: '13.5px' }} xmlns="http://www.w3.org/2000/svg"
           width="10" height="10"
           fill="currentColor" className="bi bi-caret-down-fill text-browns absolute
@@ -983,34 +1006,37 @@ export const saleProduct = [
           "Miscellaneous Income",
         ],
         inputName: "category",
+        styles: "h-40",
+
       },
       {
         placeholder: 'Quantity',
         types: 'number',
         inputName: "quantity",
-        number : true,
+        number: true,
       },
       {
         placeholder: 'Unit Price',
         types: 'number',
         inputName: "unitPrice",
-        number : true,
+        number: true,
       }, {
         placeholder: 'Deafult VAT Rule',
         types: 'number',
         inputName: "vatRate",
-        number : true,
+        number: true,
       },
       {
         placeholder: 'Vat Amount',
         types: 'decimal',
         inputName: "vatAmount",
-        
+
       },
       {
         placeholder: 'Gross Total',
         types: 'decimal',
         inputName: "grossTotal",
+        types: 'decimal',
 
       }
 
@@ -1041,32 +1067,170 @@ export const aggregateTable = [
   {
     lable: "Total Quantity",
     value: 0,
-    inputName : "totalQuantity",
-  
+    inputName: "totalQuantity",
+
 
   },
   {
     lable: "Dispatched/Sent Quantity",
     value: 0,
-    inputName : "dispatchedQuantity",
+    inputName: "dispatchedQuantity",
 
   }, {
     lable: "Sub Amount",
     value: 0,
-    inputName : "subAmount",
+    inputName: "subAmount",
 
   }, {
     lable: "VAT Amount",
     value: 0,
-    inputName : "vatAmount",
+    inputName: "vatAmount",
 
   }, {
     lable: "Total Amount",
     value: 0,
-    inputName : "totalAmount",
+    inputName: "totalAmount",
 
   }
-]
+];
+
+
+
+export const companyProfile = [
+
+  {
+    label: "*",
+    span: "Company Name",
+    types: 'text',
+    inputName: "companyName",
+    require: true,
+    required: true,
+
+
+  },
+  {
+
+    label: "*",
+    span: "Currency",
+    types: 'text',
+    inputName: "currency",
+    paddingLeft: "pl-8",
+    icon: <svg style={{ left: '96%', top: '50%', transform: 'translate(-50%,-50%)' }} xmlns="http://www.w3.org/2000/svg"
+      width="11" height="11"
+      fill="currentColor" className="bi bi-caret-down-fill text-browns absolute  " viewBox="0 0 16 16">
+      <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+    </svg>,
+    require: true,
+    required: true,
+
+
+
+  }, {
+    label: "*",
+    span: "Date Formate",
+    types: 'date',
+    inputName: "establishmentDate",
+    paddingLeft: "pl-8",
+    icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+      fill="currentColor" className="bi bi-calendar2-week text-searchIcon absolute top-2.5 left-2" viewBox="0 0 16 16">
+      <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z" />
+      <path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5zM11 7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z" />
+    </svg>,
+    require: true,
+    required: true,
+
+
+  },
+  {
+    label: "*",
+    span: "Primary Email",
+    required: true,
+    paddingLeft: "pl-8",
+    placeholder: "Email",
+    types: 'email',
+    inputName: "primaryEmail",
+    icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+      className="bi bi-envelope absolute text-searchIcon top-2.5 left-2" viewBox="0 0 16 16">
+      <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+    </svg>,
+    pattren: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    , size: 4,
+    message2: "Email can only contain letters and digits",
+    message: "Email is required to be at least 4 character.",
+    require: true,
+    required: true,
+
+
+  }, {
+    labelIcon: <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" className="bi bi-question-circle-fill" viewBox="0 0 16 16">
+      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
+    </svg>,
+    span: "Industry",
+    icon: <svg style={{ left: '96%', top: '50%', transform: 'translate(-50%,-50%)' }} xmlns="http://www.w3.org/2000/svg"
+      width="11" height="11"
+      fill="currentColor" className="bi bi-caret-down-fill text-browns absolute  " viewBox="0 0 16 16">
+      <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+    </svg>,
+    types: 'text',
+    inputName: "industry",
+    isSelect: true,
+    selectOption: [
+      "Accounting","Airline/Aviation","Alternative Dispute Resolution",
+      "Agriculture","Automotive","Banking/Mortgage","Construction","Animation","Alternative Medicine",
+      "Apparel/Fashion","Architecture/Planning","Arts/Crafts","Automotive","Aviation/Aerospace",
+      "Biotechnology/Greentech","Broadcast Media","Building Materials","Business Supplies/Equipment",
+      "Capital Markets/Hedge Fund/Private Equity","Chemicals","Civic/Social Organization",
+      "Civil Engineering","Commercial Real Estate","Computer Games","Computer Hardware",
+      "Computer Networking","Computer Software/Engineering","Computer/Network Security",
+      "Consumer Electronics","Consumer Goods","Consumer Services","Writing/Editing",
+      "Cosmetics","Dairy","Defense/Space","Design","E-Learning","Education Management",
+      
+    ],
+    styles : "h-40",
+
+  }, {
+
+    inputName: "regNo",
+    span: "Reg No#.",
+    placeholder: "",
+    types: "text",
+
+  },
+    {
+    inputName: "moile",
+    span: "Mobile No",
+    placeholder: "+92 300 0000000",
+    types: "tel",
+    pattren: /^\+?[1-9]\d{1,14}$/,
+    message: "Please enter a valid phone number.",
+  
+  },
+  {
+    inputName: "phone",
+    span: "Phone No",
+    placeholder: "+92 300 0000000",
+    types: "tel",
+    pattren: /^\+?[1-9]\d{1,14}$/,
+    message: "Please enter a valid phone number.",
+  
+  },
+  {
+
+    inputName: "eoriNo",
+    span: "EORI No#.",
+    placeholder: "GB 123 123 123 12345",
+    types: "text",
+
+  },{
+    inputName: "website",
+    span: "Website",
+    placeholder: "https://example.com",
+    types: "url",
+    pattren: /^(ftp|http|https):\/\/[^ "]+$/,
+    message: "Please enter a valid URL.",
+    require: true,
+  }
+];
 
 
 

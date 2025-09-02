@@ -9,6 +9,7 @@ import Login from "../Pages/Auth/Login";
 import ProtectedRoute from './ProtectedRoute';
 import { Navigate, useNavigate } from 'react-router';
 import EditSaleInvoice from '../Pages/Dashboard/Sale/SaleInvoiceEdit';
+import CompanyProfile from '../Components/CompanyProfile';
 
 const NewPassword = lazy(() => import("../Pages/Auth/NewPassword"));
 const Signup = lazy(() => import("../Pages/Auth/Signup"));
@@ -68,6 +69,7 @@ const AppRoutes = () => {
                         <Route path="/" element={<ProtectedRoute />}>
                             <Route element={<DashboardLayout />}>
                                 <Route index element={<Section />} />
+                                <Route path="company" element={<CompanyProfile />} />
                                 <Route path="product/list" element={<AllProduct />} />
                                 <Route path="product/view/:id" element={<ProductView />} />
                                 <Route path="product/new" element={<NewProduct />} />

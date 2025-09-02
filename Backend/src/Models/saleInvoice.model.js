@@ -20,7 +20,7 @@ const clientDetails = new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: true,
+
     },
     addressType: {
         type: String,
@@ -66,7 +66,7 @@ const product = new mongoose.Schema({
         type: Number,
         required: [true, "Product unit price is required"],
     },
-    vatPercent: {
+    vatRate : {
         type: Number,
     },
     vatAmount: {
@@ -107,7 +107,15 @@ const invoiceDetails = new mongoose.Schema({
         ]
     },
     assigneTo: {
-        type: String,
+        id : {
+            type: mongoose.Types.ObjectId,
+            ref: "TeamMember",
+        },
+
+        name : {
+            type : String,
+         
+        }
     }
 });
 
@@ -143,7 +151,8 @@ const saleInvoice = new mongoose.Schema({
             type: String,
             required: true,
         },
-        updatedBy: {
+    } , 
+    updatedBy: {
             id: {
                 type: mongoose.Types.ObjectId,
                 ref: "TeamMember",
@@ -152,7 +161,7 @@ const saleInvoice = new mongoose.Schema({
                 type: String,
             },
         }
-    },
+    
 
 
 }, { timestamps: true });

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Counter } from "./Counter.model.js";
 mongoose.pluralize(null);
 
 
@@ -20,21 +21,22 @@ const contactPersonSchema = new mongoose.Schema({
 
     },
     salePerson: {
-           id: {
-               type: mongoose.Schema.Types.ObjectId,
-               ref: "TeamMember",
-           },
-           name: {
-               type: String,
-               required: false,
-           }
-       },
-    active : {
-        type : Boolean
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "TeamMember",
+        },
+        name: {
+            type: String,
+            required: false,
+        }
     },
-    deafultContact : {
-        type : Boolean,
-    }
+    active: {
+        type: Boolean
+    },
+    defaultContact : {
+        type: Boolean,
+      //  default: true,
+    },
 });
 
 const addressSchema = new mongoose.Schema({
@@ -59,11 +61,12 @@ const addressSchema = new mongoose.Schema({
 });
 
 const detailsSchema = new mongoose.Schema({
-    active : {
-        type : Boolean,
+    active: {
+        type: Boolean,
     },
-    overdueRemainder : {
-        type : Boolean
+    overdue : {
+        type : Boolean,
+        default : true,
     },
     supplierName: {
         type: String,
@@ -85,7 +88,7 @@ const detailsSchema = new mongoose.Schema({
     phoneNo: {
         type: String,
         trim: true,
-    
+
     },
     defaultTerm: {
         type: Number,
@@ -93,14 +96,14 @@ const detailsSchema = new mongoose.Schema({
     },
     vatNumber: {
         type: String,
-        
+
     },
     vatRate: {
         type: Number,
     },
     eoriNo: {
         type: String,
-    
+
     },
     defaultCategory: {
         type: String,
@@ -108,15 +111,20 @@ const detailsSchema = new mongoose.Schema({
 });
 
 const newSupplierSchema = new mongoose.Schema({
+    SUPNumber: { type: String, unique: true },
+    Status: {
+        type: String,
+        // required : true,
+    },
 
     details: detailsSchema,
     locations: {
         billToAddress: addressSchema,
         shipToAddress: addressSchema,
     },
-    contactPersons: [contactPersonSchema], 
+    contactPersons: [contactPersonSchema],
     createdBy: {
-        id : {
+        id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "TeamMember",
         },
@@ -127,7 +135,7 @@ const newSupplierSchema = new mongoose.Schema({
 
     },
     updatedBy: {
-        id : {
+        id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "TeamMember",
         },
@@ -138,6 +146,32 @@ const newSupplierSchema = new mongoose.Schema({
 
     },
 
-},{timestamps : true});
+}, { timestamps: true });
+
+
+newSupplierSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        const currentYear = new Date().getFullYear();
+
+        let counter = await Counter.findOne({ name: 'newSupplierSchema', year: currentYear });
+
+        if (!counter) {
+            counter = await Counter.create({
+                name: 'newSupplierSchema',
+                year: currentYear,
+                seq: 1
+            });
+
+        } else {
+            counter.seq++;
+            await counter.save();
+        }
+
+
+        this.CLINumber = `SUP-${currentYear}-${counter.seq}`;
+    }
+
+    next();
+});
 
 export const NewSupplier = mongoose.model("Supplier", newSupplierSchema);

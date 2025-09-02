@@ -1,16 +1,16 @@
 import React from 'react'
 import SelectOptions from './SelectOptions';
 
-const FormInput = ({ fieldData, setValue, register, errors, className }) => {
+const FormInput = ({ fieldData, setValue, register, errors, className}) => {
 
     return (
         <>
             {fieldData.map((fields, index) => {
                 return (
 
-                    <div key={index} className={`flex flex-col ${className}`}>
-                           <label className=' font-normal flex text-sectionColor
-                                items-center text-xs mb-1.5'>
+                    <div key={index} className={`  flex flex-col ${className}`}>
+                           <label className={` font-normal flex text-sectionColor
+                                items-center text-xs mb-1.5`}>
 
                           {fields.require &&
                                 <span className='text-reds w-3 h-3 '> {fields.label} </span>}
@@ -30,7 +30,8 @@ const FormInput = ({ fieldData, setValue, register, errors, className }) => {
                                             type: fields.type,
                                             placeholder: fields.placeholder,
                                             inputName: fields.inputName,
-                                            selectOption: fields.selectOption
+                                            selectOption: fields.selectOption,
+                                              styles : fields?.styles
                                         }}
                                            icon={fields.icon}
                                            icon2={fields.icon2}

@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../Features/AuthSlice";
 import { useNavigate } from "react-router-dom";
 import { useFetch } from "../Services/ApiService.js"
+import { useSelector } from 'react-redux';
 
 const Sidebar = ({ sideOpen }) => {
 
@@ -17,6 +18,8 @@ const Sidebar = ({ sideOpen }) => {
 
 
     const { postFetch } = useFetch("http://localhost:8000/api/logout");
+      const user = useSelector((state) => state.auth.user);
+    
 
     useEffect(() => {
         sideOpen === 'side' ? setOpen('') : setOpen('hidden');
@@ -30,13 +33,13 @@ const Sidebar = ({ sideOpen }) => {
 
     const handleLogout = async () => {
         try {
-            // const response = await postFetch();
-            // if (response?.success) {  
-            dispatch(logout());
-            navigate("/login");
-            // } else {
-            //     console.log("Logout failed:", response?.message);
-            // }
+            const response = await postFetch();
+            if (response?.success) {
+                dispatch(logout());
+                navigate("/login");
+           } else {
+               console.log("Logout failed:", response?.message);
+           }
 
         }
         catch (error) {
@@ -44,6 +47,19 @@ const Sidebar = ({ sideOpen }) => {
         }
     };
 
+    // Role-based nav filtering
+    let filteredNavItems = navItems;
+    if (user) {
+        if (user.userType === 'Sales Person') {
+            filteredNavItems = navItems.filter(
+                item => item.value !== 'Dahsboard' && item.value !== 'Products/Services' && item.value !== 'Team'
+            );
+        } else if (user.userType === 'Sales Manager') {
+            filteredNavItems = navItems.filter(
+                item => item.value !== 'Dahsboard'
+            );
+        }
+    }
 
 
     return (
@@ -66,7 +82,7 @@ const Sidebar = ({ sideOpen }) => {
                              rounded-md border-searchIcon`} type="text" placeholder="Search using IMEI/Serial" />
                     </div>
                     <ul className="navbar-nav pb-5 border-b border-searchIcon">
-                        {navItems.map((menu, index) => {
+                        {filteredNavItems.map((menu, index) => {
 
                             const show = links.x === index ? 'block' : 'hidden';
 
@@ -96,7 +112,7 @@ const Sidebar = ({ sideOpen }) => {
                                         <ul className={`${show} h-full my-2.5  rounded  `}>
                                             {menu.dropdown.map((dropdownMenu, index) => {
                                                 return (
-                                                    <li key={index} className='list-none'>
+                                                    <li key={index} className='list-none '>
                                                         <Link to={dropdownMenu.Path} className='  p-3 flex items-center gap-3.5 text-textColor3 text-xs'>
                                                             {dropdownMenu.icon}
                                                             <span className={`${isOpen}`} > {dropdownMenu.value} </span>
@@ -114,7 +130,7 @@ const Sidebar = ({ sideOpen }) => {
 
 
                 <footer className="footer">
-                    <div className={`chat my-5  border border-textColor  ${sideOpen === 'side' ? 'px-2.5 py-2' : 'p-2.5'} rounded-md flex justify-center items-center gap-2 text-textColor font-semibold `} id="chat">
+                    {/* <div className={`chat my-5  border border-textColor  ${sideOpen === 'side' ? 'px-2.5 py-2' : 'p-2.5'} rounded-md flex justify-center items-center gap-2 text-textColor font-semibold `} id="chat">
                         {chatIcon}
                         <span className={`${isOpen}`}> Chat with us </span>
                     </div>
@@ -131,24 +147,24 @@ const Sidebar = ({ sideOpen }) => {
                         <span className={` ${isOpen} check bg-bgColor text-white p-1.5`}>
                             {circle}
                         </span>
-                    </div>
+                    </div> */}
 
 
                     <div className="smiles-user flex items-center justify-between mb-5 relative group" id="close">
-                        <div className='flex items-center gap-2.5'>
+                        <div className='flex items-center gap-2'>
                             <img src="https://app.smiels.com/assets/user-profile.svg" alt="" className="profile-logo" />
-                            <span className={` ${isOpen} user text-textColor2  font-normal  text-sm`}> SMIELS User </span>
+                            <span className={` ${isOpen} user text-textColor2  font-normal  text-sm`}> {user?.fullName} </span>
                         </div>
                         <span className={`${isOpen}  `} >
                             {dotsIcon}
                         </span>
 
-                        <div className="dropdown-menu-2 w-32 hidden group-hover:flex flex-col absolute left-14 -top-16
+                        <div className="dropdown-menu-2 w-40 hidden group-hover:flex flex-col absolute left-14 -top-16
                          bg-dashboard border border-searchIcon rounded" id="dropdown-menu-2">
                             <ul className="setting-menu flex items-center flex-col" >
                                 <li className='list-none w-full hover:bg-searchIcon ' >
 
-                                    <Link to="" className="setting-link flex gap-2.5 items-center p-2.5 text-xs border-b border-dashbaord  decoration-0 text-black ">
+                                    <Link to={`team/view/${user?._id}`} className="setting-link flex gap-2.5 items-center p-2.5 text-xs border-b border-dashbaord  decoration-0 text-black ">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
                                             <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
                                             <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />

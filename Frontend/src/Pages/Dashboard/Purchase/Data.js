@@ -43,6 +43,10 @@ export const supplierDetail = [
             <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
         </svg>,
         require: true,
+         isSelect : true,
+        selectOption : [
+            "Pakistani Rupee | PKRs"
+        ]
 
     }, {
 
@@ -93,7 +97,7 @@ export const supplierDetail = [
         </svg>,
         span: "VAT Number",
         placeholder: "5J6RE4H48BL023237",
-        types: 'number',
+        types: 'text',
         inputName: "vatNumber",
         require: false,
         size: 2,
@@ -137,7 +141,7 @@ export const supplierDetail = [
 
     }, {
 
-        span: "Default Sale Category",
+        span: "Default Purchase Category",
         inputName: "purchaseCategory",
         type: "text",
         icon: <svg style={{ left: '93%', top: '13.5px' }} xmlns="http://www.w3.org/2000/svg"
@@ -145,6 +149,15 @@ export const supplierDetail = [
             fill="currentColor" className="bi bi-caret-down-fill text-browns absolute  " viewBox="0 0 16 16">
             <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
         </svg>,
+        isSelect : true,
+        selectOption : [
+            "Bank Charges","Capital Expenditure",
+            "Commission Recieved","Credit Charges (Late Payment)","Discount Allowed",
+            "Distribute and Carriage","Flat Rate VAT Sales Adjustment","Furniture and Fixtures",
+            "General Sales","Goodwill","Insurance Claims","Motor Vehicles",
+        
+        ],
+        styles : "h-40"
 
     }
 
@@ -154,6 +167,7 @@ export const supplierDetail = [
 
 export const supplierHeader =[
     "Supplier Name",
+    "Reference #",
     "Email",
     "Contact Person",
     "Created On",

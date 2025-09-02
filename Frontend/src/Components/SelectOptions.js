@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef,memo } from 'react'
 
 const SelectOptions = ({ fieldName, setValue, register, field, errors, onOptionSelect }) => {
+
+    
+
     const [isOpen, setOpen] = useState(false);
     const [filteredOptions, setFilteredOptions] = useState([]);
 
@@ -18,6 +21,7 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors, onOptionS
             onOptionSelect(option);
          }
     }
+
 
 
     const handleInputChange = (field, event) => {
@@ -56,11 +60,10 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors, onOptionS
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-
     return (
 
         <>
-            <label className=' font-normal flex text-sectionColor   items-center text-xs mb-1.5'>
+            <label className={` ${field?.label_text} font-normal flex text-sectionColor   items-center text-xs mb-1.5`}>
                 {field.require &&
                     <span className='text-reds w-3 h-3 '> {field.label} </span>}
                 <span className='pr-1'> {field.span} </span>
@@ -77,7 +80,7 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors, onOptionS
                 <input style={{ boxShadow: '0 0 6px #172b4d0a' }}
                     onClick={() => { handleInputClick(field) }}
 
-                    className={`  ${errors && errors[field.inputName] ? 'focus:border-reds' : 'focus:border-textColor'} 
+                    className={`   ${errors && errors[field.inputName] ? 'focus:border-reds' : 'focus:border-textColor'} 
                          w-full outline-none py-2 px-2  ${field.paddingLeft}   rounded text-sm text-textColor2    font-normal border bg-white  `}
 
                     type={field.type}
@@ -98,7 +101,9 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors, onOptionS
                 />
 
                 {isOpen &&
-                    <div className={` opacity-100  overflow-y-auto  bg-white border border-searchIcon border-r border-l border-b w-full  
+                    <div className={` 
+                         opacity-100  ${field?.styles} overflow-y-auto  bg-white border border-searchIcon
+                          border-r  border-b w-full  
                    absolute top-full  left-0`} style={{ zIndex: 2000 }} >
 
                         {filteredOptions.length > 0 ? (
@@ -107,7 +112,7 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors, onOptionS
                                     <div key={indexOption}
                                         onClick={() => handleOptionClick(field, indexOption, option)}
                                         className={` ${indexOption === 0 ? 'bg-textColor text-white' : 'text-black2'}  p-2.5 
-                                                          hover:text-white hover:bg-textColor text-sm`}>
+                                                          hover:text-white border-b border-searchIcon hover:bg-textColor text-sm`}>
                                         <span>{option}</span>
                                     </div>)
                             })
@@ -132,4 +137,4 @@ const SelectOptions = ({ fieldName, setValue, register, field, errors, onOptionS
     )
 }
 
-export default SelectOptions
+export default memo(SelectOptions)

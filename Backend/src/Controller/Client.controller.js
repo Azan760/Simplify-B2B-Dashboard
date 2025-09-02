@@ -66,6 +66,19 @@ export const Client = asyncHandler(async (req, res) => {
             throw new ApiError(400, 'Created By is required!');
         }
 
+        const userRole = await TeamMember.findById(createdBy.id).select("userType");
+        let Status = "";
+
+        if (userRole && userRole.userType === "Admin") {
+            console.log("User is Admin");
+            Status = "Approved";
+        } else {
+            console.log("User is not Admin");
+            Status = "Pending";
+        }
+
+
+
         const details = {
             clientName,
             registration: registraion,
@@ -78,7 +91,7 @@ export const Client = asyncHandler(async (req, res) => {
             eoriNo,
             active,
             overdue,
-            defaultCategory: saleCategory
+            deafultCategory: saleCategory
         };
 
         const billToAddress = {
@@ -121,6 +134,7 @@ export const Client = asyncHandler(async (req, res) => {
         }
 
         const newClient = await NewClient.create({
+            Status,
             details,
             contactPersons: updatedSalesPersonAssignment,
             locations: {
@@ -168,6 +182,7 @@ export const detailView = asyncHandler(async (req, res) => {
 
     try {
         if (!id) {
+
             throw new ApiError(400, 'Client ID is required!');
         }
         const client = await NewClient.findById(id).select(' -__v ');
@@ -187,8 +202,11 @@ export const detailView = asyncHandler(async (req, res) => {
         throw new ApiError(500, error.message);
     }
 });
+
 export const editView = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+        const { id } = req.params;
+
+
     const {
         contactPerson = [],
         defaultTerm,
@@ -215,20 +233,19 @@ export const editView = asyncHandler(async (req, res) => {
         shipState,
         shipCountry,
         shipZipCode,
-        createdBy
-
+        updatedBy
     } = req.body;
 
     try {
-
-        if (!createdBy) {
-            throw new ApiError(400, 'Created By is required!');
+        if (!clientName || !currency || !defaultTerm) {
+            return res.status(400).json(new ApiError(400, "Missing required fields (Client Name, Currency, or Default Term)"));
         }
 
+        if (!updatedBy) {
+            throw new ApiError(400, 'Updated By is required!');
+        }
 
-
-        const fullName = `${firstName} ${lastName}`;
-
+    
         const details = {
             clientName,
             registration: registraion,
@@ -241,7 +258,7 @@ export const editView = asyncHandler(async (req, res) => {
             eoriNo,
             active,
             overdue,
-            defaultCategory: saleCategory
+            deafultCategory: saleCategory
         };
 
         const billToAddress = {
@@ -262,37 +279,43 @@ export const editView = asyncHandler(async (req, res) => {
             zipCode: shipZipCode
         };
 
-        const updatedUser = await TeamMember.findByIdAndUpdate(
-            id,
-            {
-                details,
-                contactPersons: contactPerson,
-                locations: {
-                    billToAddress,
-                    shipToAddress
-                },
-                createdBy
-            },
-            { new: true }
-        );
+        let updatedSalesPersonAssignment = Array.isArray(contactPerson) ? [...contactPerson] : [];
 
-        if (!updatedUser) {
-            throw new ApiError(404, 'User not found!');
+        if (updatedSalesPersonAssignment.length > 0) {
+            for (const i of updatedSalesPersonAssignment) {
+                if (!i.salePerson) {
+                    return res.status(400).json(new ApiError(400, "Missing required fields (assignedUser)"));
+                } else {
+                    const assignUser = await TeamMember.findOne({ fullName: i.salePerson });
+
+                    if (!assignUser) {
+                        return res.status(400).json(new ApiError(400, "Assigned user not found"));
+                    }
+
+                    i.salePerson = {
+                        id: assignUser._id,
+                        name: assignUser.fullName
+                    };
+                }
+            }
         }
 
-        return res.status(200).json(
-            new ApiResponse({
-                data: updatedUser,
-                message: 'User updated successfully!'
-            })
-        );
+        const newClient = await NewClient.findByIdAndUpdate(id,{
+            
+            details,
+            contactPersons: updatedSalesPersonAssignment,
+            locations: {
+                billToAddress,
+                shipToAddress
+            },
+            updatedBy,
+        });
+
+        const checkClient = await NewClient.findById(newClient._id).select(" -__v");
+
+        return res.status(201).json(new ApiResponse(201, checkClient, "New client created successfully"));
     } catch (error) {
-        res.status(500).json(
-            new ApiResponse({
-                data: null,
-                message: error.message
-            })
-        );
+        return res.status(500).json(new ApiError(500, "Failed to create new client", error.message));
     }
 });
 

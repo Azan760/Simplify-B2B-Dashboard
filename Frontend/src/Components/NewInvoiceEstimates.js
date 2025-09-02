@@ -17,7 +17,7 @@ import { useSelector } from 'react-redux'
 
 
 
-const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Detail = [...saleClientDetail] }) => {
+const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, url3, Detail = [...saleClientDetail] }) => {
 
 
 
@@ -30,13 +30,13 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
 
     useEffect(() => {
 
-        if (totalQuanity > 0 || totalVat > 0  || grossSum > 0) {
+        if (totalQuanity > 0 || totalVat > 0 || grossSum > 0) {
             aggregateTable[0].value = totalQuanity;
             aggregateTable[3].value = totalVat;
-            aggregateTable[2].value = totalAmount;
+            aggregateTable[2].value = totalAmount.toFixed(2);
             aggregateTable[4].value = grossSum.toFixed(2);
         }
-    }, [totalQuanity,totalVat,grossSum])
+    }, [totalQuanity, totalVat, grossSum])
 
 
 
@@ -44,6 +44,8 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
     const navigate = useNavigate();
     const { getFetch, postFetch } = useFetch(url);
     const { getFetch: getProducts } = useFetch(url2);
+    const { getFetch: salesPerson } = useFetch(url3);
+
 
     const {
         register,
@@ -95,6 +97,7 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
                 if (selectedClient) {
 
                     selectedClient.contactPersons.forEach(person => {
+                        
                         if (!saleClientDetail[1].selectOption.includes(person.fullName)) {
                             saleClientDetail[1].selectOption.push(person.fullName);
                         }
@@ -124,7 +127,7 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
     const handleAddProduct = useCallback(() => {
         append({
             productServiceName: '', sku: '', category: '', quantity: '', unitPrice: '',
-            vatRate: '', vatAmount: '', grossTotal: ''
+            vatRate: 0, vatAmount: '', grossTotal: ''
         });
     }, [append]);
 
@@ -141,6 +144,37 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
         }
     );
 
+
+    // saleInvoiceDetail[6].selectOption = [];
+
+    const { data: allSalesPerson } = useQuery(
+        ['fetchAllSalesPerson'],
+        async () => {
+            const response = await salesPerson();
+            const salePerson = response?.data;
+            console.log(salePerson);
+
+            saleInvoiceDetail[6].selectOption = [];
+
+            if (salePerson) {
+
+                salePerson.map((value, index) => {
+
+                    saleInvoiceDetail[6].selectOption.push(value?.fullName);
+                })
+
+            }
+        },
+        {
+            refetchOnWindowFocus: false,
+            keepPreviousData: true,
+        }
+    );
+
+    const handleReset = useCallback(() => {
+        reset();
+    }, []);
+
     useEffect(() => {
         if (allProduct.length > 0) {
             saleProduct[0].inputs[0].selectOption = [];
@@ -155,15 +189,15 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
 
     }, [allProduct]);
 
-        const user = useSelector((state) => state.auth.user);
-  
+    const user = useSelector((state) => state.auth.user);
+
     async function onSubmit(data) {
         data = { ...data, createdBy: { id: user?._id, name: user?.fullName } };
 
 
         try {
             console.log(data);
-           await postFetch(data);
+            await postFetch(data);
             reset();
         } catch (error) {
             console.error('Error in form submission:', error.message);
@@ -248,24 +282,24 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
                         <div className='grid gap-3 sm:grid-cols-1 xsm:grid-cols-1 grid-cols-3'>
                             {/* <FormInput fieldData={saleInvoiceDetail} register={register}
                                 errors={errors} setValue={setValue} /> */}
-                                {saleInvoiceDetail.map((fields, index) => {
-                                        return (
+                            {saleInvoiceDetail.map((fields, index) => {
+                                return (
 
-                                            <div key={index} className={`flex flex-col`}>
+                                    <div key={index} className={`flex flex-col`}>
 
-                                                {fields.isSelect ?
+                                        {fields.isSelect ?
 
-                                                    (<SelectOptions field={fields} setValue={setValue} register={register}
-                                                        errors={errors} />)
-                                                    :
-                                                    (<InputField fields={fields} errors={errors}
-                                                        register={register} />
-                                                    )
-                                                }
-                                            </div>
-                                        )
+                                            (<SelectOptions field={fields} setValue={setValue} register={register}
+                                                errors={errors} />)
+                                            :
+                                            (<InputField fields={fields} errors={errors}
+                                                register={register} />
+                                            )
+                                        }
+                                    </div>
+                                )
 
-                                    })}
+                            })}
 
                         </div>
 
@@ -274,9 +308,9 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
 
                     <DynamicField fieldConfig={saleProduct} register={register} errors={errors}
                         fields={fields} remove={remove} append={handleAddProduct} fieldName="Product"
-                        setValue={setValue} watch={watch} 
-                       // setIndex={setIndex} 
-                         setGrossSum={setGrossSum} setTotalQuanity={setTotalQuanity} allProduct={allProduct}
+                        setValue={setValue} watch={watch}
+                        // setIndex={setIndex} 
+                        setGrossSum={setGrossSum} setTotalQuanity={setTotalQuanity} allProduct={allProduct}
                         setTotalVat={setTotalVat} setTotalAmount={setTotalAmount}
                     />
 
@@ -290,12 +324,14 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
 
                         </div>
 
-                        <div className="grid border-2 rounded  border-darkBlue mt-5">
+                        <div className="grid border-2 rounded  border-darkBlue mt-10 h-52">
                             {
                                 aggregateTable.map((field, index) => {
                                     return (
 
-                                        <div key={index} className="grid  grid-cols-2 border-b  border-darkBlue   ">
+
+
+                                        <div key={index} className={`   ${index === 3 && totalVat <= 0 ? "hidden" : "grid"} grid-cols-2 border-b  border-darkBlue   `}>
                                             <span className='flex items-center justify-end text-sm px-2.5 text-darkBlue'>{field.lable} </span>
                                             <p className='flex items-center justify-end px-2.5 pr-5 bg-darkBlue text-white  border-b border-white '>
                                                 <span {...register(field.inputName)} className=' text-sm  block '> {field.value}  </span>
@@ -314,7 +350,7 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
 
                                 <Button
                                     type="button" label="Back" onClick={handleNavigate}
-                                    icon={arrowLeft} className={` flex  border border-searchIcon   bg-white text-textColor2`}
+                                    icon={arrowLeft} className={` flex border border-searchIcon bg-white text-textColor2`}
                                 />
 
                                 <div className='flex button'>
@@ -322,11 +358,12 @@ const NewInvoiceEstimates = ({ title, navigatePath, inputHeader, url, url2, Deta
                                     <Button
                                         type="reset" label="Reset" disabled={!isDirty || isSubmitting}
                                         icon={arrowClockwise}
-                                        className={`   flex  ${(!isDirty || isSubmitting) && 'opacity-50'} border border-searchIcon   bg-white text-textColor2`}
+                                        className={` flex  ${(!isDirty || isSubmitting) && 'opacity-50'} border border-searchIcon   bg-white text-textColor2`}
                                     />
 
                                     <Button
-                                        type="submit" label="Submit" onSubmit={reset} disabled={!isDirty || isSubmitting}
+                                        type="submit" label="Submit" onSubmit={handleReset}
+                                        disabled={!isDirty || isSubmitting}
                                         className={` inner-btn ${(!isDirty || isSubmitting) && 'opacity-50'}  bg-textColor text-white  ml-2.5`}
                                     />
                                 </div>

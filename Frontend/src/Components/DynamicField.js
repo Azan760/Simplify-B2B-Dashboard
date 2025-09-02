@@ -3,15 +3,12 @@ import Button from './Button'
 import { plus, plus1, trash } from './Icons'
 import SelectOptions from './SelectOptions';
 
-//setIndex, setGrossSum,setTotalQuanity, setTotalVat, setTotalAmount, onOptionSelect
 
 const DynamicField = ({
     setValue, watch, fieldName, fieldConfig, allProduct,
 
     register, errors, remove, fields, append,setGrossSum,setTotalQuanity, setTotalVat, setTotalAmount, 
 }) => {
-
-    console.log("render");
 
     const calculatedValues = (index) => {
 
@@ -34,7 +31,7 @@ const DynamicField = ({
     const handleOptionSelect = useCallback((option, currentIndex) => {
         setSelectedProduct(option);
 
-        const selected = allProduct.find(
+        const selected = allProduct?.find(
             item => item?.details?.productServiceName === option
         );
 
@@ -125,7 +122,7 @@ const DynamicField = ({
                         <tr className=''>
                             {fieldConfig[0].heading.map((head, index) => {
                                 return (
-                                    <th key={index} className='text-left p-2.5 text-xs text-white font-semibold'>
+                                    <th key={index} className={` ${head?.styles} text-left p-2.5 text-xs text-white font-semibold`}>
                                         {head} </th>)
                             }
                             )}
@@ -179,8 +176,10 @@ const DynamicField = ({
                                                                 }}
 
                                                                 setValue={setValue} register={register}
+                                                                styles={inputFiled?.styles}
                                                                 errors={errors}
                                                                 onOptionSelect={(option) => handleOptionSelect(option, index)} 
+                                                        
 
 
                                                             />)
@@ -190,7 +189,7 @@ const DynamicField = ({
 
                                                             <input type={inputFiled.types} placeholder={inputFiled.placeholder}
 
-                                                                className={`w-full outline-none py-2 px-2  rounded
+                                                                className={` ${inputFiled.inputClass} w-full outline-none py-2 px-2  rounded
                                                          text-xs text-textColor2     font-normal border bg-white 
                                                          ${errors[inputFiled.inputName] ? 'focus:border-reds' : 'focus:border-textColor'}
                                                                                   

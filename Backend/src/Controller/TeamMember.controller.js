@@ -14,7 +14,7 @@ let transporter = nodemailer.createTransport({
 });
 
 const createTeamMember = asyncHandler(async (req, res) => {
-    const { active, email, firstName, lastName, userType,createdBy,contractType,corporateTax,commissionRate} = req.body;
+    const { active, email, firstName, lastName, userType,createdBy,contractType,corporateTax,commisionRate} = req.body;
 
 
     const userImage = req.file;
@@ -44,7 +44,7 @@ const createTeamMember = asyncHandler(async (req, res) => {
             userImage: userImage?.path,
             createdBy,
             contractType,
-            commissionRate,
+            commisionRate,
             corporateTax
         });
 
@@ -213,7 +213,7 @@ export const editView = asyncHandler(async (req, res) => {
       userType,
       contractType,
       corporateTax,
-      commissionRate,
+      commisionRate,
       updatedBy
     } = req.body;
 
@@ -250,7 +250,7 @@ export const editView = asyncHandler(async (req, res) => {
           userType,
           userImage: userImage?.path,
           contractType,
-          commissionRate,
+          commisionRate,
           corporateTax,
            updatedBy
         },

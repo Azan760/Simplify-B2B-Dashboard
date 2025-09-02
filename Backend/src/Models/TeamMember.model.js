@@ -40,9 +40,9 @@ const TeamMemberSchema = new mongoose.Schema({
     },
     contractType: {
         type : String,
-        enum : ["Fixed","CommissionBased"],
+        enum : ["Fixed","CommisionBased"],
     },
-    commissionRate : {
+    commisionRate : {
         type : Number,
         default : 0
     },
@@ -76,7 +76,9 @@ const TeamMemberSchema = new mongoose.Schema({
         }
     },
     password: {         
-        type: String,              
+        type: String,
+      //  required: [true, "Password is required"],
+      //  minlength: [6, "Password must be at least 6 characters"]
     },
     refreshToken :{
         type : String,

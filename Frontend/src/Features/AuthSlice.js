@@ -20,7 +20,7 @@ export const loginUser = createAsyncThunk(
                 user: data.data.loginUserData,
             };
         } catch (error) {
-            return rejectWithValue(error.response?.data?.message || error.message);
+            return rejectWithValue(error.response || error.message);
         }
     }
 );

@@ -62,10 +62,10 @@ const Header = ({ toggleSidebar, menuClose, menuOpen }) => {
                             {dropdownMenu.map((menu, index) => {
                                 return (
                                     <li className='list-none w-full' key={index}>
-                                        <a href="" className="setting-link flex gap-2.5 items-center p-2.5 text-xs border-b border-dashbaord  decoration-0 text-black ">
+                                        <Link to={`${menu.path}`} className="setting-link flex gap-2.5 items-center p-2.5 text-xs border-b border-dashbaord  decoration-0 text-black ">
                                             {menu.icon}
                                             <span> {menu.value} </span>
-                                        </a>
+                                        </Link>
                                     </li>
                                 )
                             })}

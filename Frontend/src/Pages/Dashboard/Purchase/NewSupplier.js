@@ -9,7 +9,8 @@ const NewSupplier = HocInputForm(NewClient, {
   title: "New Supplier",
   navigatePath : "/supplier/all",
   url : "http://localhost:8000/supplier/new",
-  Detail : [...supplierDetail]
+  Detail : [...supplierDetail],
+  navigatePath : "/supplier/list",
   
 
 
