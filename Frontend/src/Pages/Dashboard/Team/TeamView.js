@@ -464,7 +464,6 @@ const TeamView = () => {
                         </div>
 
                         <div style={{ height: '270px', width: '270px', border: "15px solid white" }} className={` xsm:m-auto mb-5 ${imagePreview ? `  border-8 bg-white ` : 'border-8'
-                        <div style={{ height: '270px', width: '270px', border: "15px solid white" }} className={` xsm:m-auto mb-5 ${imagePreview ? `  border-8 bg-white ` : 'border-8'
                             } relative shadow-sideShadow flex justify-center items-center  rounded  border-white`}>
 
                             {imagePreview || watch("userImage") ? (
