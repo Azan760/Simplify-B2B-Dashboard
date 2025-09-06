@@ -351,12 +351,20 @@ const TeamView = () => {
 
     useEffect(() => {
         if (allData) {
+            console.log(allData);
+            const imagePath = allData?.userImage?.replace("public\\", "")?.replace("public/", "")?.replace(/\\/g, "/");
+            //setValue("userImage", imagePath);
+            console.log(imagePath);
+
             const nameParts = allData.fullName.split(" ");
+
             setValue("firstName", nameParts[0]);
             setValue("lastName", nameParts[1]);
             setValue("userType", allData.userType);
             setValue("email", allData.email);
             setValue("active", allData.active);
+            setValue("userImage", imagePath)
+
         }
     }, [allData]);
 
@@ -456,7 +464,18 @@ const TeamView = () => {
                         </div>
 
                         <div style={{ height: '270px', width: '270px', border: "15px solid white" }} className={` xsm:m-auto mb-5 ${imagePreview ? `  border-8 bg-white ` : 'border-8'
+                        <div style={{ height: '270px', width: '270px', border: "15px solid white" }} className={` xsm:m-auto mb-5 ${imagePreview ? `  border-8 bg-white ` : 'border-8'
                             } relative shadow-sideShadow flex justify-center items-center  rounded  border-white`}>
+
+                            {imagePreview || watch("userImage") ? (
+                                <img
+                                    src={imagePreview || `http://localhost:8000/${watch("userImage")}`}
+                                    alt="Selected"
+                                    style={{ maxHeight: '100%', maxWidth: '100%', borderRadius: '4px' }}
+                                />
+                            ) : (
+                                <span onClick={triggerFileInput}>{uploadIcon}</span>
+                            )}
                             {imagePreview ? (
                                 <img src={imagePreview}
                                     alt="Selected" style={{
@@ -470,7 +489,7 @@ const TeamView = () => {
 
                             {imagePreview &&
                                 <span onClick={triggerFileInput} className='absolute top-64 border-2
-                                 border-white bg-bgColor3 w-9 h-9 rounded-full'>
+                                 border-white bg- w-9 h-9 rounded-full'>
                                     {editIcon}
                                 </span>}
 

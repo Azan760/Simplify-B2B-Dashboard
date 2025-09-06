@@ -367,7 +367,7 @@ export const section = [
         d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
     </svg>,
     value3: '19,571.53%',
-    path: "/Sale/AllSaleInvoice"
+    path: "/sales/si/list"
   },
   {
     icon: <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
@@ -393,7 +393,7 @@ export const section = [
     </svg>,
     value3: '-11.60%',
     minus: 'text-textColor6',
-    path: "/Purchase/AllPurchaseInvoice"
+    path: "/purchase/pi/list"
 
 
   },
@@ -414,7 +414,7 @@ export const section = [
       <path fillRule="evenodd"
         d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z" />
     </svg>,
-    path: "/Purchase/AllSupplier"
+    path: "supplier/list"
 
   },
   {
@@ -440,7 +440,7 @@ export const section = [
         d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
     </svg>,
     value3: '33.33%',
-    path: "/Sale/AllClient"
+    path: "client/list"
 
 
   }, {
@@ -467,7 +467,7 @@ export const section = [
         d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
     </svg>,
     value3: '66.67% ',
-    path: "/Product/AllProduct"
+    path: "product/list"
 
   }
 

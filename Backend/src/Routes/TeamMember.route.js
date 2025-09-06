@@ -29,6 +29,14 @@ import {
 
 const router = Router();
 
+
+
+ router.route('/new').post(upload.single('userImage'),createTeamMember);
+ router.route('/createPassword/:id').put(createPassword);
+ router.route('/list').get(allMember);
+ router.route('/view/:id').get(detailView);
+ router.route('/view/:id').put(upload.single('userImage'),editView);
+
 router.route('/new').post(upload.single('userImage'), createTeamMember);
 router.route('/createPassword/:id').put(createPassword);
 router.route('/list').get(allMember);
