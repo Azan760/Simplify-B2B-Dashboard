@@ -10,7 +10,7 @@ const router = Router();
  router.route('/createPassword/:id').put(createPassword);
  router.route('/list').get(allMember);
  router.route('/view/:id').get(detailView);
- router.route('/view/:id').put(editView);
+ router.route('/view/:id').put(upload.single('userImage'),editView);
 
 
 export default router;

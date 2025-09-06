@@ -3,6 +3,8 @@ import { asyncHandler } from "../Utils/AsyncHandler.js";
 import nodemailer from 'nodemailer';
 import { ApiError } from "../Utils/ApiError.js";
 import { ApiResponse } from "../Utils/ApiResponse.js"
+import path from "path";
+
 
 let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -186,6 +188,7 @@ export const detailView = asyncHandler(async(req,res) => {
             throw new ApiError(400, 'User ID is required!');
         }
         const user = await TeamMember.findById(id).select('-refreshToken -password -__v ');
+        const imageName = user.userImage ? path.basename(user.userImage) : null;
         if (!user) {
             throw new ApiError(404, 'User not found!');
         }
@@ -204,6 +207,9 @@ export const detailView = asyncHandler(async(req,res) => {
 
 export const editView = asyncHandler(async (req, res) => {
     const { id } = req.params;
+
+
+
     console.log(id);
     const {
       active,
@@ -214,13 +220,14 @@ export const editView = asyncHandler(async (req, res) => {
       contractType,
       corporateTax,
       commisionRate,
+
       updatedBy
     } = req.body;
 
     console.log(req.body);
   
     const userImage = req?.file;
-    console.log(userImage?.path);
+    console.log("userimage",userImage?.path);
   
     try {
 
