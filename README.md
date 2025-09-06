@@ -1,4 +1,4 @@
-# Web-Projects
+# Simplify-B2B-Dashboard
 This repository contains a collection of my full-stack web development projects built using a variety of modern technologies and frameworks. The projects include:
 
 Frontend: React.js, HTML5, CSS3, Bootstrap, Tailwind CSS
